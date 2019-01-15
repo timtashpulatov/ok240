@@ -55,37 +55,30 @@ Down    cpi     1ah
         jnz     Begin
         
 CurDown lda     Row
-        inr     a
+        adi     8
         sta     Row
         jmp     Paint
 CurLeft
         lda     Col
-        dcr     a
+        sbi     2
         sta     Col
         jmp     Paint
 CurRight
         lda     Col
-        inr     a
+        adi     2
         sta     Col
         jmp     Paint
 CurUp
         lda     Row
-        dcr     a
+        sbi     8
         sta     Row
         jmp     Paint
         
-
-
 
         ; Рисуем
 Paint
 
         lxi     h, BITMAP1
-;        lda     INV
-;        ora     a
-;        jz      Paint1
-;        lxi     h, BITMAP0
-;Paint1        
         call    PaintCursor
         jmp     Begin
 
@@ -131,4 +124,4 @@ BITMAP1
         
 INV     db      0
 
-CurPos  dw      0505h
+CurPos  dw      0808h
