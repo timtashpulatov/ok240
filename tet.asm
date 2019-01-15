@@ -179,7 +179,7 @@ WallDone
 
 DoBlock
         push    h
-        lxi     h, BRICK
+        lxi     h, COOLBRICK    ; BRICK
         call    PaintBlock
         pop     h
         ret
@@ -228,6 +228,16 @@ BRICK   db      0b00000000
         db      0b01000010
         db      0b01000010
         db      0b01111110
+        db      0b00000000
+        
+COOLBRICK
+        db      0b11111110
+        db      0b11111100
+        db      0b10000000
+        db      0b00000000
+        db      0b11101111
+        db      0b11001111
+        db      0b00001000
         db      0b00000000
 
 WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
