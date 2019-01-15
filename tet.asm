@@ -12,12 +12,15 @@ WARMBOOT equ    0e003h
 KBDSTAT equ     0e006h
 KBDREAD equ     0e009h
 
+Row     equ     CurPos
+Col     equ     CurPos+1
+
         org     1000h
 
 Begin
         ; Ввод с клавиатуры
         call    KBDREAD
-        cpi     0x1a            ; ESC?
+        cpi     0x1b            ; ESC?
         jnz     Space
         jmp     WARMBOOT        ; возврат в Монитор
 
@@ -26,19 +29,62 @@ Space   cpi     ' '
         lda     INV
         cma
         sta     INV
+        jmp     Paint
 
-Left
-        ; Рисуем
-        lxi     h, BITMAP1
-        lxi     b, XY
-        call    PaintBitmap
+Left    cpi     8
+        jz      CurLeft
+
+Right   cpi     18h
+        jz      CurRight
         
+Up      cpi     19h
+        jz      CurUp
+        
+Down    cpi     1bh
+        jnz     Begin
+        
+CurDown lda     Row
+        inr     a
+        sta     Row
+        jmp     Paint
+CurLeft
+        lda     Col
+        dcr     a
+        sta     Col
+        jmp     Paint
+CurRight
+        lda     Col
+        inr     a
+        sta     Col
+        jmp     Paint
+CurUp
+        lda     Row
+        dcr     a
+        sta     Row
+        jmp     Paint
+        
+
+
+
+        ; Рисуем
+Paint
+        lhld    CurPos
+        mov     b, h
+        mov     c, l
+
+        lxi     h, BITMAP1
+        lda     INV
+        ora     a
+        jz      Paint1
+        lxi     h, BITMAP0
+Paint1        
+        call    PaintCursor
         jmp     Begin
 
-; PaintBitmap - нарисовать битмап 8х8
+; PaintCursor - нарисовать битмап 8х8
 ; HL - адрес битмапа
 ; BC - X и Y
-PaintBitmap
+PaintCursor
         di
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
         mvi     a, ENROM
@@ -73,4 +119,6 @@ BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
         
-INV     db      0        
+INV     db      0
+
+CurPos  dw      0505h
