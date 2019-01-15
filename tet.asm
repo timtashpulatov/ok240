@@ -59,23 +59,24 @@ Up      cpi     19h
         
 Down    cpi     1ah
         jnz     Begin
+
         
 CurDown lda     Row
-        cpi     8+(8*8)
+        cpi     8*8
         jz      Paint
         adi     8
         sta     Row
         jmp     Paint
 CurLeft
         lda     Col
-        cpi     8
+        cpi     2
         jz      Paint
         sbi     2
         sta     Col
         jmp     Paint
 CurRight
         lda     Col
-        cpi     24
+        cpi     16
         jz      Paint
         adi     2
         sta     Col
@@ -161,12 +162,15 @@ BTW
         cpi     0ffh
         jz      WallDone
         
-        rlc
-        rlc
-        rlc
+        ora     a
+        ral
+        ral
+        ral
         mov     c, a
         inx     h
-        mov     d, m
+        mov     a, m
+        ral
+        mov     b, a
         inx     h
         call    DoBlock
         jmp     BTW
@@ -226,7 +230,9 @@ BRICK   db      0b00000000
         db      0b01111110
         db      0b00000000
 
-WALL    db      0, 0, 1, 0, 2, 0, 3, 0
+WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
+        db      9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9, 9
+        db      0, 9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9
         db      0ffh, 0ffh
         
 INV     db      0
