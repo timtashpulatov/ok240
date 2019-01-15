@@ -18,8 +18,19 @@ Col     equ     CurPos+1
         org     1000h
 
 Begin
+
+        lxi     h, BITMAP1
+        call    PaintCursor
+
         ; Ввод с клавиатуры
         call    KBDREAD
+
+        push    a
+        lxi     h, BITMAP0
+        call    PaintCursor
+        pop     a
+
+
         cpi     0x1b            ; ESC?
         jnz     Space
         jmp     WARMBOOT        ; возврат в Монитор
@@ -40,7 +51,7 @@ Right   cpi     18h
 Up      cpi     19h
         jz      CurUp
         
-Down    cpi     1bh
+Down    cpi     1ah
         jnz     Begin
         
 CurDown lda     Row
@@ -68,16 +79,13 @@ CurUp
 
         ; Рисуем
 Paint
-        lhld    CurPos
-        mov     b, h
-        mov     c, l
 
         lxi     h, BITMAP1
-        lda     INV
-        ora     a
-        jz      Paint1
-        lxi     h, BITMAP0
-Paint1        
+;        lda     INV
+;        ora     a
+;        jz      Paint1
+;        lxi     h, BITMAP0
+;Paint1        
         call    PaintCursor
         jmp     Begin
 
@@ -92,11 +100,13 @@ PaintCursor
         
         push    h
         lxi     h, SCREEN
-        mov     d, b
+        lda     Col
+        mov     d, a
         mvi     e, 0
         dad     d       ; hl = SCREEN + X*256
         mvi     d, 0
-        mov     e, c
+        lda     Row
+        mov     e, a
         dad     d       ; hl = hl + Y
         pop     d       ; de = адрес битмапа
 
