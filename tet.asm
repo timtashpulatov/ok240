@@ -55,21 +55,29 @@ Down    cpi     1ah
         jnz     Begin
         
 CurDown lda     Row
+        cpi     8+(8*8)
+        jz      Paint
         adi     8
         sta     Row
         jmp     Paint
 CurLeft
         lda     Col
+        cpi     8
+        jz      Paint
         sbi     2
         sta     Col
         jmp     Paint
 CurRight
         lda     Col
+        cpi     24
+        jz      Paint
         adi     2
         sta     Col
         jmp     Paint
 CurUp
         lda     Row
+        cpi     8
+        jz      Paint
         sbi     8
         sta     Row
         jmp     Paint
