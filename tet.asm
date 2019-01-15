@@ -12,10 +12,16 @@ WARMBOOT equ    0e003h
 KBDSTAT equ     0e006h
 KBDREAD equ     0e009h
 
+OFFSET_X equ    2
+OFFSET_Y equ    2
+
 Row     equ     CurPos
 Col     equ     CurPos+1
 
         org     1000h
+
+        call    ClearScreen
+        call    BuildTheWall
 
 Begin
 
@@ -126,9 +132,102 @@ PBLoop  ldax    d
         ei
         ret
 
+; ClearScreen
+ClearScreen
+        di
+        mvi     a, ENROM
+        out     BANKING
+        
+        lxi     h, SCREEN
+        lxi     b, 256*64
+        
+Cls     mvi     m, 0
+        inx     h
+        dcx     b
+        mov     a, b
+        ora     c
+        jnz     Cls
+        
+        xra     a
+        out     BANKING
+        ei
+        ret
+
+; BuildTheWall
+BuildTheWall
+        lxi     h, WALL
+BTW        
+        mov     a, m
+        cpi     0ffh
+        jz      WallDone
+        
+        rlc
+        rlc
+        rlc
+        mov     c, a
+        inx     h
+        mov     d, m
+        inx     h
+        call    DoBlock
+        jmp     BTW
+WallDone        
+        ret
+
+DoBlock
+        push    h
+        lxi     h, BRICK
+        call    PaintBlock
+        pop     h
+        ret
+
+; PaintBlock
+PaintBlock
+        di
+
+        mvi     a, ENROM
+        out     BANKING
+        
+        push    h
+        lxi     h, SCREEN
+        mov     d, b
+        mvi     e, 0
+        dad     d       ; hl = SCREEN + X*256
+        mvi     d, 0
+        mov     e, c
+        dad     d       ; hl = hl + Y
+        pop     d       ; de = адрес битмапа
+
+        mvi     c, 8
+BlockLoop
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+        dcr     c
+        jnz     PBLoop
+
+        xra     a
+        out     BANKING
+        
+        ei
+        ret
+
+
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0        
 BITMAP1
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
+        
+BRICK   db      0b00000000
+        db      0b01111110
+        db      0b01000010
+        db      0b01000010
+        db      0b01000010
+        db      0b01000010
+        db      0b01111110
+        db      0b00000000
+
+WALL    db      0, 0, 1, 0, 2, 0, 3, 0
+        db      0ffh, 0ffh
         
 INV     db      0
 
