@@ -30,13 +30,11 @@ Col     equ     CurPos+1
         call    ResetScroll
         call    ClearScreen
         call    BuildTheWall
+        call    UnpackWorkBitmap
 
 Begin
 
         call    PaintCursor
-
-
-        call    UnpackWorkBitmap
 
 
         ; Ввод с клавиатуры
@@ -161,23 +159,30 @@ PackWorkBitmap
 ; *************************************************
 UnpackWorkBitmap
         lxi     b, 0x0308
-        lda     COOLBRICK
+        mvi     e, 8
+        lxi     h, COOLBRICK
+UnpLoop        
+        mov     a, m
         call    PaintByteWithBitmaps
-        lxi     b, 0x0310
-        lda     COOLBRICK+1
-        call    PaintByteWithBitmaps
-        lxi     b, 0x0318
-        lda     COOLBRICK+2
-        call    PaintByteWithBitmaps
-        lxi     b, 0x0320
-        lda     COOLBRICK+3
-        call    PaintByteWithBitmaps
+        mov     a, c
+        adi     8
+        mov     c, a
+        xra     a
+        adc     b
+        mov     b, a
+        inx     h
+        dcr     e
+        jnz     UnpLoop
+        
         ret
 
 ; *************************************************
 ; Нарисовать байт битмапами
 ; *************************************************
 PaintByteWithBitmaps
+        push    bc
+        push    de
+        push    hl
         mvi     e, 8   
 Loopp        
         rrc
@@ -195,6 +200,9 @@ Looppp
         dcr     e
         jnz     Loopp
 
+        pop     hl
+        pop     de
+        pop     bc
         ret
 
 
