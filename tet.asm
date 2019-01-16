@@ -35,6 +35,10 @@ Begin
 
         call    PaintCursor
 
+
+        call    PaintByteWithBitmaps
+
+
         ; Ввод с клавиатуры
         call    KBDREAD
 
@@ -159,7 +163,9 @@ PaintByteWithBitmaps
 
         mvi     a, 0b11001010
      
-        mvi     c, 8   
+        lxi     b, 0x2000       ; 16, 0
+     
+        mvi     e, 8   
 Loopp        
         rrc
         lxi     h, BITMAP0
@@ -167,12 +173,13 @@ Loopp
         lxi     h, BITMAP1
 Looppp
         push    a
-        push    b
-        
-        pop     b
+        call    PaintBitmap
         pop     a
         
-        dcr     c
+        inr     b
+        inr     b
+        
+        dcr     e
         jnz     Loopp
 
         ret
@@ -187,6 +194,7 @@ Looppp
 PaintBitmap
         di
         push    a
+        push    bc
         push    de
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
         mvi     a, ENROM
@@ -217,6 +225,7 @@ PBLoop  ldax    d
         out     BANKING
         
         pop     de
+        pop     bc
         pop     a
         ei
         ret
