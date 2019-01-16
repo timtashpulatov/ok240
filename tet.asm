@@ -1,11 +1,13 @@
         .project tet.bin
 
+SCROLL_V equ    0C0h
 BANKING equ     0C1h
+SCROLL_VH equ   0C2h
 
 MAP32K  equ     0x01
 ENROM   equ     0x10
 
-XY      equ     1010h
+XY      equ     0908h
 SCREEN  equ     0c000h
 
 WARMBOOT equ    0e003h
@@ -20,6 +22,12 @@ Col     equ     CurPos+1
 
         org     1000h
 
+; Инициализация важных и нужных переменных
+        lxi     h, XY
+        shld    CurPos
+
+; Чистим экран и рисуем нетленку
+        call    ResetScroll
         call    ClearScreen
         call    BuildTheWall
 
@@ -60,10 +68,13 @@ Up      cpi     19h
 Down    cpi     1ah
         jnz     Begin
 
-MARGIN_BOT      equ     1+8*8
+; *************************************************
+; * Правим координаты курсора
+; *************************************************
+MARGIN_BOT      equ     8*8
 MARGIN_LEFT     equ     1+2
 MARGIN_RIGHT    equ     1+16
-MARGIN_TOP      equ     1+8
+MARGIN_TOP      equ     8
         
 CurDown lda     Row
         cpi     MARGIN_BOT
@@ -189,6 +200,8 @@ DoBlock
         ret
 
 ; PaintBlock
+; HL - адрес битмапа
+; BC - координаты
 PaintBlock
         di
 
@@ -250,6 +263,15 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8
         db      0ffh, 0ffh
         
+; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
+ResetScroll
+        xra     a
+        out     SCROLL_V
+        out     SCROLL_VH
+        ret
+        
+; Зажечь/погасить квадратик
 INV     db      0
 
-CurPos  dw      0909h
+; Координаты курсора
+CurPos  dw      0
