@@ -49,10 +49,11 @@ Begin
 
 Space   cpi     ' '
         jnz     Left
-        lda     INV
-        cma
-        sta     INV
-        jmp     Paint
+;        lda     INV
+;        cma
+;        sta     INV
+        call    InvertDot
+        jmp     Begin
 
 Left    cpi     8
         jz      CurLeft
@@ -126,6 +127,19 @@ EraseCursor
         mov     c, l
         mov     b, h
         lxi     h, BITMAP0
+        call    PaintBitmap
+        ret
+
+; *************************************************
+; InvertDot
+; Точку рисуем в первой цветовой плоскости (курсор во второй)
+; *************************************************
+InvertDot
+        lhld    CurPos
+        mov     c, l
+        mov     b, h
+        dcr     b
+        lxi     h, BITMAP1
         call    PaintBitmap
         ret
 
