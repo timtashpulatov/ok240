@@ -60,30 +60,34 @@ Up      cpi     19h
 Down    cpi     1ah
         jnz     Begin
 
+MARGIN_BOT      equ     1+8*8
+MARGIN_LEFT     equ     1+2
+MARGIN_RIGHT    equ     1+16
+MARGIN_TOP      equ     1+8
         
 CurDown lda     Row
-        cpi     8*8
+        cpi     MARGIN_BOT
         jz      Paint
         adi     8
         sta     Row
         jmp     Paint
 CurLeft
         lda     Col
-        cpi     2
+        cpi     MARGIN_LEFT
         jz      Paint
         sbi     2
         sta     Col
         jmp     Paint
 CurRight
         lda     Col
-        cpi     16
+        cpi     MARGIN_RIGHT
         jz      Paint
         adi     2
         sta     Col
         jmp     Paint
 CurUp
         lda     Row
-        cpi     8
+        cpi     MARGIN_TOP
         jz      Paint
         sbi     8
         sta     Row
@@ -248,4 +252,4 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         
 INV     db      0
 
-CurPos  dw      0808h
+CurPos  dw      0909h
