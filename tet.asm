@@ -36,7 +36,7 @@ Begin
         call    PaintCursor
 
 
-        call    PaintByteWithBitmaps
+        call    UnpackWorkBitmap
 
 
         ; Ввод с клавиатуры
@@ -155,16 +155,29 @@ InvertDot
 PackWorkBitmap
         ret
 
+; *************************************************
+; Распаковать рабочий битмап в экран
+;       (нарисовать биты квадратиками)
+; *************************************************
+UnpackWorkBitmap
+        lxi     b, 0x2000       ; 16, 0
+        lda     COOLBRICK
+        call    PaintByteWithBitmaps
+        lxi     b, 0x2008       ; 16, 0
+        lda     COOLBRICK+1
+        call    PaintByteWithBitmaps
+        lxi     b, 0x2010       ; 16, 0
+        lda     COOLBRICK+2
+        call    PaintByteWithBitmaps
+        lxi     b, 0x2018       ; 16, 0
+        lda     COOLBRICK+3
+        call    PaintByteWithBitmaps
+        ret
 
 ; *************************************************
 ; Нарисовать байт битмапами
 ; *************************************************
 PaintByteWithBitmaps
-
-        mvi     a, 0b11001010
-     
-        lxi     b, 0x2000       ; 16, 0
-     
         mvi     e, 8   
 Loopp        
         rrc
