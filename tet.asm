@@ -153,12 +153,41 @@ PackWorkBitmap
 
 
 ; *************************************************
+; Нарисовать байт битмапами
+; *************************************************
+PaintByteWithBitmaps
+
+        mvi     a, 0b11001010
+     
+        mvi     c, 8   
+Loopp        
+        rrc
+        lxi     h, BITMAP0
+        jnc     Looppp
+        lxi     h, BITMAP1
+Looppp
+        push    a
+        push    b
+        
+        pop     b
+        pop     a
+        
+        dcr     c
+        jnz     Loopp
+
+        ret
+
+
+
+; *************************************************
 ; PaintBitmap - нарисовать битмап 8х8
 ; HL - адрес битмапа
 ; BC - X и Y
 ; *************************************************
 PaintBitmap
         di
+        push    a
+        push    de
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
         mvi     a, ENROM
         out     BANKING
@@ -187,6 +216,8 @@ PBLoop  ldax    d
         xra     a
         out     BANKING
         
+        pop     de
+        pop     a
         ei
         ret
 
