@@ -53,7 +53,7 @@ Space   cpi     ' '
 ;        cma
 ;        sta     INV
         call    InvertDot
-        call    UpdateWorkBitmap
+        call    PackWorkBitmap
         call    PaintWorkBitmap
         jmp     Begin
 
@@ -144,6 +144,13 @@ InvertDot
         lxi     h, BITMAP1
         call    PaintBitmap
         ret
+
+; *************************************************
+; Собрать рабочий битмап из экранной области
+; *************************************************
+PackWorkBitmap
+        ret
+
 
 ; *************************************************
 ; PaintBitmap - нарисовать битмап 8х8
@@ -244,10 +251,9 @@ ResetScroll
         out     SCROLL_VH
         ret
 
-; Собрать рабочий битмап из экранной области
-UpdateWorkBitmap
-        ret
-;
+; *************************************************
+; Вывести рабочий битмап
+; *************************************************
 PaintWorkBitmap
         mvi     b, 12*2
         mvi     c, 8
