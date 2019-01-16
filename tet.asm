@@ -53,6 +53,8 @@ Space   cpi     ' '
 ;        cma
 ;        sta     INV
         call    InvertDot
+        call    UpdateWorkBitmap
+        call    PaintWorkBitmap
         jmp     Begin
 
 Left    cpi     8
@@ -126,7 +128,7 @@ EraseCursor
         lhld    CurPos
         mov     c, l
         mov     b, h
-        lxi     h, BITMAP0
+        lxi     h, BMPDOT ; BITMAP0
         call    PaintBitmap
         ret
 
@@ -235,13 +237,30 @@ DoBlock
         pop     h
         ret
 
+; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
+ResetScroll
+        xra     a
+        out     SCROLL_V
+        out     SCROLL_VH
+        ret
 
+; Собрать рабочий битмап из экранной области
+UpdateWorkBitmap
+        ret
+;
+PaintWorkBitmap
+        mvi     b, 12*2
+        mvi     c, 8
+        lxi     h, COOLBRICK    ;WORKBMP
+        call    PaintBitmap
+        ret
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
 BITMAP55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
+BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
         
 BRICK   db      0b00000000
         db      0b01111110
@@ -262,18 +281,15 @@ COOLBRICK
         db      0b00001000
         db      0b00000000
 
+; Рабочий битмап
+WORKBMP ds      8
+
 WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9, 9
         db      0, 9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9
         db      0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8
         db      0ffh, 0ffh
         
-; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
-ResetScroll
-        xra     a
-        out     SCROLL_V
-        out     SCROLL_VH
-        ret
         
 ; Зажечь/погасить квадратик
 INV     db      0
