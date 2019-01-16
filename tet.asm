@@ -33,15 +33,13 @@ Col     equ     CurPos+1
 
 Begin
 
-        lxi     h, BITMAP1
         call    PaintCursor
 
         ; Ввод с клавиатуры
         call    KBDREAD
 
         push    a
-        lxi     h, BITMAP0
-        call    PaintCursor
+        call    EraseCursor
         pop     a
 
 
@@ -105,17 +103,32 @@ CurUp
         jmp     Paint
         
 
-        ; Рисуем
+; Рисуем
 Paint
-
-        lxi     h, BITMAP1
         call    PaintCursor
         jmp     Begin
 
-; PaintCursor - нарисовать битмап 8х8
+PaintCursor
+        lhld    CurPos
+        mov     c, l
+        mov     b, h
+        lxi     h, BITMAP1
+        call    PaintBitmap
+        ret
+
+EraseCursor
+        lhld    CurPos
+        mov     c, l
+        mov     b, h
+        lxi     h, BITMAP0
+        call    PaintBitmap
+        ret
+
+
+; PaintBitmap - нарисовать битмап 8х8
 ; HL - адрес битмапа
 ; BC - X и Y
-PaintCursor
+PaintBitmap
         di
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
         mvi     a, ENROM
@@ -123,13 +136,13 @@ PaintCursor
         
         push    h
         lxi     h, SCREEN
-        lda     Col
-        mov     d, a
+;        lda     Col
+        mov     d, b
         mvi     e, 0
         dad     d       ; hl = SCREEN + X*256
         mvi     d, 0
-        lda     Row
-        mov     e, a
+;        lda     Row
+        mov     e, c
         dad     d       ; hl = hl + Y
         pop     d       ; de = адрес битмапа
 
