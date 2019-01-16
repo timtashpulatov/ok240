@@ -108,6 +108,9 @@ Paint
         call    PaintCursor
         jmp     Begin
 
+; *************************************************
+; PaintCursor
+; *************************************************
 PaintCursor
         lhld    CurPos
         mov     c, l
@@ -115,7 +118,9 @@ PaintCursor
         lxi     h, BITMAP1
         call    PaintBitmap
         ret
-
+; *************************************************
+; EraseCursor
+; *************************************************
 EraseCursor
         lhld    CurPos
         mov     c, l
@@ -124,10 +129,11 @@ EraseCursor
         call    PaintBitmap
         ret
 
-
+; *************************************************
 ; PaintBitmap - нарисовать битмап 8х8
 ; HL - адрес битмапа
 ; BC - X и Y
+; *************************************************
 PaintBitmap
         di
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
@@ -161,7 +167,9 @@ PBLoop  ldax    d
         ei
         ret
 
+; *************************************************
 ; ClearScreen
+; *************************************************
 ClearScreen
         di
         mvi     a, ENROM
@@ -181,8 +189,9 @@ Cls     mvi     m, 0
         out     BANKING
         ei
         ret
-
+; *************************************************
 ; BuildTheWall
+; *************************************************
 BuildTheWall
         lxi     h, WALL
 BTW        
@@ -207,44 +216,11 @@ WallDone
 
 DoBlock
         push    h
-        lxi     h, COOLBRICK    ; BRICK
-        call    PaintBlock
+        lxi     h, COOLBRICK
+        call    PaintBitmap
         pop     h
         ret
 
-; PaintBlock
-; HL - адрес битмапа
-; BC - координаты
-PaintBlock
-        di
-
-        mvi     a, ENROM
-        out     BANKING
-        
-        push    h
-        lxi     h, SCREEN
-        mov     d, b
-        mvi     e, 0
-        dad     d       ; hl = SCREEN + X*256
-        mvi     d, 0
-        mov     e, c
-        dad     d       ; hl = hl + Y
-        pop     d       ; de = адрес битмапа
-
-        mvi     c, 8
-BlockLoop
-        ldax    d
-        mov     m, a
-        inx     d
-        inx     h
-        dcr     c
-        jnz     PBLoop
-
-        xra     a
-        out     BANKING
-        
-        ei
-        ret
 
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0        
