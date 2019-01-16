@@ -116,7 +116,7 @@ PaintCursor
         lhld    CurPos
         mov     c, l
         mov     b, h
-        lxi     h, BITMAP1
+        lxi     h, BITMAP55
         call    PaintBitmap
         ret
 ; *************************************************
@@ -237,9 +237,11 @@ DoBlock
 
 
 
-BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0        
+BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
-        db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
+        db      255, 255, 255, 255, 255, 255, 255, 255, 255
+BITMAP55
+        db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
         
 BRICK   db      0b00000000
         db      0b01111110
