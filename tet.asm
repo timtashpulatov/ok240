@@ -160,16 +160,16 @@ PackWorkBitmap
 ;       (нарисовать биты квадратиками)
 ; *************************************************
 UnpackWorkBitmap
-        lxi     b, 0x2000       ; 16, 0
+        lxi     b, 0x0308
         lda     COOLBRICK
         call    PaintByteWithBitmaps
-        lxi     b, 0x2008       ; 16, 0
+        lxi     b, 0x0310
         lda     COOLBRICK+1
         call    PaintByteWithBitmaps
-        lxi     b, 0x2010       ; 16, 0
+        lxi     b, 0x0318
         lda     COOLBRICK+2
         call    PaintByteWithBitmaps
-        lxi     b, 0x2018       ; 16, 0
+        lxi     b, 0x0320
         lda     COOLBRICK+3
         call    PaintByteWithBitmaps
         ret
@@ -181,7 +181,7 @@ PaintByteWithBitmaps
         mvi     e, 8   
 Loopp        
         rrc
-        lxi     h, BITMAP0
+        lxi     h, BMPDOT
         jnc     Looppp
         lxi     h, BITMAP1
 Looppp
