@@ -130,10 +130,10 @@ PaintCursor
 EraseCursor
 
         lda     Row             ; строка (координата Y)
-        sui     8
+        sui     8               ; отнять смещение
         rar
         rar
-        rar
+        rar                     ; и поделить на 8
         ani     7
         mov     l, a
         mvi     h, 0
@@ -141,15 +141,19 @@ EraseCursor
         dad     d               ; hl = WORKBMP + строка
         
         lda     Col             ; координата X
-        sui     2
-        rar
+        sui     2               ; минус смещение
+        rar                     ; и поделить на 2 для цветного режима
+        
+        sui     0fh             ; отзеркалить
+        ani     7
+        dcr     a
         mov     c, a            ; это будет счетчик для сдвига
         
         mov     a, m            ; добыли нужную строчку пикселей
 ECLoop
         dcr     c
         jm      ECNext
-        ral
+        rar
         jmp     ECLoop
 
 ECNext  
@@ -157,7 +161,7 @@ ECNext
         mov     c, l
         mov     b, h
         lxi     h, BMPDOT
-        ani     0x80
+        ani     0x01
         jz      ECNextNext
         lxi     h, BITMAP1
 ECNextNext                
