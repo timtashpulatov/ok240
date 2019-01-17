@@ -164,12 +164,9 @@ UnpackWorkBitmap
 UnpLoop        
         mov     a, m
         call    PaintByteWithBitmaps
-        mov     a, c
-        adi     8
+        mvi     a, 8
+        add     c
         mov     c, a
-        xra     a
-        adc     b
-        mov     b, a
         inx     h
         dcr     e
         jnz     UnpLoop
