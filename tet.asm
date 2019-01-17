@@ -7,7 +7,7 @@ SCROLL_VH equ   0C2h
 MAP32K  equ     0x01
 ENROM   equ     0x10
 
-XY      equ     0908h
+XY      equ     0308h
 SCREEN  equ     0c000h
 
 WARMBOOT equ    0e003h
@@ -124,13 +124,44 @@ PaintCursor
         call    PaintBitmap
         ret
 ; *************************************************
-; EraseCursor
+; Вывести вместо курсора картинку, соответствующую 
+; точке из рабочего битмапа
 ; *************************************************
 EraseCursor
+
+        lda     Row             ; строка (координата Y)
+        sui     8
+        rar
+        rar
+        rar
+        ani     7
+        mov     l, a
+        mvi     h, 0
+        lxi     d, WORKBMP
+        dad     d               ; hl = WORKBMP + строка
+        
+        lda     Col             ; координата X
+        sui     2
+        rar
+        mov     c, a            ; это будет счетчик для сдвига
+        
+        mov     a, m            ; добыли нужную строчку пикселей
+ECLoop
+        dcr     c
+        jm      ECNext
+        ral
+        jmp     ECLoop
+
+ECNext  
         lhld    CurPos
         mov     c, l
         mov     b, h
-        lxi     h, BMPDOT ; BITMAP0
+        lxi     h, BMPDOT
+        ani     0x80
+        jz      ECNextNext
+        lxi     h, BITMAP1
+ECNextNext                
+        
         call    PaintBitmap
         ret
 
@@ -346,7 +377,16 @@ COOLBRICK
         db      0b00000000
 
 ; Рабочий битмап
-WORKBMP ds      8
+WORKBMP
+        db      0b11111110
+        db      0b11111100
+        db      0b10000000
+        db      0b00000000
+        db      0b11101111
+        db      0b11001111
+        db      0b00001000
+        db      0b00000000
+
 
 WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9, 9
