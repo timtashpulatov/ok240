@@ -139,30 +139,29 @@ EraseCursor
         mvi     h, 0
         lxi     d, WORKBMP
         dad     d               ; hl = WORKBMP + строка
-        
+
+; Адрес нужного байта добыли, займемся номером бита        
         lda     Col             ; координата X
         sui     2               ; минус смещение
         rar                     ; и поделить на 2 для цветного режима
         
-        sui     0fh             ; отзеркалить
-        ani     7
-        dcr     a
+;        sui     0ffh             ; отзеркалить
+;        ani     7
+;        dcr     a
+        inr     a
         mov     c, a            ; это будет счетчик для сдвига
         
         mov     a, m            ; добыли нужную строчку пикселей
 ECLoop
+        rlc
         dcr     c
-        jm      ECNext
-        rar
-        jmp     ECLoop
+        jnz     ECLoop
 
-ECNext  
         lhld    CurPos
         mov     c, l
         mov     b, h
         lxi     h, BMPDOT
-        ani     0x01
-        jz      ECNextNext
+        jnc     ECNextNext
         lxi     h, BITMAP1
 ECNextNext                
         
