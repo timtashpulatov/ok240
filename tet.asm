@@ -30,6 +30,7 @@ Col     equ     CurPos+1
         call    ResetScroll
         call    ClearScreen
         call    BuildTheWall
+        call    DrawPalette
         call    UnpackWorkBitmap
 
 Begin
@@ -353,12 +354,33 @@ PaintWorkBitmap
         call    PaintBitmap
         ret
 
+; *************************************************
+; Нарисовать палитру
+; *************************************************
+DrawPalette
+        lxi     b, 0200h + 10*8
+        lxi     h, MAZOK
+        call    PaintBitmap
+; Второй цвет        
+        lxi     b, 0700h + 10*8
+        lxi     h, MAZOK
+        call    PaintBitmap
+; Оба цвета
+        lxi     b, 0a00h + 10*8
+        lxi     h, MAZOK
+        call    PaintBitmap
+        lxi     b, 0b00h + 10*8
+        lxi     h, MAZOK
+        call    PaintBitmap
+        ret
+
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
 BITMAP55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
 BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
+MAZOK   db      255, 255, 255, 255, 255, 255, 255, 255, 255
         
 BRICK   db      0b00000000
         db      0b01111110
