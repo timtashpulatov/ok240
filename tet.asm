@@ -412,7 +412,8 @@ PrintString
 PrtStrDone        
         ret
 
-POPS    db      1bh, 35h, 10, 10, '1 2 3', 0
+POPS    db      1bh, 35h, 10, 10,
+        db      '1 2 3', 0
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
