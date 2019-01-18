@@ -59,7 +59,7 @@ Space   cpi     ' '
 ;        lda     INV
 ;        cma
 ;        sta     INV
-        call    InvertDot
+        call    PlaceDot
         call    PackWorkBitmap
         call    PaintWorkBitmap
         jmp     Begin
@@ -117,6 +117,8 @@ CycleBackColor
 ColorOne
 ColorTwo
 BothColors
+        ani     3
+        call    PlaceDot
         jmp     Begin
 
 
@@ -218,16 +220,24 @@ ECNextNext
         ret
 
 ; *************************************************
-; InvertDot
-; Точку рисуем в первой цветовой плоскости (курсор во второй)
+; Точку рисуем
+; В аккумуляторе номер плоскости 00, 01, 10 или 11
 ; *************************************************
-InvertDot
+PlaceDot
         lhld    CurPos
         mov     c, l
         mov     b, h
-        dcr     b
+
+        rrc
+        jnc     PD2
         lxi     h, BITMAP1
         call    PaintBitmap
+PD2
+        rrc
+        jnc     PDone
+        lxi     h, BITMAP1
+        call    PaintBitmap
+PDone
         ret
 
 ; *************************************************
