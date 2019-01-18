@@ -4,6 +4,8 @@ SCROLL_V equ    0C0h
 BANKING equ     0C1h
 SCROLL_VH equ   0C2h
 
+VIDEO   equ     0E1h
+
 MAP32K  equ     0x01
 ENROM   equ     0x10
 
@@ -33,6 +35,7 @@ Col     equ     CurPos+1
         call    BuildTheWall
         call    DrawPalette
         call    UnpackWorkBitmap
+        call    PaintWorkBitmap
 
 Begin
 
@@ -81,7 +84,32 @@ Two     cpi     32h
         
 Three   cpi     33h
         jz      BothColors
+
+; Перебор цветов переднего плана и фона
+        cpi     'F'
+        jz      CycleForeColor
+        cpi     'B'
+        jz      CycleBackColor
+
         jmp     Begin
+
+; *************************************************
+; *************************************************
+CycleForeColor
+        in      VIDEO
+        inr     a
+        ani     7
+        ori     40h
+        out     VIDEO
+        jmp     Begin   ; неэкономно. C9 наше всё
+CycleBackColor
+        in      VIDEO
+        adi     8
+        ani     3fh
+        ori     40h
+        out     VIDEO
+        jmp     Begin
+        
 
 ; *************************************************
 ; * Правим точку цветом 01, 10 или 11
