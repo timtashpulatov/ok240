@@ -71,7 +71,7 @@ Up      cpi     19h
         jz      CurUp
         
 Down    cpi     1ah
-        jz      Down
+        jz      CurDown
 
 One     cpi     31h
         jz      ColorOne
@@ -378,24 +378,41 @@ PaintWorkBitmap
 ; Нарисовать палитру
 ; *************************************************
 DrawPalette
-        lxi     b, 0200h + 10*8
+        lxi     b, 0400h + 11*8
         lxi     h, MAZOK
         call    PaintBitmap
 ; Второй цвет        
-        lxi     b, 0700h + 10*8
+        lxi     b, 0900h + 11*8
         lxi     h, MAZOK
         call    PaintBitmap
 ; Оба цвета
-        lxi     b, 0a00h + 10*8
+        lxi     b, 0c00h + 11*8
         lxi     h, MAZOK
         call    PaintBitmap
-        lxi     b, 0b00h + 10*8
+        lxi     b, 0d00h + 11*8
         lxi     h, MAZOK
         call    PaintBitmap
 ; Подписать
-        mvi     c, '0'
-        call    CHAROUT
+        lxi     h, POPS
+        call    PrintString
         ret
+
+; *************************************************
+; Напечатать ASCIIZ строчку
+; HL - начало строки
+; *************************************************
+PrintString
+        mov     a, m
+        ora     a
+        jz      PrtStrDone
+        mov     c, a
+        call    CHAROUT
+        inx     h
+        jmp     PrintString
+PrtStrDone        
+        ret
+
+POPS    db      1bh, 35h, 10, 10, '1 2 3', 0
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
