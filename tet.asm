@@ -39,14 +39,14 @@ Col     equ     CurPos+1
 
 Begin
 
-        call    PaintCursor
+;        call    PaintCursor
 
 
         ; Ввод с клавиатуры
         call    KBDREAD
 
         push    a
-        call    EraseCursor
+;        call    EraseCursor
         pop     a
 
 
@@ -84,6 +84,9 @@ Two     cpi     32h
         
 Three   cpi     33h
         jz      BothColors
+        
+Zero    cpi     30h
+        jz      NoColors
 
 ; Перебор цветов переднего плана и фона
         cpi     'F'
@@ -117,6 +120,7 @@ CycleBackColor
 ColorOne
 ColorTwo
 BothColors
+NoColors
         ani     3
         call    PlaceDot
         jmp     Begin
@@ -161,7 +165,7 @@ CurUp
 
 ; Рисуем
 Paint
-        call    PaintCursor
+;        call    PaintCursor
         jmp     Begin
 
 ; *************************************************
@@ -227,15 +231,20 @@ PlaceDot
         lhld    CurPos
         mov     c, l
         mov     b, h
-
-        rrc
-        jnc     PD2
+        
+        dcr     b
         lxi     h, BITMAP1
-        call    PaintBitmap
+        rrc
+        jc      PD2
+        lxi     h, BMPDOT
 PD2
+        call    PaintBitmap
+        inr     b
+        lxi     h, BITMAP1      ; не, ну правда, нельзя ли зациклить?
         rrc
-        jnc     PDone
-        lxi     h, BITMAP1
+        jc      PD3
+        lxi     h, BMPDOT
+PD3        
         call    PaintBitmap
 PDone
         ret
@@ -431,8 +440,8 @@ DrawPalette
         lxi     h, MAZOK
         call    PaintBitmap
 ; Подписать
-        lxi     h, POPS
-        call    PrintString
+;        lxi     h, POPS
+;        call    PrintString
         ret
 
 ; *************************************************
@@ -450,8 +459,8 @@ PrintString
 PrtStrDone        
         ret
 
-POPS    db      1bh, 35h, 10, 10,
-        db      '1 2 3', 0
+;POPS    db      1bh, 35h, 10, 10,
+;        db      '1 2 3', 0
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
