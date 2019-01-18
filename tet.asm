@@ -70,7 +70,26 @@ Up      cpi     19h
         jz      CurUp
         
 Down    cpi     1ah
-        jnz     Begin
+        jz      Down
+
+One     cpi     31h
+        jz      ColorOne
+        
+Two     cpi     32h
+        jz      ColorTwo
+        
+Three   cpi     33h
+        jz      BothColors
+        jmp     Begin
+
+; *************************************************
+; * Правим точку цветом 01, 10 или 11
+; *************************************************
+ColorOne
+ColorTwo
+BothColors
+        jmp     Begin
+
 
 ; *************************************************
 ; * Правим координаты курсора
