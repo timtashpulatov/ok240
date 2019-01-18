@@ -13,6 +13,7 @@ SCREEN  equ     0c000h
 WARMBOOT equ    0e003h
 KBDSTAT equ     0e006h
 KBDREAD equ     0e009h
+CHAROUT equ     0e00ch  ; вывести символ из регистра C
 
 OFFSET_X equ    2
 OFFSET_Y equ    2
@@ -391,6 +392,9 @@ DrawPalette
         lxi     b, 0b00h + 10*8
         lxi     h, MAZOK
         call    PaintBitmap
+; Подписать
+        mvi     c, '0'
+        call    CHAROUT
         ret
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
