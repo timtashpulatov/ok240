@@ -1,4 +1,4 @@
-        .project tet.bin
+        .project graf.bin
 
 SCROLL_V equ    0C0h
 BANKING equ     0C1h
@@ -249,8 +249,8 @@ PackWorkBitmap
 UnpackWorkBitmap
         lxi     b, 0x0208
         call    UnWorBit
-        lxi     b, 0x0308
-        call    UnWorBit
+;        lxi     b, 0x0308
+;        call    UnWorBit
         ret
         
 UnWorBit        
@@ -283,6 +283,7 @@ Loopp
         lxi     h, BITMAP1
 Looppp
         push    a
+        mvi     a, 3
         call    PaintBitmap
         pop     a
         
@@ -325,15 +326,13 @@ PaintBitmap
 
         pop     a       ; плоскости
 
-        mvi a, 3 ; HACK
-
 Plane1
-        ani     1
-        jz      Plane2
+        rrc
+        jnc     Plane2
         call    Copy8
 Plane2        
-        ani     2
-        jz      PlaneDone
+        rrc
+        jnc     PlaneDone
 
         ; Второй план битмапа
         push    h
@@ -422,6 +421,7 @@ WallDone
 DoBlock
         push    h
         lxi     h, COOLBRICK
+        mvi     a, 1
         call    PaintBitmap
         pop     h
         ret
@@ -449,17 +449,17 @@ PaintWorkBitmap
 DrawPalette
         lxi     b, 0400h + 11*8
         lxi     h, MAZOK
+        mvi     a, 1
         call    PaintBitmap
 ; Второй цвет        
-        lxi     b, 0900h + 11*8
+        lxi     b, 0800h + 11*8
         lxi     h, MAZOK
+        mvi     a, 2
         call    PaintBitmap
 ; Оба цвета
         lxi     b, 0c00h + 11*8
         lxi     h, MAZOK
-        call    PaintBitmap
-        lxi     b, 0d00h + 11*8
-        lxi     h, MAZOK
+        mvi     a, 3
         call    PaintBitmap
 ; Подписать
 ;        lxi     h, POPS
