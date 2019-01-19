@@ -35,11 +35,10 @@ Col             equ     CurPos+1
         call    BuildTheWall
         call    DrawPalette
         call    UnpackWorkBitmap
-        call    PaintWorkBitmap
 
 Begin
-
-        call    PaintCursor
+        call    WorkBitmapPreview
+;        call    PaintCursor
 
 
         ; Ввод с клавиатуры
@@ -61,8 +60,7 @@ Space   cpi     ' '
 ;        sta     INV
         mvi     a, 3
         call    PlaceDot
-        call    PackWorkBitmap
-        call    PaintWorkBitmap
+        call    WorkBitmapPreview
         jmp     Begin
 
 Left    cpi     8
@@ -127,7 +125,6 @@ BothColors
         call    UpdateWorkBitmap        
         jmp     Begin
 
-
 UpdateWorkBitmap
         ret
 
@@ -189,7 +186,7 @@ PaintCursor
 ; точке из рабочего битмапа
 ; *************************************************
 EraseCursor     ; Попросту выведем заново весь битмап
-        call    UnpackWorkBitmap
+;        call    UnpackWorkBitmap
         ret
 
 EraseCursor0
@@ -240,6 +237,13 @@ PlaceDot
         lhld    CurPos
         mov     c, l
         mov     b, h
+        lxi     h, BITMAP1
+; Особый случай - для очистки обоих планов
+        ora     a
+        jnz     PDT
+        lxi     h, BITMAP0
+        cma
+PDT        
         call    PaintBitmap
         ret
 
@@ -446,7 +450,7 @@ ResetScroll
 ; *************************************************
 ; Вывести рабочий битмап
 ; *************************************************
-PaintWorkBitmap
+WorkBitmapPreview
         mvi     b, 12*2
         mvi     c, 8
         lxi     h, COOLBRICK    ;WORKBMP
