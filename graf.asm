@@ -124,8 +124,12 @@ ColorTwo
 BothColors
         ani     3
         call    PlaceDot
+        call    UpdateWorkBitmap        
         jmp     Begin
 
+
+UpdateWorkBitmap
+        ret
 
 ; *************************************************
 ; * Правим координаты курсора
@@ -242,8 +246,10 @@ PlaceDot
 
 ; *************************************************
 ; Собрать рабочий битмап из экранной области
+; (вряд ли хорошая идея)
 ; *************************************************
 PackWorkBitmap
+
         ret
 
 ; *************************************************
@@ -444,6 +450,7 @@ PaintWorkBitmap
         mvi     b, 12*2
         mvi     c, 8
         lxi     h, COOLBRICK    ;WORKBMP
+        mvi     a, 3
         call    PaintBitmap
         ret
 
