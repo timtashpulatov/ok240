@@ -1,27 +1,27 @@
         .project graf.bin
 
-SCROLL_V equ    0C0h
-BANKING equ     0C1h
-SCROLL_VH equ   0C2h
+SCROLL_V        equ     0C0h
+BANKING         equ     0C1h
+SCROLL_VH       equ     0C2h
 
-VIDEO   equ     0E1h
+VIDEO           equ     0E1h
 
-MAP32K  equ     0x01
-ENROM   equ     0x10
+MAP32K          equ     0x01
+ENROM           equ     0x10
 
-XY      equ     0208h
-SCREEN  equ     0c000h
+XY              equ     0208h
+SCREEN          equ     0c000h
 
-WARMBOOT equ    0e003h
-KBDSTAT equ     0e006h
-KBDREAD equ     0e009h
-CHAROUT equ     0e00ch  ; вывести символ из регистра C
+WARMBOOT        equ     0e003h
+KBDSTAT         equ     0e006h
+KBDREAD         equ     0e009h
+CHAROUT         equ     0e00ch  ; вывести символ из регистра C
 
-OFFSET_X equ    2
-OFFSET_Y equ    2
+OFFSET_X        equ    2
+OFFSET_Y        equ    2
 
-Row     equ     CurPos
-Col     equ     CurPos+1
+Row             equ     CurPos
+Col             equ     CurPos+1
 
         org     1000h
 
@@ -177,14 +177,18 @@ PaintCursor
         mov     c, l
         mov     b, h
         lxi     h, BITMAP55
+        mvi     a, 1
         call    PaintBitmap
         ret
 ; *************************************************
 ; Вывести вместо курсора картинку, соответствующую 
 ; точке из рабочего битмапа
 ; *************************************************
-EraseCursor
+EraseCursor     ; Попросту выведем заново весь битмап
+        call    UnpackWorkBitmap
+        ret
 
+EraseCursor0
         lda     Row             ; строка (координата Y)
         sui     8               ; отнять смещение
         rar
