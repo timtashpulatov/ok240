@@ -163,6 +163,7 @@ GetBitmapRowPtr
         push    a
         lxi     b, 0
         lda     Row
+        sui     8       ; опять оффсеты
         mov     c, a
         lxi     h, WORKBMP
         dad     b
@@ -173,6 +174,22 @@ GetBitmapRowPtr
 ; * Установить в C бит, соответствующий текущему столбцу
 ; *************************************************
 GetBitmapColBitMask
+        push    a
+        lda     Col
+        sui     2               ; отнять смещение (TODO: оформить все эти оффсеты как-то официально)
+        rar                     ; поделить на два, т.к. курсор перемещается скачками по 2 (TODO: переделать)
+        inr     a
+        mov     c, a
+        mvi     a, 0b10000000
+GBCLoop
+        dcr     c
+        jz      GBCDone
+        rar
+        jmp     GBCLoop
+        
+GBCDone    
+        mov     c, a
+        pop     a
         ret
 
 ; *************************************************
@@ -280,6 +297,7 @@ ECNextNext
 ; В аккумуляторе номер плоскости 00, 01, 10 или 11
 ; *************************************************
 PlaceDot
+        push    a
         lhld    CurPos
         mov     c, l
         mov     b, h
@@ -291,6 +309,7 @@ PlaceDot
         cma
 PDT        
         call    PaintBitmap
+        pop     a
         ret
 
 
@@ -465,12 +484,12 @@ BTW
         ral
         mov     b, a
         inx     h
-        call    DoBlock
+        call    LayBrick
         jmp     BTW
 WallDone        
         ret
 
-DoBlock
+LayBrick
         push    h
         lxi     h, COOLBRICK
         mvi     a, 1
@@ -491,7 +510,7 @@ ResetScroll
 WorkBitmapPreview
         mvi     b, 12*2
         mvi     c, 8
-        lxi     h, COOLBRICK    ;WORKBMP
+        lxi     h, WORKBMP
         mvi     a, 3
         call    PaintBitmap
         ret
