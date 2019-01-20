@@ -329,9 +329,8 @@ UnpackWorkBitmap
         
 UnWorBit        
         mvi     e, 8
-        lxi     h, WORKBMP    ; для отладки
+        lxi     h, WORKBMP
 UnpLoop        
-        mov     a, m
         call    PaintByteWithBitmaps
         mvi     a, 8
         add     c
@@ -349,7 +348,9 @@ PaintByteWithBitmaps
         push    bc
         push    de
         push    hl
-        mvi     e, 8   
+        
+        mvi     e, 8
+        mov     a, m
 Loopp        
         rlc
         lxi     h, BMPDOT
@@ -371,6 +372,8 @@ Looppp
         pop     de
         pop     bc
         ret
+
+
 
 ; *************************************************
 ; PaintBitmap - нарисовать битмап 8х8
@@ -399,7 +402,7 @@ PaintBitmap
         pop     de       ; de = адрес битмапа
 
         pop     a       ; плоскости
-
+        
 Plane1
         rrc
         jnc     Plane2
