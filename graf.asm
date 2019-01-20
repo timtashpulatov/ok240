@@ -352,7 +352,7 @@ PaintByteWithBitmaps
         mvi     e, 8
         mov     a, m
 Loopp        
-        rlc
+        rrc
         lxi     h, BMPDOT
         jnc     Looppp
         lxi     h, BITMAP1
