@@ -129,19 +129,19 @@ BothColors
 ; * Проапдейтить рабочий битмап точкой
 ; *************************************************
 UpdateWorkBitmap
-        call    UpdateSinglePlane
-        rrc
-        call    UpdateSinglePlane
-        ret
-        
-; *************************************************
-; * a0 - сбросить или установить
-; *************************************************
-UpdateSinglePlane
         push    a
         call    GetBitmapRowPtr
         call    GetBitmapColBitMask
+        call    Pops
+        lxi     d, 8
+        dad     d
+        rrc
+        call    Pops
+        pop     a
+        ret
 
+Pops
+        push    a
         rrc
         mov     a, c
         jnc     USP1
@@ -164,6 +164,9 @@ GetBitmapRowPtr
         lxi     b, 0
         lda     Row
         sui     8       ; опять оффсеты
+        rar             ; поделить на 8, см. скачки курсора
+        rar
+        rar
         mov     c, a
         lxi     h, WORKBMP
         dad     b
@@ -326,7 +329,7 @@ UnpackWorkBitmap
         
 UnWorBit        
         mvi     e, 8
-        lxi     h, COOLBRICK    ; для отладки
+        lxi     h, WORKBMP    ; для отладки
 UnpLoop        
         mov     a, m
         call    PaintByteWithBitmaps
