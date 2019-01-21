@@ -38,7 +38,7 @@ Col             equ     CurPos+1
 
 Begin
         call    WorkBitmapPreview
-;        call    PaintCursor
+        call    PaintCursor
 
 
         ; Ввод с клавиатуры
@@ -252,10 +252,10 @@ PaintCursor
 ; Вывести вместо курсора картинку, соответствующую 
 ; точке из рабочего битмапа
 ; *************************************************
-EraseCursor
+EraseCursor0
         ret
 
-EraseCursor0
+EraseCursor
         lda     Row             ; строка (координата Y)
         sui     8               ; отнять смещение
         rar
@@ -271,10 +271,9 @@ EraseCursor0
         lda     Col             ; координата X
         sui     2               ; минус смещение
         rar                     ; и поделить на 2 для цветного режима
-        
-;        sui     0ffh             ; отзеркалить
-;        ani     7
-;        dcr     a
+        cma
+        ani     7
+
         inr     a
         mov     c, a            ; это будет счетчик для сдвига
         
@@ -291,7 +290,7 @@ ECLoop
         jnc     ECNextNext
         lxi     h, BITMAP1
 ECNextNext                
-        
+        mvi     a, 3
         call    PaintBitmap
         ret
 
