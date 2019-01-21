@@ -250,13 +250,11 @@ PaintCursor
         mvi     a, 1
         call    PaintBitmap
         ret
+
 ; *************************************************
 ; Вывести вместо курсора картинку, соответствующую 
 ; точке из рабочего битмапа
 ; *************************************************
-EraseCursor0
-        ret
-
 EraseCursor
         lda     Row             ; строка (координата Y)
         sui     8               ; отнять смещение
@@ -273,28 +271,40 @@ EraseCursor
         lda     Col             ; координата X
         sui     2               ; минус смещение
         rar                     ; и поделить на 2 для цветного режима
+        
         cma
         ani     7
 
         inr     a
         mov     c, a            ; это будет счетчик для сдвига
         
-        mov     a, m            ; добыли нужную строчку пикселей
-ECLoop
-        rlc
+        mvi     a, 1          ; это будет маска для проверки бита
+        
+CBLoop        
+        rrc
         dcr     c
-        jnz     ECLoop
-
-        lhld    CurPos
-        mov     c, l
-        mov     b, h
-        lxi     h, BMPDOT
-        jnc     ECNextNext
-        lxi     h, BITMAP1
-ECNextNext                
-        mvi     a, 3
-        call    PaintBitmap
+        jnz     CBLoop
+        mov     c, a            ; получили маску в C
+        
+        mov     a, m
+        ana     c
+        mvi     a, 1
+        jnz     EC2
+        xra     a
+EC2        
+        mov     b, a
+        lxi     d, 8
+        dad     d
+        mov     a, m
+        ana     c
+        mov     a, b
+        jz      EC3
+        ori     2
+EC3
+        call    PlaceDot
         ret
+
+
 
 ; *************************************************
 ; Точку рисуем
@@ -309,7 +319,7 @@ PlaceDot
 ; Особый случай - для очистки обоих планов
         ora     a
         jnz     PDT
-        lxi     h, BITMAP0
+        lxi     h, BMPDOT
         cma
 PDT        
         call    PaintBitmap
