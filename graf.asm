@@ -339,17 +339,42 @@ UnpackWorkBitmap
 Wow0
         
         call    EraseCursor     ; ух ты, стильно!
+        call    Dly
         
         lda     Col
         adi     2
-        cpi     MARGIN_RIGHT
+        cpi     MARGIN_RIGHT+2
         jz      Wow1
         sta     Col
         jmp     Wow0
-Wow1        
-        
-        
+
+Wow1
+        mvi     a, MARGIN_LEFT
+        sta     Col
+        lda     Row
+        adi     8
+        cpi     MARGIN_BOT+8
+        jz      Wow2
+        sta     Row
+        jmp     Wow0
+Wow2
         ret
+
+DELAY   equ     2000
+; *********************
+; Маленькая задержечка
+; *********************
+Dly
+        push    hl
+        lxi     h, DELAY
+Dly0
+        dcx     h
+        mov     a, h
+        ora     l
+        jnz     Dly0
+        pop     hl
+        ret
+
 
 UnpackWorkBitmap0
         lxi     b, 0x0208
