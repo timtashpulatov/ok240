@@ -35,6 +35,7 @@ Col             equ     CurPos+1
         call    BuildTheWall
         call    DrawPalette
         call    UnpackWorkBitmap
+        call    GoFigure
 
 Begin
         call    WorkBitmapPreview
@@ -630,6 +631,30 @@ DrawPalette
 ;        call    PrintString
         ret
 
+GoFigure
+        lxi     b, 1600h + 11*8
+        lxi     h, BALL
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     b, 1800h + 11*8
+        lxi     h, BALL
+        mvi     a, 3
+        call    PaintBitmap
+        
+        lxi     b, 1800h + 10*8
+        lxi     h, BALL
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     b, 1a00h + 11*8
+        lxi     h, BALL
+        mvi     a, 3
+        call    PaintBitmap
+
+        ret
+
+
 ; *************************************************
 ; Напечатать ASCIIZ строчку
 ; HL - начало строки
@@ -720,6 +745,9 @@ BMP_2   db      0, 38h, 44h, 40h, 20h, 10h, 8h, 7ch
         db      0, 38h, 44h, 40h, 20h, 10h, 8h, 7ch
 BMP_3   db      0, 38h, 44h, 40h, 30h, 40h, 44h, 38h
         db      0, 38h, 44h, 40h, 30h, 40h, 44h, 38h
+
+BALL    db      4eh, 0c7h, 8bh, 0c5h, 83h, 0c0h, 0abh, 7eh
+        db      34h, 17h, 2bh, 15h, 2bh, 15h, 0, 0
 
 WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9, 9
