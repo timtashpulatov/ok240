@@ -60,7 +60,7 @@ Space   cpi     ' '
 ;        sta     INV
         mvi     a, 3
         call    PlaceDot
-        call    WorkBitmapPreview
+;        call    WorkBitmapPreview
         jmp     Begin
 
 Left    cpi     8
@@ -339,7 +339,6 @@ UnpackWorkBitmap
 Wow0
         
         call    EraseCursor     ; ух ты, стильно!
-        call    Dly
         
         lda     Col
         adi     2
@@ -349,6 +348,7 @@ Wow0
         jmp     Wow0
 
 Wow1
+        call    Dly
         mvi     a, MARGIN_LEFT
         sta     Col
         lda     Row
@@ -376,58 +376,58 @@ Dly0
         ret
 
 
-UnpackWorkBitmap0
-        lxi     b, 0x0208
-        call    UnWorBit
+;UnpackWorkBitmap0
+;        lxi     b, 0x0208
+;        call    UnWorBit
 ;        lxi     b, 0x0308
 ;        call    UnWorBit
-        ret
+;        ret
         
-UnWorBit        
-        mvi     e, 8
-        lxi     h, WORKBMP
-UnpLoop        
-        call    PaintByteWithBitmaps
-        mvi     a, 8
-        add     c
-        mov     c, a
-        inx     h
-        dcr     e
-        jnz     UnpLoop
+;UnWorBit        
+;        mvi     e, 8
+;        lxi     h, WORKBMP
+;UnpLoop        
+;        call    PaintByteWithBitmaps
+;        mvi     a, 8
+;        add     c
+;        mov     c, a
+;        inx     h
+;        dcr     e
+;        jnz     UnpLoop
         
-        ret
+;        ret
 
 ; *************************************************
 ; Нарисовать байт битмапами
 ; *************************************************
-PaintByteWithBitmaps
-        push    bc
-        push    de
-        push    hl
+;PaintByteWithBitmaps
+;        push    bc
+;        push    de
+;        push    hl
         
-        mvi     e, 8
-        mov     a, m
-Loopp        
-        rrc
-        lxi     h, BMPDOT
-        jnc     Looppp
-        lxi     h, BITMAP1
-Looppp
-        push    a
-        mvi     a, 3
-        call    PaintBitmap
-        pop     a
+;        mvi     e, 8
+;        mov     a, m
+;Loopp        
+;        rrc
+;        lxi     h, BMPDOT
+;        jnc     Looppp
+;        lxi     h, BITMAP1
+;Looppp
+;        push    a
+;        mvi     a, 3
+;        call    PaintBitmap
+;        pop     a
         
-        inr     b
-        inr     b
+;        inr     b
+;       inr     b
         
-        dcr     e
-        jnz     Loopp
+;        dcr     e
+;        jnz     Loopp
 
-        pop     hl
-        pop     de
-        pop     bc
-        ret
+;        pop     hl
+;        pop     de
+;        pop     bc
+;        ret
 
 
 
@@ -575,6 +575,18 @@ WorkBitmapPreview
         lxi     h, WORKBMP
         mvi     a, 3
         call    PaintBitmap
+        
+        mvi     b, 12*2
+        mvi     c, 0
+        lxi     h, BOTLINE
+        mvi     a, 3
+        call    PaintBitmap
+        
+        mvi     b, 12*2
+        mvi     c, 16
+        lxi     h, TOPLINE
+        mvi     a, 3
+        call    PaintBitmap        
         ret
 
 ; *************************************************
@@ -653,6 +665,12 @@ COOLBRICK
         db      0b00000000
         
         db      0, 0, 0, 0, 0, 0, 0, 0
+
+TOPLINE db      0, 255, 0, 0, 0, 0, 0, 0
+        db      0, 255, 0, 0, 0, 0, 0, 0
+        
+BOTLINE db      0, 0, 0, 0, 0, 0, 255, 0
+        db      0, 0, 0, 0, 0, 0, 255, 0
 
 ; Рабочий битмап
 WORKBMP
