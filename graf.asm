@@ -93,10 +93,28 @@ Zero    cpi     30h
         cpi     'B'
         jz      CycleBackColor
 
+; Разное
+        cpi     'Z'
+        jz      Zap
+
         jmp     Begin
 
 ; *************************************************
 ; *************************************************
+Zap     lxi     h, WORKBMP
+        mvi     c, 16
+Loo     mvi     m, 0
+        inx     h
+        dcr     c
+        jnz     Loo
+
+        lxi     h, XY
+        shld    CurPos
+        
+        call    UnpackWorkBitmap 
+        
+        jmp     Begin
+
 CycleForeColor
         in      VIDEO
         inr     a
@@ -594,17 +612,17 @@ WorkBitmapPreview
 ; *************************************************
 DrawPalette
         lxi     b, 0400h + 11*8
-        lxi     h, MAZOK
+        lxi     h, BMP_1
         mvi     a, 1
         call    PaintBitmap
 ; Второй цвет        
         lxi     b, 0800h + 11*8
-        lxi     h, MAZOK
+        lxi     h, BMP_2
         mvi     a, 2
         call    PaintBitmap
 ; Оба цвета
         lxi     b, 0c00h + 11*8
-        lxi     h, MAZOK
+        lxi     h, BMP_3
         mvi     a, 3
         call    PaintBitmap
 ; Подписать
@@ -693,6 +711,15 @@ WORKBMP
         db      0b00001000
         db      0b00000000
 
+; 0
+BMP_0   db      0, 38h, 44h, 64h, 54h, 4ch, 44h, 38h
+        db      0, 38h, 44h, 64h, 54h, 4ch, 44h, 38h
+BMP_1   db      0, 10h, 18h, 10h, 10h, 10h, 10h, 38h
+        db      0, 10h, 18h, 10h, 10h, 10h, 10h, 38h        
+BMP_2   db      0, 38h, 44h, 40h, 20h, 10h, 8h, 7ch        
+        db      0, 38h, 44h, 40h, 20h, 10h, 8h, 7ch
+BMP_3   db      0, 38h, 44h, 40h, 30h, 40h, 44h, 38h
+        db      0, 38h, 44h, 40h, 30h, 40h, 44h, 38h
 
 WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9, 9
