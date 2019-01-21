@@ -336,6 +336,22 @@ PDT
 ;       (нарисовать биты квадратиками)
 ; *************************************************
 UnpackWorkBitmap
+Wow0
+        
+        call    EraseCursor     ; ух ты, стильно!
+        
+        lda     Col
+        adi     2
+        cpi     MARGIN_RIGHT
+        jz      Wow1
+        sta     Col
+        jmp     Wow0
+Wow1        
+        
+        
+        ret
+
+UnpackWorkBitmap0
         lxi     b, 0x0208
         call    UnWorBit
 ;        lxi     b, 0x0308
