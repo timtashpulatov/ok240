@@ -247,7 +247,7 @@ PaintCursor
         mov     c, l
         mov     b, h
         lxi     h, BITMAP55
-        mvi     a, 1
+        mvi     a, 3
         call    PaintBitmap
         ret
 
@@ -256,6 +256,10 @@ PaintCursor
 ; точке из рабочего битмапа
 ; *************************************************
 EraseCursor
+
+        mvi     a, 0
+        call    PlaceDot
+
         lda     Row             ; строка (координата Y)
         sui     8               ; отнять смещение
         rar
