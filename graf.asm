@@ -399,62 +399,6 @@ Dly0
         pop     hl
         ret
 
-
-;UnpackWorkBitmap0
-;        lxi     b, 0x0208
-;        call    UnWorBit
-;        lxi     b, 0x0308
-;        call    UnWorBit
-;        ret
-        
-;UnWorBit        
-;        mvi     e, 8
-;        lxi     h, WORKBMP
-;UnpLoop        
-;        call    PaintByteWithBitmaps
-;        mvi     a, 8
-;        add     c
-;        mov     c, a
-;        inx     h
-;        dcr     e
-;        jnz     UnpLoop
-        
-;        ret
-
-; *************************************************
-; Нарисовать байт битмапами
-; *************************************************
-;PaintByteWithBitmaps
-;        push    bc
-;        push    de
-;        push    hl
-        
-;        mvi     e, 8
-;        mov     a, m
-;Loopp        
-;        rrc
-;        lxi     h, BMPDOT
-;        jnc     Looppp
-;        lxi     h, BITMAP1
-;Looppp
-;        push    a
-;        mvi     a, 3
-;        call    PaintBitmap
-;        pop     a
-        
-;        inr     b
-;       inr     b
-        
-;        dcr     e
-;        jnz     Loopp
-
-;        pop     hl
-;        pop     de
-;        pop     bc
-;        ret
-
-
-
 ; *************************************************
 ; PaintBitmap - нарисовать битмап 8х8
 ; HL - адрес битмапа
@@ -656,8 +600,10 @@ DrawPalette
         mvi     a, 3
         call    PaintBitmap
 ; Подписать
-;        lxi     h, POPS
-;        call    PrintString
+        mvi     a, 4
+        sta     0xbfec
+        lxi     h, String
+        call    PrintString
         ret
 
 GoFigure
@@ -699,8 +645,8 @@ PrintString
 PrtStrDone        
         ret
 
-;POPS    db      1bh, 35h, 10, 10,
-;        db      '1 2 3', 0
+String  ;  db      1bh, 35h, 10, 10
+        db      '1 2 3 4 5 6 7 8 9 0', 0
 
 ; *************************************************
 ; Мультяшка
