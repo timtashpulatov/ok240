@@ -23,6 +23,8 @@ OFFSET_Y        equ    2
 Row             equ     CurPos
 Col             equ     CurPos+1
 
+WORKBMP         equ     4000h
+
         org     1000h
 
 ; Инициализация важных и нужных переменных
@@ -595,13 +597,37 @@ WorkBitmapPreview
         mvi     a, 3
         call    PaintBitmap
         
-        mvi     b, 12*2
+        mvi     b, 11*2
         mvi     c, 0
         lxi     h, BOTLINE
         mvi     a, 3
         call    PaintBitmap
         
         mvi     b, 12*2
+        mvi     c, 0
+        lxi     h, BOTLINE
+        mvi     a, 3
+        call    PaintBitmap        
+
+        mvi     b, 13*2
+        mvi     c, 0
+        lxi     h, BOTLINE
+        mvi     a, 3
+        call    PaintBitmap        
+        
+        mvi     b, 11*2
+        mvi     c, 16
+        lxi     h, TOPLINE
+        mvi     a, 3
+        call    PaintBitmap        
+
+        mvi     b, 12*2
+        mvi     c, 16
+        lxi     h, TOPLINE
+        mvi     a, 3
+        call    PaintBitmap        
+        
+        mvi     b, 13*2
         mvi     c, 16
         lxi     h, TOPLINE
         mvi     a, 3
@@ -716,7 +742,7 @@ BOTLINE db      0, 0, 0, 0, 0, 0, 255, 0
         db      0, 0, 0, 0, 0, 0, 255, 0
 
 ; Рабочий битмап
-WORKBMP
+WORKBMP_
         ; Первый план
         db      0b11111110
         db      0b11111100
