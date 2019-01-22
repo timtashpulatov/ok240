@@ -100,6 +100,9 @@ Zero    cpi     30h
         cpi     'Z'
         jz      Zap
 
+        cpi     'P'
+        jz      Play
+
         jmp     Begin
 
 ; *************************************************
@@ -698,6 +701,31 @@ PrtStrDone
 
 ;POPS    db      1bh, 35h, 10, 10,
 ;        db      '1 2 3', 0
+
+; *************************************************
+; Мультяшка
+; *************************************************
+Play
+        lxi     b, 16*8
+Play0        
+        lxi     h, BALL
+        mvi     a, 3
+        call    PaintBitmap
+        call    Dly
+        call    Dly
+
+        lxi     h, BITMAP0
+        mvi     a, 3
+        call    PaintBitmap
+
+        inr     b
+        inr     b
+        mov     a, b
+        cpi     30*2
+        jnz     Play0
+        
+        jmp     Begin
+        
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
