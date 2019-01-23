@@ -102,19 +102,49 @@ Zero    cpi     30h
         cpi     'Z'
         jz      Zap
 
-        cpi     'P'
-        jz      Play
-
         cpi     '>'
         jz      SelectNextBitmap
         
         cpi     '<'
         jz      SelectPrevBitmap
 
+        cpi     'C'
+        jz      Copy
+        
+        cpi     'P'
+        jz      Paste
+
         jmp     Begin
 
 ; *************************************************
 ; *************************************************
+Copy
+        lhld    BmpPtr
+        lxi     d, CLIPBOARD
+CL0        
+        mvi     c, 16
+CopyLoop
+        mov     a, m
+        stax    d
+        inx     h
+        inx     d
+        dcr     c
+        jnz     CopyLoop
+        
+        ; Нарисовать клипборд
+        lxi     h, CLIPBOARD
+        mvi     b, 20*2
+        mvi     c, 16*8
+        mvi     a, 3
+        call    PaintBitmap
+        
+        jmp     RedrawWorkBitmap
+Paste
+        lhld    BmpPtr
+        lxi     d, CLIPBOARD
+        xchg
+        jmp     CL0
+
 SelectPrevBitmap
         lxi     d, -16
         jmp     SNB
@@ -125,6 +155,7 @@ SNB
         dad     d
 
         shld    BmpPtr
+RedrawWorkBitmap        
         lxi     h, XY
         shld    CurPos
         call    UnpackWorkBitmap
@@ -566,15 +597,15 @@ WorkBitmapPreview
         mvi     b, 11*2
         mvi     c, 8
         lhld    BmpPtr
+        push    h
+        lxi     d, -16
+        dad     d
         mvi     a, 3
-        push    hl
         call    PaintBitmap
  
         mvi     b, 12*2
         mvi     c, 8
         pop     hl
-        lxi     d, 16
-        dad     d
         mvi     a, 3
         push    hl
         call    PaintBitmap
@@ -692,30 +723,6 @@ PrtStrDone
 String  ;  db      1bh, 35h, 10, 10
         db      '1 2 3 4 5 6 7 8 9 0', 0
 
-; *************************************************
-; Мультяшка
-; *************************************************
-Play
-        lxi     b, 16*8
-Play0        
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
-        call    Dly
-        call    Dly
-
-        lxi     h, BITMAP0
-        mvi     a, 3
-        call    PaintBitmap
-
-        inr     b
-        inr     b
-        mov     a, b
-        cpi     30*2
-        jnz     Play0
-        
-        jmp     Begin
-        
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
@@ -759,8 +766,8 @@ TOPLINE db      0, 255, 0, 0, 0, 0, 0, 0
 BOTLINE db      0, 0, 0, 0, 0, 0, 255, 0
         db      0, 0, 0, 0, 0, 0, 255, 0
 
-; Рабочий битмап
-WORKBMP_
+; Клипборд
+CLIPBOARD
         ; Первый план
         db      0b11111110
         db      0b11111100
