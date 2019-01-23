@@ -30,6 +30,8 @@ WORKBMP         equ     4000h
 ; Инициализация важных и нужных переменных
         lxi     h, XY
         shld    CurPos
+        lxi     h, WORKBMP
+        shld    BmpPtr
 
 ; Чистим экран и рисуем нетленку
         call    ResetScroll
@@ -103,11 +105,33 @@ Zero    cpi     30h
         cpi     'P'
         jz      Play
 
+        cpi     '>'
+        jz      SelectNextBitmap
+        
+        cpi     '<'
+        jz      SelectPrevBitmap
+
         jmp     Begin
 
 ; *************************************************
 ; *************************************************
-Zap     lxi     h, WORKBMP
+SelectPrevBitmap
+        lxi     d, -16
+        jmp     SNB
+SelectNextBitmap
+        lxi     d, 16
+SNB        
+        lhld    BmpPtr
+        dad     d
+
+        shld    BmpPtr
+        lxi     h, XY
+        shld    CurPos
+        call    UnpackWorkBitmap
+        
+        jmp     Begin
+
+Zap     lhld    BmpPtr
         mvi     c, 16
 Loo     mvi     m, 0
         inx     h
@@ -192,7 +216,7 @@ GetBitmapRowPtr
         rar
         rar
         mov     c, a
-        lxi     h, WORKBMP
+        lhld     BmpPtr
         dad     b
         pop     a
         ret
@@ -290,9 +314,9 @@ EraseCursor
         rar
         rar                     ; и поделить на 8
         ani     7
-        mov     l, a
-        mvi     h, 0
-        lxi     d, WORKBMP
+        mov     e, a
+        mvi     d, 0
+        lhld    BmpPtr
         dad     d               ; hl = WORKBMP + строка
 
 ; Адрес нужного байта добыли, займемся номером бита        
@@ -372,7 +396,7 @@ Wow0
         jmp     Wow0
 
 Wow1
-        call    Dly
+        ;call    Dly
         mvi     a, MARGIN_LEFT
         sta     Col
         lda     Row
@@ -538,11 +562,31 @@ ResetScroll
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
 WorkBitmapPreview
+
+        mvi     b, 11*2
+        mvi     c, 8
+        lhld    BmpPtr
+        mvi     a, 3
+        push    hl
+        call    PaintBitmap
+ 
         mvi     b, 12*2
         mvi     c, 8
-        lxi     h, WORKBMP
+        pop     hl
+        lxi     d, 16
+        dad     d
+        mvi     a, 3
+        push    hl
+        call    PaintBitmap
+
+        mvi     b, 13*2
+        mvi     c, 8
+        pop     hl
+        lxi     d, 16
+        dad     d
         mvi     a, 3
         call    PaintBitmap
+
         
         mvi     b, 11*2
         mvi     c, 0
@@ -600,10 +644,10 @@ DrawPalette
         mvi     a, 3
         call    PaintBitmap
 ; Подписать
-        mvi     a, 4
-        sta     0xbfec
-        lxi     h, String
-        call    PrintString
+;        mvi     a, 4
+;        sta     0xbfec
+;        lxi     h, String
+;        call    PrintString
         ret
 
 GoFigure
@@ -761,3 +805,5 @@ INV     db      0
 
 ; Координаты курсора
 CurPos  dw      0
+
+BmpPtr dw      0
