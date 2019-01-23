@@ -39,7 +39,7 @@ WORKBMP         equ     4000h
         call    BuildTheWall
         call    DrawPalette
         call    UnpackWorkBitmap
-        call    GoFigure
+;        call    GoFigure
 
 Begin
         call    WorkBitmapPreview
@@ -133,8 +133,7 @@ CopyLoop
         
         ; Нарисовать клипборд
         lxi     h, CLIPBOARD
-        mvi     b, 20*2
-        mvi     c, 16*8
+        lxi     b, 1800h + 3*8
         mvi     a, 3
         call    PaintBitmap
         
