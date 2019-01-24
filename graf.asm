@@ -744,6 +744,11 @@ Help
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     b, 1a00h + 13*8+4
+        lxi     h, THREE
+        mvi     a, 3
+        call    PaintBitmap
+
         ret
 
 
@@ -794,6 +799,8 @@ ONE     db      0ffh, 0efh, 0efh, 0efh, 0efh, 0ffh, 83h, 0ffh
         db      8, 12, 8, 8, 8, 3eh, 0, 0
 TWO     db      0ffh, 0e3h, 0ddh, 0efh, 0f7h, 0ffh, 0c1h, 0ffh
         db      1ch, 22h, 10h, 8, 4, 3eh, 0, 0
+THREE   db      0ffh, 0e3h, 0ddh, 0e7h, 0ffh, 0ddh, 0e3h, 0ffh
+        db      1ch, 22h, 18h, 20h, 22h, 1ch, 0, 0
 
 COOLBRICK
         db      0b11111110
