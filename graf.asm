@@ -41,6 +41,15 @@ WORKBMP         equ     4000h
         call    UnpackWorkBitmap
 ;        call    GoFigure
 
+; Эксперименты с выводом символа без курсора
+        mvi     a, 4
+        sta     0bfech  ; скажем НЕТ курсору
+        lxi     h, 0000h
+        shld    0bfedh  ; координаты текстового курсора
+        mvi     c, 'Z'
+        call    CHAROUT
+
+
 Begin
         call    WorkBitmapPreview
         call    PaintCursor
@@ -591,10 +600,10 @@ ResetScroll
 ; *************************************************
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
+PREVIEW_X       equ     11
+PREVIEW_Y       equ     1
 WorkBitmapPreview
-
-        mvi     b, 11*2
-        mvi     c, 8
+        lxi     b, PREVIEW_X*512+PREVIEW_Y*8
         lhld    BmpPtr
         push    h
         lxi     d, -16
@@ -602,56 +611,53 @@ WorkBitmapPreview
         mvi     a, 3
         call    PaintBitmap
  
-        mvi     b, 12*2
-        mvi     c, 8
+        lxi     b, (PREVIEW_X+1)*512+PREVIEW_Y*8
         pop     hl
         mvi     a, 3
         push    hl
         call    PaintBitmap
 
-        mvi     b, 13*2
-        mvi     c, 8
+        lxi     b, (PREVIEW_X+2)*512+PREVIEW_Y*8
         pop     hl
         lxi     d, 16
         dad     d
         mvi     a, 3
         call    PaintBitmap
 
-        
-        mvi     b, 11*2
-        mvi     c, 0
+; Нарисуем красивую полосочку сверху        
+        lxi     b, PREVIEW_X*512
         lxi     h, BOTLINE
         mvi     a, 3
+        push    hl
         call    PaintBitmap
         
-        mvi     b, 12*2
-        mvi     c, 0
-        lxi     h, BOTLINE
+        lxi     b, (PREVIEW_X+1)*512
         mvi     a, 3
+        pop     hl
+        push    hl
         call    PaintBitmap        
 
-        mvi     b, 13*2
-        mvi     c, 0
-        lxi     h, BOTLINE
+        lxi     b, (PREVIEW_X+2)*512
         mvi     a, 3
-        call    PaintBitmap        
-        
-        mvi     b, 11*2
-        mvi     c, 16
-        lxi     h, TOPLINE
-        mvi     a, 3
+        pop     hl
         call    PaintBitmap        
 
-        mvi     b, 12*2
-        mvi     c, 16
+; И снизу        
+        lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
         lxi     h, TOPLINE
         mvi     a, 3
+        push    hl
+        call    PaintBitmap        
+
+        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
+        mvi     a, 3
+        pop     hl
+        push    hl
         call    PaintBitmap        
         
-        mvi     b, 13*2
-        mvi     c, 16
-        lxi     h, TOPLINE
+        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
         mvi     a, 3
+        pop     hl
         call    PaintBitmap        
         ret
 
@@ -765,27 +771,6 @@ TOPLINE db      0, 255, 0, 0, 0, 0, 0, 0
 BOTLINE db      0, 0, 0, 0, 0, 0, 255, 0
         db      0, 0, 0, 0, 0, 0, 255, 0
 
-; Клипборд
-CLIPBOARD
-        ; Первый план
-        db      0b11111110
-        db      0b11111100
-        db      0b10000000
-        db      0b00000000
-        db      0b11101111
-        db      0b11001111
-        db      0b00001000
-        db      0b00000000
-        ; Второй план
-        db      0b11111110
-        db      0b11111100
-        db      0b10000000
-        db      0b00000000
-        db      0b11101111
-        db      0b11001111
-        db      0b00001000
-        db      0b00000000
-
 ; 0
 BMP_0   db      0, 38h, 44h, 64h, 54h, 4ch, 44h, 38h
         db      0, 38h, 44h, 64h, 54h, 4ch, 44h, 38h
@@ -813,3 +798,7 @@ INV     db      0
 CurPos  dw      0
 
 BmpPtr dw      0
+
+; Клипборд
+CLIPBOARD       equ     .
+        
