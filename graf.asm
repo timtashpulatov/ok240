@@ -599,6 +599,14 @@ ResetScroll
 PREVIEW_X       equ     11
 PREVIEW_Y       equ     1
 WorkBitmapPreview
+
+        lxi     h, (PREVIEW_X-1)*512+PREVIEW_Y*8
+        mvi     c, '<'
+        call    MYCHAROUT
+        lxi     h, (PREVIEW_X+3)*512+PREVIEW_Y*8
+        mvi     c, '>'
+        call    MYCHAROUT
+
         lxi     b, PREVIEW_X*512+PREVIEW_Y*8
         lhld    BmpPtr
         push    h
