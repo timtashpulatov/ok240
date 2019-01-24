@@ -24,6 +24,7 @@ Row             equ     CurPos
 Col             equ     CurPos+1
 
 WORKBMP         equ     4000h
+CURSYS          equ     0bfedh
 
         org     1000h
 
@@ -44,11 +45,6 @@ WORKBMP         equ     4000h
 ; Эксперименты с выводом символа без курсора
         mvi     a, 4
         sta     0bfech  ; скажем НЕТ курсору
-        lxi     h, 0000h
-        shld    0bfedh  ; координаты текстового курсора
-        mvi     c, 'Z'
-        call    CHAROUT
-
 
 Begin
         call    WorkBitmapPreview
@@ -661,6 +657,9 @@ WorkBitmapPreview
         call    PaintBitmap        
         ret
 
+
+PALETTE_X       equ     2
+PALETTE_Y       equ     11
 ; *************************************************
 ; Нарисовать палитру
 ; *************************************************
@@ -675,10 +674,10 @@ DrawPalette
         mvi     a, 2
         call    PaintBitmap
 ; Оба цвета
-        lxi     b, 0c00h + 11*8
-        lxi     h, BMP_3
-        mvi     a, 3
-        call    PaintBitmap
+        lxi     h, 0c00h + 11*8
+        mvi     c, '3'
+        call    MYCHAROUT
+
 ; Подписать
 ;        mvi     a, 4
 ;        sta     0xbfec
@@ -707,6 +706,14 @@ GoFigure
         mvi     a, 3
         call    PaintBitmap
 
+        ret
+
+; *************************************************
+; Вывести символ С по адресу HL
+; *************************************************
+MYCHAROUT
+        shld    CURSYS  ; координаты текстового курсора
+        call    CHAROUT
         ret
 
 
