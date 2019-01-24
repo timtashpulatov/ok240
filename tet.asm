@@ -33,7 +33,7 @@ CURSYS          equ     0bfedh
 ; Чистим экран и рисуем нетленку
         call    ResetScroll
         call    ClearScreen
-        call    BuildTheWall
+;        call    BuildTheWall
         
         call    InitCTAKAH
         call    DrawCTAKAH
@@ -41,8 +41,8 @@ CURSYS          equ     0bfedh
 
 
 ; Эксперименты с выводом символа без курсора
-        mvi     a, 4
-        sta     0bfech  ; скажем НЕТ курсору
+;        mvi     a, 4
+;       sta     0bfech  ; скажем НЕТ курсору
 ; Вывести справку по командам
         call    Help
 
@@ -99,15 +99,21 @@ KeyFunctions
 ; *******************************************
 InitCTAKAH
         lxi     hl, CTAKAH
-        lxi     de, COLS
+        lxi     de, COLS - 2
         mvi     c, ROWS
 KeepGoin        
         mvi     m, 0ffh
         dad     d
+        inx     hl
+        mvi     m, 0ffh
+        inx     hl
+        
         dcr     c
         jnz     KeepGoin
         
         ret
+
+
 
 ROWS    equ     20 + 1  ; потому что дно
 COLS    equ     10 + 2  ; потому что стенки
@@ -115,16 +121,16 @@ COLS    equ     10 + 2  ; потому что стенки
 ; Нарисуем СТАКАН
 ; *******************************************
 DrawCTAKAH
-        lxi     hl, CTAKAH + ROWS*COLS  ; снизу вверх будем выводить, и справа налево
-        mvi     b, COLS
-NextRow
+        lxi     hl, CTAKAH + ROWS*COLS - 1  ; снизу вверх будем выводить, и справа налево
         mvi     c, ROWS
+NextRow
+        mvi     b, COLS
 NextCol
         call    DrawCell
-        dcr     c
+        dcr     b
         jnz     NextCol
 
-        dcr     b
+        dcr     c
         jnz     NextRow
         ret
 
