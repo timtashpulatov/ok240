@@ -110,6 +110,15 @@ KeepGoin
         
         dcr     c
         jnz     KeepGoin
+
+; Нарисуем дно
+        lxi     hl, CTAKAH + ROWS*COLS - 1
+        mvi     b, COLS
+KG0
+        mvi     m, 0ffh
+        dcx     hl
+        dcr     b
+        jnz     KG0
         
         ret
 
@@ -158,7 +167,7 @@ DrawCell
         lxi     hl, BITMAP1
         ora     a
         jnz     DC0
-        lxi     hl, BITMAP0
+        lxi     hl, CHECKERS
 DC0        
         mvi     a, 3
         call    PaintBitmap
@@ -527,7 +536,7 @@ BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
-BITMAP55
+CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
 
