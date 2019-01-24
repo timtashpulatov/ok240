@@ -59,12 +59,74 @@ Begin
         pop     a
 
 
-        cpi     0x1b            ; ESC?
-        jnz     Space
-        jmp     WARMBOOT        ; возврат в Монитор
+;        cpi     0x1b            ; ESC?
+;        jnz     Space
+;        jmp     WARMBOOT        ; возврат в Монитор
+
+        mov     c, a
+        lxi     d, KeyFunctions
+Next        
+        ldax    d
+        ora     a
+        jz      Begin
+        cmp     c
+        jz      Gotcha
+        inx     d
+        inx     d
+        inx     d
+        jmp     Next
+Gotcha
+        inx     d
+        ldax    d
+        mov     l, a
+        inx     d
+        ldax    d
+        mov     h, a
+        mov     a, c
+        pchl
+
+; Жумптабле
+KeyFunctions
+        db      8
+        dw      CurLeft
+        db      18h
+        dw      CurRight
+        db      19h
+        dw      CurUp
+        db      1ah
+        dw      CurDown
+        
+        db      31h
+        dw      ColorOne
+        db      32h
+        dw      ColorTwo
+        db      33h
+        dw      BothColors
+        db      30h
+        dw      NoColors
+        db      'F'
+        dw      CycleForeColor  ; Перебор цветов переднего плана и фона
+        db      'B'
+        dw      CycleBackColor
+        db      'Z'
+        dw      Zap
+        db      '>'
+        dw      SelectNextBitmap
+        db      '<'
+        dw      SelectPrevBitmap
+        db      'C'
+        dw      Copy
+        db      'P'
+        dw      Paste
+        
+        db      1bh
+        dw      WARMBOOT
+        db      0
+        dw      0
+
 
 Space   cpi     ' '
-        jnz     Left
+;        jnz     Left
 ;        lda     INV
 ;        cma
 ;        sta     INV
@@ -73,53 +135,6 @@ Space   cpi     ' '
 ;        call    WorkBitmapPreview
         jmp     Begin
 
-Left    cpi     8
-        jz      CurLeft
-
-Right   cpi     18h
-        jz      CurRight
-        
-Up      cpi     19h
-        jz      CurUp
-        
-Down    cpi     1ah
-        jz      CurDown
-
-One     cpi     31h
-        jz      ColorOne
-        
-Two     cpi     32h
-        jz      ColorTwo
-        
-Three   cpi     33h
-        jz      BothColors
-        
-Zero    cpi     30h
-        jz      NoColors
-
-; Перебор цветов переднего плана и фона
-        cpi     'F'
-        jz      CycleForeColor
-        cpi     'B'
-        jz      CycleBackColor
-
-; Разное
-        cpi     'Z'
-        jz      Zap
-
-        cpi     '>'
-        jz      SelectNextBitmap
-        
-        cpi     '<'
-        jz      SelectPrevBitmap
-
-        cpi     'C'
-        jz      Copy
-        
-        cpi     'P'
-        jz      Paste
-
-        jmp     Begin
 
 ; *************************************************
 ; *************************************************
