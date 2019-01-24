@@ -29,18 +29,16 @@ CURSYS          equ     0bfedh
         org     1000h
 
 ; Инициализация важных и нужных переменных
-        lxi     h, XY
-        shld    CurPos
-        lxi     h, WORKBMP
-        shld    BmpPtr
 
 ; Чистим экран и рисуем нетленку
         call    ResetScroll
         call    ClearScreen
         call    BuildTheWall
-        call    DrawPalette
-        call    UnpackWorkBitmap
-;        call    GoFigure
+        
+        call    InitCTAKAH
+        call    DrawCTAKAH
+
+
 
 ; Эксперименты с выводом символа без курсора
         mvi     a, 4
@@ -49,21 +47,12 @@ CURSYS          equ     0bfedh
         call    Help
 
 Begin
-        call    WorkBitmapPreview
-        call    PaintCursor
+        ;call    WorkBitmapPreview
+
 
 
         ; Ввод с клавиатуры
         call    KBDREAD
-
-        push    a
-        call    EraseCursor
-        pop     a
-
-
-;        cpi     0x1b            ; ESC?
-;        jnz     Space
-;        jmp     WARMBOOT        ; возврат в Монитор
 
         mov     c, a
         lxi     d, KeyFunctions
@@ -98,104 +87,86 @@ KeyFunctions
         db      1ah
         dw      CurDown
         
-        db      31h
-        dw      ColorOne
-        db      32h
-        dw      ColorTwo
-        db      33h
-        dw      BothColors
-        db      30h
-        dw      NoColors
-        db      'F'
-        dw      CycleForeColor  ; Перебор цветов переднего плана и фона
-        db      'B'
-        dw      CycleBackColor
-        db      'Z'
-        dw      Zap
-        db      '>'
-        dw      SelectNextBitmap
-        db      '<'
-        dw      SelectPrevBitmap
-        db      'C'
-        dw      Copy
-        db      'P'
-        dw      Paste
-        
+
         db      1bh
         dw      WARMBOOT
         db      0
         dw      0
 
 
-Space   cpi     ' '
-;        jnz     Left
-;        lda     INV
-;        cma
-;        sta     INV
-        mvi     a, 3
-        call    PlaceDot
-;        call    WorkBitmapPreview
-        jmp     Begin
-
-
-; *************************************************
-; *************************************************
-Copy
-        lhld    BmpPtr
-        lxi     d, CLIPBOARD
-CL0        
-        mvi     c, 16
-CopyLoop
-        mov     a, m
-        stax    d
-        inx     h
-        inx     d
+; *******************************************
+; Сполоснем СТАКАН
+; *******************************************
+InitCTAKAH
+        lxi     hl, CTAKAH
+        lxi     de, COLS
+        mvi     c, ROWS
+KeepGoin        
+        mvi     m, 0ffh
+        dad     d
         dcr     c
-        jnz     CopyLoop
+        jnz     KeepGoin
         
-        ; Нарисовать клипборд
-        lxi     h, CLIPBOARD
-        lxi     b, 1800h + 3*8
+        ret
+
+ROWS    equ     20 + 1  ; потому что дно
+COLS    equ     10 + 2  ; потому что стенки
+; *******************************************
+; Нарисуем СТАКАН
+; *******************************************
+DrawCTAKAH
+        lxi     hl, CTAKAH + ROWS*COLS  ; снизу вверх будем выводить, и справа налево
+        mvi     b, COLS
+NextRow
+        mvi     c, ROWS
+NextCol
+        call    DrawCell
+        dcr     c
+        jnz     NextCol
+
+        dcr     b
+        jnz     NextRow
+        ret
+
+; *******************************************
+; Вывести клетку стакана
+; HL - указатель на текущую клетку в игровой посуде
+; BC = COL и ROW
+; *******************************************
+DrawCell
+        push    bc
+        
+        mov     a, b
+        add     b
+        mov     b, a
+        
+        xra     a
+        mov     a, c
+        ral
+        ral
+        ral
+        mov     c, a
+        
+        push    hl
+        mov     a, m
+        lxi     hl, BITMAP1
+        ora     a
+        jnz     DC0
+        lxi     hl, BITMAP0
+DC0        
         mvi     a, 3
         call    PaintBitmap
+        pop     hl
         
-        jmp     RedrawWorkBitmap
-Paste
-        lhld    BmpPtr
-        lxi     d, CLIPBOARD
-        xchg
-        jmp     CL0
-
-SelectPrevBitmap
-        lxi     d, -16
-        jmp     SNB
-SelectNextBitmap
-        lxi     d, 16
-SNB        
-        lhld    BmpPtr
-        dad     d
-
-        shld    BmpPtr
-RedrawWorkBitmap        
-        lxi     h, XY
-        shld    CurPos
-        call    UnpackWorkBitmap
+        dcx     hl
         
-        jmp     Begin
+        pop     bc
+        ret
 
-Zap     lhld    BmpPtr
-        mvi     c, 16
-Loo     mvi     m, 0
-        inx     h
-        dcr     c
-        jnz     Loo
 
-        lxi     h, XY
-        shld    CurPos
-        
-        call    UnpackWorkBitmap 
-        
-        jmp     Begin
+
+
+
 
 CycleForeColor
         in      VIDEO
@@ -213,252 +184,17 @@ CycleBackColor
         jmp     Begin
         
 
-; *************************************************
-; * Правим точку цветом 01, 10 или 11
-; *************************************************
-NoColors
-ColorOne
-ColorTwo
-BothColors
-        ani     3
-        call    PlaceDot
-        call    UpdateWorkBitmap        
-        jmp     Begin
 
-; *************************************************
-; * Проапдейтить рабочий битмап точкой
-; *************************************************
-UpdateWorkBitmap
-        push    a
-        call    GetBitmapRowPtr
-        call    GetBitmapColBitMask
-        call    Pops
-        lxi     d, 8
-        dad     d
-        rrc
-        call    Pops
-        pop     a
-        ret
 
-Pops
-        push    a
-        rrc
-        mov     a, c
-        jnc     USP1
-        ora     m
-        ; Установить бит
-        jmp     USPDone
-USP1    ; Сбросить бит
-        cma
-        ana     m
-USPDone
-        mov     m, a
-        pop     a
-        ret
-
-; *************************************************
-; * Вернуть в HL указатель на текущую строчку битмапа
-; *************************************************
-GetBitmapRowPtr
-        push    a
-        lxi     b, 0
-        lda     Row
-        sui     8       ; опять оффсеты
-        rar             ; поделить на 8, см. скачки курсора
-        rar
-        rar
-        mov     c, a
-        lhld     BmpPtr
-        dad     b
-        pop     a
-        ret
-
-; *************************************************
-; * Установить в C бит, соответствующий текущему столбцу
-; *************************************************
-GetBitmapColBitMask
-        push    a
-        lda     Col
-        sui     2               ; отнять смещение (TODO: оформить все эти оффсеты как-то официально)
-        rar                     ; поделить на два, т.к. курсор перемещается скачками по 2 (TODO: переделать)
-        cma
-        ani     7
-        inr     a
-        mov     c, a
-        mvi     a, 0b10000000
-GBCLoop
-        dcr     c
-        jz      GBCDone
-        rar
-        jmp     GBCLoop
-        
-GBCDone    
-        mov     c, a
-        pop     a
-        ret
-
-; *************************************************
-; * Правим координаты курсора
-; *************************************************
-MARGIN_BOT      equ     8*8
-MARGIN_LEFT     equ     2
-MARGIN_RIGHT    equ     16
-MARGIN_TOP      equ     8
-        
-CurDown lda     Row
-        cpi     MARGIN_BOT
-        jz      Paint
-        adi     8
-        sta     Row
-        jmp     Paint
+CurDown
 CurLeft
-        lda     Col
-        cpi     MARGIN_LEFT
-        jz      Paint
-        sbi     2
-        sta     Col
-        jmp     Paint
+
 CurRight
-        lda     Col
-        cpi     MARGIN_RIGHT
-        jz      Paint
-        adi     2
-        sta     Col
-        jmp     Paint
+
 CurUp
-        lda     Row
-        cpi     MARGIN_TOP
-        jz      Paint
-        sbi     8
-        sta     Row
-        jmp     Paint
-        
-
-; Рисуем
-Paint
-;        call    PaintCursor
-        jmp     Begin
-
-; *************************************************
-; PaintCursor
-; *************************************************
-PaintCursor
-        lhld    CurPos
-        mov     c, l
-        mov     b, h
-        lxi     h, BITMAP55
-        mvi     a, 3
-        call    PaintBitmap
-        ret
-
-; *************************************************
-; Вывести вместо курсора картинку, соответствующую 
-; точке из рабочего битмапа
-; *************************************************
-EraseCursor
-
-        mvi     a, 0
-        call    PlaceDot
-
-        lda     Row             ; строка (координата Y)
-        sui     8               ; отнять смещение
-        rar
-        rar
-        rar                     ; и поделить на 8
-        ani     7
-        mov     e, a
-        mvi     d, 0
-        lhld    BmpPtr
-        dad     d               ; hl = WORKBMP + строка
-
-; Адрес нужного байта добыли, займемся номером бита        
-        lda     Col             ; координата X
-        sui     2               ; минус смещение
-        rar                     ; и поделить на 2 для цветного режима
-        
-        cma
-        ani     7
-
-        inr     a
-        mov     c, a            ; это будет счетчик для сдвига
-        
-        mvi     a, 1          ; это будет маска для проверки бита
-        
-CBLoop        
-        rrc
-        dcr     c
-        jnz     CBLoop
-        mov     c, a            ; получили маску в C
-        
-        mov     a, m
-        ana     c
-        mvi     a, 1
-        jnz     EC2
-        xra     a
-EC2        
-        mov     b, a
-        lxi     d, 8
-        dad     d
-        mov     a, m
-        ana     c
-        mov     a, b
-        jz      EC3
-        ori     2
-EC3
-        call    PlaceDot
-        ret
 
 
 
-; *************************************************
-; Точку рисуем
-; В аккумуляторе номер плоскости 00, 01, 10 или 11
-; *************************************************
-PlaceDot
-        push    a
-        lhld    CurPos
-        mov     c, l
-        mov     b, h
-        lxi     h, BITMAP1
-; Особый случай - для очистки обоих планов
-        ora     a
-        jnz     PDT
-        lxi     h, BMPDOT
-        cma
-PDT        
-        call    PaintBitmap
-        pop     a
-        ret
-
-
-; *************************************************
-; Распаковать рабочий битмап в экран
-;       (нарисовать биты квадратиками)
-; *************************************************
-UnpackWorkBitmap
-Wow0
-        
-        call    EraseCursor     ; ух ты, стильно!
-        
-        lda     Col
-        adi     2
-        cpi     MARGIN_RIGHT+2
-        jz      Wow1
-        sta     Col
-        jmp     Wow0
-
-Wow1
-        ;call    Dly
-        mvi     a, MARGIN_LEFT
-        sta     Col
-        lda     Row
-        adi     8
-        cpi     MARGIN_BOT+8
-        jz      Wow2
-        sta     Row
-        jmp     Wow0
-Wow2
-        ret
 
 DELAY   equ     2000
 ; *********************
@@ -829,15 +565,11 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8
         db      0ffh, 0ffh
         
-        
-; Зажечь/погасить квадратик
-INV     db      0
 
-; Координаты курсора
-CurPos  dw      0
 
 BmpPtr dw      0
 
-; Клипборд
-CLIPBOARD       equ     .
+; Игровая посуда
+CTAKAH       equ     .
         
+  
