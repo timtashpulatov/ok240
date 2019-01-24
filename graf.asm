@@ -664,18 +664,18 @@ PALETTE_Y       equ     11
 ; Нарисовать палитру
 ; *************************************************
 DrawPalette
-        lxi     b, 0400h + 11*8
-        lxi     h, BMP_1
-        mvi     a, 1
-        call    PaintBitmap
+        lxi     h, 0400h + 11*8
+        mvi     c, '1'
+        call    MYCHAROUT
 ; Второй цвет        
-        lxi     b, 0800h + 11*8
-        lxi     h, BMP_2
-        mvi     a, 2
-        call    PaintBitmap
+        lxi     h, 0900h + 11*8
+        inr     c
+        call    MYCHAROUT
 ; Оба цвета
         lxi     h, 0c00h + 11*8
-        mvi     c, '3'
+        inr     c
+        call    MYCHAROUT
+        lxi     h, 0d00h + 11*8
         call    MYCHAROUT
 
 ; Подписать
@@ -777,16 +777,6 @@ TOPLINE db      0, 255, 0, 0, 0, 0, 0, 0
         
 BOTLINE db      0, 0, 0, 0, 0, 0, 255, 0
         db      0, 0, 0, 0, 0, 0, 255, 0
-
-; 0
-BMP_0   db      0, 38h, 44h, 64h, 54h, 4ch, 44h, 38h
-        db      0, 38h, 44h, 64h, 54h, 4ch, 44h, 38h
-BMP_1   db      0, 10h, 18h, 10h, 10h, 10h, 10h, 38h
-        db      0, 10h, 18h, 10h, 10h, 10h, 10h, 38h        
-BMP_2   db      0, 38h, 44h, 40h, 20h, 10h, 8h, 7ch        
-        db      0, 38h, 44h, 40h, 20h, 10h, 8h, 7ch
-BMP_3   db      0, 38h, 44h, 40h, 30h, 40h, 44h, 38h
-        db      0, 38h, 44h, 40h, 30h, 40h, 44h, 38h
 
 BALL    db      4eh, 0c7h, 8bh, 0c5h, 83h, 0c0h, 0abh, 7eh
         db      34h, 17h, 2bh, 15h, 2bh, 15h, 0, 0
