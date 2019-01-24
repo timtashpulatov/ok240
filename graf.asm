@@ -45,6 +45,8 @@ CURSYS          equ     0bfedh
 ; Эксперименты с выводом символа без курсора
         mvi     a, 4
         sta     0bfech  ; скажем НЕТ курсору
+; Вывести справку по командам
+        call    Help
 
 Begin
         call    WorkBitmapPreview
@@ -731,6 +733,20 @@ GoFigure
 
         ret
 
+Help
+        lxi     b, 1a00h + 11*8
+        lxi     h, ONE
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     b, 1a00h + 12*8+2
+        lxi     h, TWO
+        mvi     a, 3
+        call    PaintBitmap
+
+        ret
+
+
 ; *************************************************
 ; Вывести символ С по адресу HL
 ; *************************************************
@@ -774,15 +790,11 @@ BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
 MAZOK   db      255, 255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
         
-BRICK   db      0b00000000
-        db      0b01111110
-        db      0b01000010
-        db      0b01000010
-        db      0b01000010
-        db      0b01000010
-        db      0b01111110
-        db      0b00000000
-        
+ONE     db      0ffh, 0efh, 0efh, 0efh, 0efh, 0ffh, 83h, 0ffh
+        db      8, 12, 8, 8, 8, 3eh, 0, 0
+TWO     db      0ffh, 0e3h, 0ddh, 0efh, 0f7h, 0ffh, 0c1h, 0ffh
+        db      1ch, 22h, 10h, 8, 4, 3eh, 0, 0
+
 COOLBRICK
         db      0b11111110
         db      0b11111100
