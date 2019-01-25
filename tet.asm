@@ -38,6 +38,7 @@ CURSYS          equ     0bfedh
         call    InitCTAKAH
         lxi     de, 06c0h
         call    UnpackFigure
+        call    DrawFigure
         
         call    DrawCTAKAH
 
