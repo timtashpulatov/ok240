@@ -36,9 +36,10 @@ CURSYS          equ     0bfedh
 ;        call    BuildTheWall
         
         call    InitCTAKAH
-        call    DrawCTAKAH
-        lxi     de, 07e0h
+        lxi     de, 06c0h
         call    UnpackFigure
+        
+        call    DrawCTAKAH
 
 
 
@@ -547,8 +548,29 @@ String  ;  db      1bh, 35h, 10, 10
 ; Вклеить фигуру из рабочего буфера в стакан
 ; *************************************************
 DrawFigure
-
+        lxi     hl, CTAKAH
+        lxi     de, FIGBUF
         
+        call    DrawFigLine
+        call    DrawFigLine
+        call    DrawFigLine
+        call    DrawFigLine
+        
+        ret
+
+DrawFigLine
+        push    hl
+        mvi     c, 4
+DFL
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+        dcr     c
+        jnz     DFL
+        pop     hl
+        lxi     b, 12
+        dad     b
         ret
 
 ; *************************************************
@@ -582,9 +604,9 @@ UnFH
 ; Тетрамино
 ; *************************************************
 ;       . . . .         . 1 . .
-;       . 1 1 1         . 1 1 .
-;       1 1 1 .         . 1 1 .
-;       . . . .         . . 1 .
+;       . 1 1 .         . 1 1 .
+;       1 1 . .         . . 1 .
+;       . . . .         . . . .
 
 FIG_1   db      0b00000111, 0b11100000
         db      0b01000110, 0b01100010
