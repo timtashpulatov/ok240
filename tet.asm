@@ -202,11 +202,46 @@ DC0
 ; Нарисовать ФИГУРУ
 ; *******************************************
 PaintPentamino
-        lxi     b, 0808h
+
+        lxi     bc, 1010h
+        lxi     hl, FIGBUF
+        
+        call    PaintPentaLine
+        call    PaintPentaLine
+        call    PaintPentaLine
+        call    PaintPentaLine
+        
+        ret
+
+PaintPentaLine
+        mvi     e, 4
+        push    bc
+PPL
+        mov     a, m
+        ora     a
+        jz      PPL1
+        push    hl
         lxi     hl, PENTABRICK
         mvi     a, 3
         call    PaintBitmap
+        pop     hl
+PPL1    
+        inx     hl
+        inr     b
+        inr     b
+        dcr     e
+        jnz     PPL
+        
+;        inx     hl
+        pop     bc
+        mvi     a, 8
+        add     c
+        mov     c, a
+        
         ret
+
+
+
 
 
 
