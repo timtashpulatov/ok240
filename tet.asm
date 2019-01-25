@@ -50,7 +50,7 @@ CURSYS          equ     0bfedh
 ;        mvi     a, 4
 ;       sta     0bfech  ; скажем НЕТ курсору
 ; Вывести справку по командам
-        call    Help
+        ;call    Help
 
 Begin
         ;call    WorkBitmapPreview
@@ -194,7 +194,7 @@ DC0
         pop     hl
         
         dcx     hl
-        
+
         pop     bc
         ret
 
@@ -203,7 +203,8 @@ DC0
 ; *******************************************
 PaintPentamino
 
-        lxi     bc, 1010h
+        mvi     b, 1eh
+        mvi     c, 0eh
         lxi     hl, FIGBUF
         
         call    PaintPentaLine
