@@ -41,6 +41,8 @@ CURSYS          equ     0bfedh
         call    DrawFigure
         
         call    DrawCTAKAH
+        
+        call    PaintPentamino
 
 
 
@@ -166,7 +168,7 @@ NextCol
 ; *******************************************
 DrawCell
         push    bc
-        
+
         mov     a, b
         adi     CTAKAH_HORIZONTAL_OFFSET
         add     a
@@ -179,7 +181,7 @@ DrawCell
         ral
         ral
         mov     c, a
-        
+
         push    hl
         mov     a, m
         lxi     hl, BITMAP1
@@ -196,7 +198,15 @@ DC0
         pop     bc
         ret
 
-
+; *******************************************
+; Нарисовать ФИГУРУ
+; *******************************************
+PaintPentamino
+        lxi     b, 0808h
+        lxi     hl, PENTABRICK
+        mvi     a, 3
+        call    PaintBitmap
+        ret
 
 
 
@@ -646,6 +656,10 @@ TWO     db      0ffh, 0e3h, 0ddh, 0efh, 0f7h, 0ffh, 0c1h, 0ffh
         db      1ch, 22h, 10h, 8, 4, 3eh, 0, 0
 THREE   db      0ffh, 0e3h, 0ddh, 0e7h, 0ffh, 0ddh, 0e3h, 0ffh
         db      1ch, 22h, 18h, 20h, 22h, 1ch, 0, 0
+
+PENTABRICK
+        db      7fh, 7fh, 5fh, 5fh, 5fh, 43h, 7fh, 0
+        db      0, 1eh, 1eh, 1eh, 1eh, 0, 0, 0
 
 COOLBRICK
         db      0b11111110
