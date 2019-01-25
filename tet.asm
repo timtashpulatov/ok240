@@ -138,7 +138,8 @@ KG0
         ret
 
 
-
+CTAKAH_HORIZONTAL_OFFSET        equ     10
+CTAKAH_VERTICAL_OFFSET          equ     6
 ROWS    equ     20 + 1  ; потому что дно
 COLS    equ     10 + 2  ; потому что стенки
 ; *******************************************
@@ -167,11 +168,13 @@ DrawCell
         push    bc
         
         mov     a, b
-        add     b
+        adi     CTAKAH_HORIZONTAL_OFFSET
+        add     a
         mov     b, a
         
         xra     a
         mov     a, c
+        adi     CTAKAH_VERTICAL_OFFSET
         ral
         ral
         ral
@@ -197,7 +200,8 @@ DC0
 
 
 
-
+; *******************************************
+; *******************************************
 CycleForeColor
         in      VIDEO
         inr     a
@@ -611,6 +615,10 @@ UnFH
 
 FIG_1   db      0b00000111, 0b11100000
         db      0b01000110, 0b01100010
+        db      0b00000111, 0b11100000
+        db      0b01000110, 0b01100010
+        
+
 
 ; *************************************************
 ; Битмапчики
