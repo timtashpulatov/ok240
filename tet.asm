@@ -99,6 +99,17 @@ KeyFunctions
 ; *******************************************
 InitCTAKAH
         lxi     hl, CTAKAH
+        lxi     bc, COLS*ROWS
+Rinse
+        mvi     m, 0
+        inx     hl
+        dcx     bc
+        mov     a, b
+        ora     c
+        jnz     Rinse
+        
+
+        lxi     hl, CTAKAH
         lxi     de, COLS - 2
         mvi     c, ROWS
 KeepGoin        
@@ -167,7 +178,7 @@ DrawCell
         lxi     hl, BITMAP1
         ora     a
         jnz     DC0
-        lxi     hl, CHECKERS
+        lxi     hl, BITMAP0     ; CHECKERS
 DC0        
         mvi     a, 3
         call    PaintBitmap
