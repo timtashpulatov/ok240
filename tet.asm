@@ -549,7 +549,7 @@ String  ;  db      1bh, 35h, 10, 10
 ; Вклеить фигуру из рабочего буфера в стакан
 ; *************************************************
 DrawFigure
-        lxi     hl, CTAKAH
+        lxi     hl, CTAKAH+1+3
         lxi     de, FIGBUF
         
         call    DrawFigLine
