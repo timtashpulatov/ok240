@@ -111,7 +111,10 @@ KeyFunctions
 ; *******************************************
 ; *******************************************
 CurDown
-        jmp     Begin
+        lhld    FIG_X
+        inr     h
+        jmp     MoveFig
+
 
 CurLeft
         lhld    FIG_X
@@ -124,7 +127,9 @@ CurRight
         jmp     MoveFig
 
 CurUp
-        jmp     Begin
+        lhld    FIG_X
+        dcr     h
+        jmp     MoveFig
 
 
 MoveFig
