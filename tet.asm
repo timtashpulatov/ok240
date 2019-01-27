@@ -131,6 +131,9 @@ CurRight
 
 CurUp
         lhld    FIG_X
+        mov     a, h
+        ora     a
+        jz      Begin
         dcr     h
         jmp     MoveFig
 
