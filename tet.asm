@@ -329,7 +329,7 @@ DrawCell
         lxi     hl, BITMAP1
         ora     a
         jnz     DC0
-        lxi     hl, BITMAP0     ; CHECKERS
+        lxi     hl, CHECKERS; BITMAP0     ; CHECKERS
 DC0        
         mvi     a, 3
         call    PaintBitmap
@@ -349,13 +349,13 @@ ErasePentamino
 
         lhld    FIG_X
         inr     l
-        push    hl
         call    CoordToPtr
-        xchg
-        pop     hl
-        xchg
-;        inr     c
-        
+
+        lda     FIG_X
+        mov     b, a
+        lda     FIG_Y
+        mov     c, a
+
         call    DrawCell
         
         ret
