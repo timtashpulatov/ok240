@@ -38,7 +38,7 @@ COLS            equ     10 + 2  ; потому что стенки
 ; Инициализация важных и нужных переменных
 
 ; Чистим экран и рисуем нетленку
-        lxi     h, 0006
+        lxi     h, 0000
         shld    FIG_X
         call    ResetScroll
         call    ClearScreen
@@ -118,6 +118,9 @@ CurDown
 
 CurLeft
         lhld    FIG_X
+        mov     a, l
+        ora     a
+        jz      Begin
         dcr     l
         jmp     MoveFig
 
@@ -150,6 +153,7 @@ MoveFig
 ; *******************************************
 IfItFitsISits
         push    hl
+        inr     l
         call    CoordToPtr
         
         lxi     d, FIGBUF
@@ -218,12 +222,14 @@ CoordToPtr
         
         lxi     h, CTAKAH
         mov     a, d
-        inr     a
         lxi     b, COLS
 CTP
+        ora     a
+        jz      CTP1
         dad     b
         dcr     a
-        jnz     CTP
+        jmp     CTP
+CTP1        
 
         mov     c, e
         mvi     b, 0
