@@ -45,7 +45,7 @@ COLS            equ     10 + 2  ; потому что стенки
 ;        call    BuildTheWall
         
         call    InitCTAKAH
-        lxi     de, 06c0h
+        lxi     de, 0ffffh      ;       06c0h
         call    UnpackFigure
 ;        call    DrawFigure
         
@@ -125,6 +125,9 @@ CurLeft
         jmp     MoveFig
 
 CurRight
+        
+        call    ErasePentamino
+        
         lhld    FIG_X
         inr     l
         jmp     MoveFig
@@ -343,12 +346,16 @@ DC0
 ; прямоугольника фигуры
 ; *******************************************
 ErasePentamino
-;        lxi     h, CTAKAH
-;        mvi     c, 4            ; строк в фигуре
 
-;        call    DrawCell
-                
-;        ret
+        lhld    FIG_X
+        call    CoordToPtr
+        xchg
+        lhld    FIG_X
+        xchg
+        inr     c
+        call    DrawCell
+        
+        ret
 
 ; *******************************************
 ; Нарисовать ФИГУРУ
