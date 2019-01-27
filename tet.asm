@@ -36,7 +36,7 @@ CURSYS          equ     0bfedh
 ;        call    BuildTheWall
         
         call    InitCTAKAH
-        lxi     de, 06c0h
+        lxi     de, 0ffffh      ;06c0h
         call    UnpackFigure
         call    DrawFigure
         
@@ -205,7 +205,7 @@ PaintPentamino
 
         lda     FIG_X
         adi     CTAKAH_HORIZONTAL_OFFSET
-        adi     2       ; зачем? почему?
+        adi     2       ; зачем? почему? потому что стенка стакана
         add     a
         mov     b, a            ; X (столбец по горизонтали)
         
@@ -218,7 +218,6 @@ PaintPentamino
         mov     c, a            ; Y (строка по вертикали)
 
         
-        ;mvi     c, 10 * 8
         lxi     hl, FIGBUF
         
         call    PaintPentaLine
@@ -621,7 +620,7 @@ CTAKAH_COLS     equ     COLS
 ;
 ; *************************************************
 DrawFigure
-        lxi     hl, CTAKAH+1+3  ; буфер стакана
+        lxi     hl, CTAKAH + 1      ; буфер стакана с отступом от стены
         
         ; Добавить к указателю стакана координаты фигуры
         
