@@ -38,7 +38,7 @@ COLS            equ     10 + 2  ; потому что стенки
 ; Инициализация важных и нужных переменных
 
 ; Чистим экран и рисуем нетленку
-        lxi     h, 0004
+        lxi     h, 0006
         shld    FIG_X
         call    ResetScroll
         call    ClearScreen
@@ -47,7 +47,7 @@ COLS            equ     10 + 2  ; потому что стенки
         call    InitCTAKAH
         lxi     de, 06c0h
         call    UnpackFigure
-        call    DrawFigure
+;        call    DrawFigure
         
         call    DrawCTAKAH
         
@@ -114,18 +114,27 @@ CurDown
         jmp     Begin
 
 CurLeft
-        jmp     Begin
+        lhld    FIG_X
+        dcr     l
+        jmp     MoveFig
 
 CurRight
         lhld    FIG_X
         inr     l
-        
-        call    IfItFitsISits
-        jc      Begin
-        shld    FIG_X
-        jmp     Begin
+        jmp     MoveFig
 
 CurUp
+        jmp     Begin
+
+
+MoveFig
+        call    IfItFitsISits
+        ora     a
+        jnz      Begin
+        shld    FIG_X
+
+        call    PaintPentamino
+
         jmp     Begin
 
 
@@ -142,7 +151,8 @@ IfItFitsISits
         mvi     c, 4
 loop
         call    CheckFigLine
-        jc      NotFits         ; Не вписывается, расходимся
+        ora     a
+        jnz      NotFits         ; Не вписывается, расходимся
         dcr     c
         jnz     loop
 
@@ -156,12 +166,14 @@ NotFits
 ; *******************************************
 CheckFigLine
         push    bc
+        push    hl
         mvi     c, 4
 CFL0
         call    CheckFigDot
         ora     a
         jz      CFL
         sec     ; место занято
+        pop     hl
         pop     bc
         ret
 
@@ -170,7 +182,8 @@ CFL
         inx     hl
         dcr     c
         jnz     CFL0
-    
+
+        pop     hl    
         lxi     b, COLS
         dad     b
     
@@ -192,11 +205,11 @@ CheckFigDot
 ; *******************************************
 ; Преобразовать координаты фигуры в адрес от начала CTAKAH
 ;
-; Принимаем координаты в DE
+; Принимаем координаты в HL
 ; Возвращаем в HL указатель на точку в стакане
 ; *******************************************
 CoordToPtr
-;        lhld    FIG_X
+        xchg
         
         lxi     h, CTAKAH
         mov     a, d
