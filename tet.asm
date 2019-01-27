@@ -128,26 +128,79 @@ CurUp
 ; по маске фигуры
 ; *******************************************
 IfItFitsISits
+        lhld    FIG_X
+        call    CoordToPtr
+        lxi     d, FIGBUF
+        lxi     bc, 0004h
+        
+        inx     d
+        ret
 
+
+
+        call    CheckFigLine
+        jc      NotFits         ; Не вписывается, расходимся
+        call    CheckFigLine
+        jc      NotFits         ; Не вписывается, расходимся
+        call    CheckFigLine
+        jc      NotFits         ; Не вписывается, расходимся
+        call    CheckFigLine
+NotFits
         ret
 
 ; *******************************************
-; Преобразовать координаты фигуры FIG_X и FIG_Y
-; в адрес от ночала CTAKAH
+; Установить Carry, если строка фигуры не вписывается 
+; в строку стакана
 ; *******************************************
-CoordToPtr
+CheckFigLine
+        push    bc
+        mvi     c, 4
+CFL0
+        call    CheckFigDot
+        ora     a
+        jz      CFL
+        sec     ; место занято
+        pop     bc
+        ret
+
+CFL
+        inx     de
+        inx     hl
+        dcr     c
+        jnz     CFL0
+    
+        pop     bc
+        ret
+
+; *******************************************
+; Вернуть в A признак доступности точки стакана
+; *******************************************
+CheckFigDot
+        ldax    d       ; проверить точку фигуры
+        ora     a
+        rz
+; Точка фигуры не пустая, проверим точку стакана
+        xra     a
+        ora     m
+        ret
+
+; *******************************************
+; Преобразовать координаты фигуры в адрес от начала CTAKAH
+;
 ; Принимаем координаты в DE
 ; Возвращаем в HL указатель на точку в стакане
-        lhld    FIG_X
+; *******************************************
+CoordToPtr
+;        lhld    FIG_X
         
         lxi     h, CTAKAH
         mov     a, d
         inr     a
         lxi     b, COLS
-loop
+CTP
         dad     b
         dcr     a
-        jnz     loop
+        jnz     CTP
 
         mov     c, e
         mvi     b, 0
