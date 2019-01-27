@@ -117,6 +117,12 @@ CurLeft
         jmp     Begin
 
 CurRight
+        lhld    FIG_X
+        inr     l
+        
+        call    IfItFitsISits
+        jc      Begin
+        shld    FIG_X
         jmp     Begin
 
 CurUp
@@ -126,9 +132,10 @@ CurUp
 ; *******************************************
 ; Проверить, свободны ли клетки в стакане
 ; по маске фигуры
+; в HL начальные координаты для проверки
 ; *******************************************
 IfItFitsISits
-        lhld    FIG_X
+        push    hl
         call    CoordToPtr
         
         lxi     d, FIGBUF
@@ -140,6 +147,7 @@ loop
         jnz     loop
 
 NotFits
+        pop     hl
         ret
 
 ; *******************************************
