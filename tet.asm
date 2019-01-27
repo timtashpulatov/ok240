@@ -130,7 +130,7 @@ CurUp
 MoveFig
         call    IfItFitsISits
         ora     a
-        jnz      Begin
+        jnz     Begin
         shld    FIG_X
 
         call    PaintPentamino
@@ -152,7 +152,7 @@ IfItFitsISits
 loop
         call    CheckFigLine
         ora     a
-        jnz      NotFits         ; Не вписывается, расходимся
+        jnz     NotFits         ; Не вписывается, расходимся
         dcr     c
         jnz     loop
 
