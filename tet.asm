@@ -203,8 +203,22 @@ DC0
 ; *******************************************
 PaintPentamino
 
-        mvi     b, 1eh
-        mvi     c, 0eh
+        lda     FIG_X
+        adi     CTAKAH_HORIZONTAL_OFFSET
+        adi     2       ; зачем? почему?
+        add     a
+        mov     b, a            ; X (столбец по горизонтали)
+        
+        
+        lda     FIG_Y
+        adi     CTAKAH_VERTICAL_OFFSET
+        ral
+        ral
+        ral
+        mov     c, a            ; Y (строка по вертикали)
+
+        
+        ;mvi     c, 10 * 8
         lxi     hl, FIGBUF
         
         call    PaintPentaLine
@@ -599,10 +613,15 @@ String  ;  db      1bh, 35h, 10, 10
 
 ; *************************************************
 ; Вклеить фигуру из рабочего буфера в стакан
+; 
+; Должна выхываться один-единственный раз, когда фигура
+; уже не может дальше двигаться и должна прирасти к стакану
+;
 ; *************************************************
 DrawFigure
-        lxi     hl, CTAKAH+1+3
-        lxi     de, FIGBUF
+        lxi     de, FIGBUF      ; буфер фигуры
+        lxi     hl, CTAKAH+1+3  ; буфер стакана
+        
         
         call    DrawFigLine
         call    DrawFigLine
@@ -622,7 +641,7 @@ DFL
         dcr     c
         jnz     DFL
         pop     hl
-        lxi     b, 12
+        lxi     b, 12   ; перейти к следующей строке стакана
         dad     b
         ret
 
@@ -728,8 +747,20 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
 
 BmpPtr dw      0
 
+; ТЕТРИСОВЫЯ ПЕРЕМЕННЫЯ
+
+; Координаты текущей фигуры
+FIG_X   db      0
+FIG_Y   db      0
+
+; Буфер для распакованной фигуры 4x4
+;       . . . .
+;       . . . .
+;       . . . .
+;       . . . .
 FIGBUF  ds      16
+
 ; Игровая посуда
-CTAKAH       equ     .
+CTAKAH  equ     .
         
   
