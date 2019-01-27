@@ -611,6 +611,8 @@ PrtStrDone
 String  ;  db      1bh, 35h, 10, 10
         db      '1 2 3 4 5 6 7 8 9 0', 0
 
+CTAKAH_COLS     equ     COLS
+
 ; *************************************************
 ; Вклеить фигуру из рабочего буфера в стакан
 ; 
@@ -619,9 +621,26 @@ String  ;  db      1bh, 35h, 10, 10
 ;
 ; *************************************************
 DrawFigure
-        lxi     de, FIGBUF      ; буфер фигуры
         lxi     hl, CTAKAH+1+3  ; буфер стакана
         
+        ; Добавить к указателю стакана координаты фигуры
+        
+        lda     FIG_Y
+        mvi     d, CTAKAH_COLS
+DF0        
+        ora     a
+        jz     DF1
+        dad     d
+        dcr     a
+        jmp     DF0
+        
+DF1
+        lda     FIG_X           ; добавить смещение по строке
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+        
+        lxi     de, FIGBUF      ; буфер фигуры
         
         call    DrawFigLine
         call    DrawFigLine
