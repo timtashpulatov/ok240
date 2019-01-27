@@ -130,21 +130,15 @@ CurUp
 IfItFitsISits
         lhld    FIG_X
         call    CoordToPtr
-        lxi     d, FIGBUF
-        lxi     bc, 0004h
         
-        inx     d
-        ret
-
-
-
+        lxi     d, FIGBUF
+        mvi     c, 4
+loop
         call    CheckFigLine
         jc      NotFits         ; Не вписывается, расходимся
-        call    CheckFigLine
-        jc      NotFits         ; Не вписывается, расходимся
-        call    CheckFigLine
-        jc      NotFits         ; Не вписывается, расходимся
-        call    CheckFigLine
+        dcr     c
+        jnz     loop
+
 NotFits
         ret
 
@@ -168,6 +162,9 @@ CFL
         inx     hl
         dcr     c
         jnz     CFL0
+    
+        lxi     b, COLS
+        dad     b
     
         pop     bc
         ret
