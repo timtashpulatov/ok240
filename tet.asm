@@ -36,7 +36,7 @@ CURSYS          equ     0bfedh
 ;        call    BuildTheWall
         
         call    InitCTAKAH
-        lxi     de, 0ffffh      ;06c0h
+        lxi     de, 06c0h
         call    UnpackFigure
         call    DrawFigure
         
@@ -212,6 +212,7 @@ PaintPentamino
         
         lda     FIG_Y
         adi     CTAKAH_VERTICAL_OFFSET
+        inr     a       ; а это зачем?
         ral
         ral
         ral
