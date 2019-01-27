@@ -348,11 +348,14 @@ DC0
 ErasePentamino
 
         lhld    FIG_X
+        inr     l
+        push    hl
         call    CoordToPtr
         xchg
-        lhld    FIG_X
+        pop     hl
         xchg
-        inr     c
+;        inr     c
+        
         call    DrawCell
         
         ret
