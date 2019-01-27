@@ -26,11 +26,20 @@ Col             equ     CurPos+1
 WORKBMP         equ     4000h
 CURSYS          equ     0bfedh
 
+
+CTAKAH_HORIZONTAL_OFFSET        equ     10
+CTAKAH_VERTICAL_OFFSET          equ     6
+ROWS            equ     20 + 1  ; потому что дно
+COLS            equ     10 + 2  ; потому что стенки
+
+
         org     1000h
 
 ; Инициализация важных и нужных переменных
 
 ; Чистим экран и рисуем нетленку
+        lxi     h, 0004
+        shld    FIG_X
         call    ResetScroll
         call    ClearScreen
 ;        call    BuildTheWall
@@ -99,6 +108,55 @@ KeyFunctions
         db      0
         dw      0
 
+; *******************************************
+; *******************************************
+CurDown
+        jmp     Begin
+
+CurLeft
+        jmp     Begin
+
+CurRight
+        jmp     Begin
+
+CurUp
+        jmp     Begin
+
+
+; *******************************************
+; Проверить, свободны ли клетки в стакане
+; по маске фигуры
+; *******************************************
+IfItFitsISits
+
+        ret
+
+; *******************************************
+; Преобразовать координаты фигуры FIG_X и FIG_Y
+; в адрес от ночала CTAKAH
+; *******************************************
+CoordToPtr
+; Принимаем координаты в DE
+; Возвращаем в HL указатель на точку в стакане
+        lhld    FIG_X
+        
+        lxi     h, CTAKAH
+        mov     a, d
+        inr     a
+        lxi     b, COLS
+loop
+        dad     b
+        dcr     a
+        jnz     loop
+
+        mov     c, e
+        mvi     b, 0
+        dad     b
+        ret
+        
+
+
+
 
 ; *******************************************
 ; Сполоснем СТАКАН
@@ -140,10 +198,7 @@ KG0
         ret
 
 
-CTAKAH_HORIZONTAL_OFFSET        equ     10
-CTAKAH_VERTICAL_OFFSET          equ     6
-ROWS    equ     20 + 1  ; потому что дно
-COLS    equ     10 + 2  ; потому что стенки
+
 ; *******************************************
 ; Нарисуем СТАКАН
 ; *******************************************
@@ -197,6 +252,19 @@ DC0
 
         pop     bc
         ret
+
+; *******************************************
+; Стереть ФИГУРУ
+; Проще всего вывести на экран кусок стакана из-под
+; прямоугольника фигуры
+; *******************************************
+ErasePentamino
+;        lxi     h, CTAKAH
+;        mvi     c, 4            ; строк в фигуре
+
+;        call    DrawCell
+                
+;        ret
 
 ; *******************************************
 ; Нарисовать ФИГУРУ
@@ -279,15 +347,6 @@ CycleBackColor
         
 
 
-
-CurDown
-CurLeft
-
-CurRight
-
-CurUp
-
-        jmp     Begin
 
 
 
