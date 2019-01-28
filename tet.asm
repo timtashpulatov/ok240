@@ -103,7 +103,8 @@ KeyFunctions
         dw      CurUp
         db      1ah
         dw      CurDown
-        
+        db      ' '
+        dw      Drop
 
         db      1bh
         dw      WARMBOOT
@@ -127,6 +128,10 @@ UpdateRng
         ret
         
 ; *******************************************
+
+Drop
+        jmp     Begin
+
 CurDown
         lhld    FIG_X
         inr     h
@@ -214,17 +219,11 @@ Rotate
         lhld    FIG_X
         call    IfItFitsISits
         pop     hl
-        jz      RotateOK
+        jz      RotateDone
         
         call    PrevPhase
         call    RenderPhase
-        jmp     RotateDone
 
-RotateOK
-;        call    ErasePentamino
-;        call    PaintPentamino
-        jmp     RotateDone
-        
 RotateDone        
         call    PaintPentamino
         pop     de
