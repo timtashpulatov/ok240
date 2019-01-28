@@ -363,6 +363,7 @@ ErasePentamino
         mvi     d, 4    ; четыре строки в пентамино
 EP0
         push    bc
+        push    hl
         mvi     e, 4    ; в каждой по четыре клетки
 EP
         push    de
@@ -373,11 +374,14 @@ EP
         dcr     e
         jnz     EP
         
+        pop     hl
+        lxi     b, COLS
+        dad     b
+        
         pop     bc
         inr     c
         dcr     d
         jnz     EP0
-
 
         pop     hl
         ret
