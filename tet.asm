@@ -115,6 +115,7 @@ KeyFunctions
 ; *******************************************
 HouseKeeping
         call    Dly
+        call    Anime
         jmp     CurDown
         
 ; *******************************************
@@ -770,6 +771,29 @@ Help
 
         ret
 
+Anime   
+        lda     AnimeFrame
+        inr     a
+        ani     3
+        sta     AnimeFrame
+
+        lxi     h, AnimeFrame1
+        cpi     1
+        jz      AnimeHai
+        lxi     h, AnimeFrame2
+        cpi     2
+        jz      AnimeHai
+        lxi     h, AnimeFrame3
+AnimeHai
+        lxi     b, 0
+        call    PaintBitmap
+        
+        ret
+
+AnimeFrame1     equ     ONE
+AnimeFrame2     equ     TWO
+AnimeFrame3     equ     THREE
+
 
 ; *************************************************
 ; Вывести символ С по адресу HL
@@ -958,6 +982,9 @@ BmpPtr dw      0
 ; Координаты текущей фигуры
 FIG_X   db      4
 FIG_Y   db      0
+
+; Патч для KDE под FreeBSD
+AnimeFrame      ds      1
 
 ; Буфер для распакованной фигуры 4x4
 ;       . . . .
