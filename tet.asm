@@ -159,6 +159,7 @@ MoveFig
 
 AreWeStuck
         call    DrawFigure
+        call    DrawCTAKAH
         lxi     h, 0000
         shld    FIG_X
         jmp     Begin
@@ -485,7 +486,7 @@ CycleBackColor
 
 
 
-DELAY   equ     4000
+DELAY   equ     8000
 ; *********************
 ; Маленькая задержечка
 ; *********************
@@ -840,7 +841,7 @@ DrawFigure
         lxi     hl, CTAKAH + 1      ; буфер стакана с отступом от стены
         ; Добавить к указателю стакана координаты фигуры
         lda     FIG_Y
-        mvi     d, CTAKAH_COLS
+        lxi     d, CTAKAH_COLS
 DF0        
         ora     a
         jz     DF1
@@ -868,7 +869,10 @@ DrawFigLine
         mvi     c, 4
 DFL
         ldax    d
+        ora     a
+        jz      DFL1
         mov     m, a
+DFL1        
         inx     d
         inx     h
         dcr     c
