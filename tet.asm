@@ -144,7 +144,6 @@ CurRight
 
 CurUp
         call    Rotate
-        call    PaintPentamino
         jmp     Begin
 
 MoveFig
@@ -174,19 +173,21 @@ Rotate
         push    de
 ; Следующая фаза
         call    NextPhase
-        
         call    RenderPhase
-
 ; Проверить, помещается ли. Если нет, вернуть предыдущую фазу
-
         push    hl
         lhld    FIG_X
         call    IfItFitsISits
         pop     hl
-        jz      RotateDone
+        jz      RotateOK
         
         call    PrevPhase
         call    RenderPhase
+        jmp     RotateDone
+
+RotateOK
+        call    ErasePentamino
+        call    PaintPentamino
         jmp     RotateDone
         
 RotateDone        
@@ -196,33 +197,33 @@ RotateDone
         ret
 
 NextPhase
-        lda     FIG_PHA
-        inr     a
-        ani     3
-        sta     FIG_PHA
-        ret
+                lda     FIG_PHA
+                inr     a
+                ani     3
+                sta     FIG_PHA
+                ret
 
 PrevPhase
-        lda     FIG_PHA
-        dcr     a
-        ani     3
-        sta     FIG_PHA
-        ret
+                lda     FIG_PHA
+                dcr     a
+                ani     3
+                sta     FIG_PHA
+                ret
 
 RenderPhase
-        ral
-        mov     c, a
-        mvi     b, 0
+                ral
+                mov     c, a
+                mvi     b, 0
+                
+                lhld    FIG_PTR
+                dad     b
         
-        lhld    FIG_PTR
-        dad     b
+                mov     d, m
+                inx     h
+                mov     e, m
         
-        mov     d, m
-        inx     h
-        mov     e, m
-        
-        call    UnpackFigure
-        ret
+                call    UnpackFigure
+                ret
 
 ; *******************************************
 ; Проверить, свободны ли клетки в стакане
