@@ -115,7 +115,7 @@ KeyFunctions
 ; *******************************************
 HouseKeeping
         call    Dly
-        call    Anime
+;        call    Anime
         jmp     CurDown
         
 ; *******************************************
@@ -150,12 +150,17 @@ CurUp
 MoveFig
         call    IfItFitsISits
         ora     a
-        jnz     Begin
+        jnz     AreWeStuck
         call    ErasePentamino
         shld    FIG_X
 
         call    PaintPentamino
+        jmp     Begin
 
+AreWeStuck
+        call    DrawFigure
+        lxi     h, 0000
+        shld    FIG_X
         jmp     Begin
 
 
@@ -827,15 +832,13 @@ CTAKAH_COLS     equ     COLS
 ; *************************************************
 ; Вклеить фигуру из рабочего буфера в стакан
 ; 
-; Должна выхываться один-единственный раз, когда фигура
+; Должна вызываться один-единственный раз, когда фигура
 ; уже не может дальше двигаться и должна прирасти к стакану
 ;
 ; *************************************************
 DrawFigure
         lxi     hl, CTAKAH + 1      ; буфер стакана с отступом от стены
-        
         ; Добавить к указателю стакана координаты фигуры
-        
         lda     FIG_Y
         mvi     d, CTAKAH_COLS
 DF0        
