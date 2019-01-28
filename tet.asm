@@ -130,7 +130,14 @@ UpdateRng
 ; *******************************************
 
 Drop
-        jmp     Begin
+        lhld    FIG_X
+DropAgain        
+        inr     h
+        shld    FIG_X
+        call    IfItFitsISits
+        ora     a
+        jnz     AreWeStuck
+        jmp     DropAgain
 
 CurDown
         lhld    FIG_X
