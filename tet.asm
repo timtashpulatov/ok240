@@ -119,7 +119,8 @@ KeyFunctions
 HouseKeeping
         call    Dly
 ;        call    Anime
-        jmp     CurDown
+;        jmp     CurDown
+        jmp     Begin
         
 ; *******************************************
 CurDown
@@ -143,6 +144,7 @@ CurRight
 
 CurUp
         call    Rotate
+        call    PaintPentamino
         jmp     Begin
 
 MoveFig
@@ -171,11 +173,43 @@ Rotate
         push    bc
         push    de
 ; Следующая фаза
+        call    NextPhase
+        
+        call    RenderPhase
+
+; Проверить, помещается ли. Если нет, вернуть предыдущую фазу
+
+        push    hl
+        lhld    FIG_X
+        call    IfItFitsISits
+        pop     hl
+        jz      RotateDone
+        
+        call    PrevPhase
+        call    RenderPhase
+        jmp     RotateDone
+        
+RotateDone        
+        pop     de
+        pop     hl
+        pop     bc
+        ret
+
+NextPhase
         lda     FIG_PHA
         inr     a
         ani     3
         sta     FIG_PHA
-        
+        ret
+
+PrevPhase
+        lda     FIG_PHA
+        dcr     a
+        ani     3
+        sta     FIG_PHA
+        ret
+
+RenderPhase
         ral
         mov     c, a
         mvi     b, 0
@@ -188,10 +222,6 @@ Rotate
         mov     e, m
         
         call    UnpackFigure
-        
-        pop     de
-        pop     hl
-        pop     bc
         ret
 
 ; *******************************************
@@ -975,6 +1005,13 @@ FIG_6   db      0b10001110, 0b00000000
         db      0b01000100, 0b11000000
         db      0b00001110, 0b00100000
         db      0b01100100, 0b01000000
+
+FIG_7   db      0b00101110, 0b00000000
+        db      0b11000100, 0b01000000
+        db      0b11101000, 0b00000000
+        db      0b01000100, 0b01100000
+
+
 
 ; *************************************************
 ; Битмапчики
