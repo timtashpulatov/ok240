@@ -175,6 +175,7 @@ InitFigure
 
         lxi     h, FIG_1        ; заменить на генератор
         lda     Rng
+
         ani     7
         cpi     7
         jz      Same
@@ -202,6 +203,9 @@ Rotate
         push    hl
         push    bc
         push    de
+
+        call    ErasePentamino
+
 ; Следующая фаза
         call    NextPhase
         call    RenderPhase
@@ -217,11 +221,12 @@ Rotate
         jmp     RotateDone
 
 RotateOK
-        call    ErasePentamino
-        call    PaintPentamino
+;        call    ErasePentamino
+;        call    PaintPentamino
         jmp     RotateDone
         
 RotateDone        
+        call    PaintPentamino
         pop     de
         pop     hl
         pop     bc
@@ -452,6 +457,16 @@ DC0
 ; *******************************************
 ErasePentamino
         push    hl
+        lxi     h, CHECKERS
+        shld    FIG_BMP
+        call    PaintPentamino
+        lxi     h, PENTABRICK
+        shld    FIG_BMP
+        pop     hl
+        ret
+
+ErasePentamino0
+        push    hl
         lhld    FIG_X
         inr     l
         call    CoordToPtr      ; --- ok
@@ -531,7 +546,8 @@ PPL
         ora     a
         jz      PPL1
         push    hl
-        lxi     hl, PENTABRICK
+;        lxi     hl, PENTABRICK
+        lhld    FIG_BMP
         mvi     a, 3
         call    PaintBitmap
         pop     hl
@@ -1019,7 +1035,7 @@ FIG_2   db      0b00000110, 0b00110000
         db      0b00000110, 0b00110000
         db      0b00100110, 0b01000000
         
-FIG_3   db      0b00001111, 0b00000000
+FIG_3   db      0b00001111, 0b00000000  ; Палка
         db      0b01000100, 0b01000100
         db      0b00001111, 0b00000000
         db      0b01000100, 0b01000100
@@ -1029,7 +1045,7 @@ FIG_4   db      0b01001110, 0b00000000
         db      0b00001110, 0b01000000
         db      0b01000110, 0b01000000
         
-FIG_5   db      0b01100110, 0b00000000
+FIG_5   db      0b01100110, 0b00000000  ; Кубик
         db      0b01100110, 0b00000000
         db      0b01100110, 0b00000000
         db      0b01100110, 0b00000000
@@ -1118,7 +1134,8 @@ FIG_Y   db      0
 FIG_PTR dw      FIG_1
 ; Фаза текущей фигуры (0-3)
 FIG_PHA db      0
-
+; Адрес битмапа, которым выводим фигуру (для рисования и стирания)
+FIG_BMP dw      PENTABRICK
 ; Псевдослучайность
 RNG     db      0
 
