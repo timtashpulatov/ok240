@@ -45,7 +45,7 @@ COLS            equ     10 + 2  ; потому что стенки
 ;        call    BuildTheWall
         
         call    InitCTAKAH
-        lxi     de, 0ffffh      ;       06c0h
+        lxi     de, 06c0h;      0ffffh      ;       06c0h
         call    UnpackFigure
 ;        call    DrawFigure
         
@@ -294,12 +294,14 @@ NextRow
         mvi     b, COLS
 NextCol
         call    DrawCell
+        dcx     hl
         dcr     b
         jnz     NextCol
 
         dcr     c
         jnz     NextRow
         ret
+
 
 ; *******************************************
 ; Вывести клетку стакана
@@ -332,8 +334,6 @@ DC0
         mvi     a, 3
         call    PaintBitmap
         pop     hl
-        
-        dcx     hl
 
         pop     bc
         ret
@@ -357,7 +357,27 @@ ErasePentamino
         inr     a
         mov     c, a
 
-        call    DrawCell        ; B - COLS, C - ROWS
+; К этому моменту в HL указатель на фрагмент стакана,
+; а в BC - координаты (COL, ROW)
+        
+        mvi     d, 4    ; четыре строки в пентамино
+EP0
+        push    bc
+        mvi     e, 4    ; в каждой по четыре клетки
+EP
+        push    de
+        call    DrawCell
+        pop     de
+        inr     b
+        inx     hl
+        dcr     e
+        jnz     EP
+        
+        pop     bc
+        inr     c
+        dcr     d
+        jnz     EP0
+
 
         pop     hl
         ret
