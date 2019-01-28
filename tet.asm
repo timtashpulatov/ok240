@@ -67,6 +67,10 @@ Begin
 
 
         ; Ввод с клавиатуры
+        call    KBDSTAT
+        ora     a
+        jz     HouseKeeping
+        
         call    KBDREAD
 
         mov     c, a
@@ -109,6 +113,10 @@ KeyFunctions
         dw      0
 
 ; *******************************************
+HouseKeeping
+        call    Dly
+        jmp     CurDown
+        
 ; *******************************************
 CurDown
         lhld    FIG_X
@@ -471,7 +479,7 @@ CycleBackColor
 
 
 
-DELAY   equ     2000
+DELAY   equ     4000
 ; *********************
 ; Маленькая задержечка
 ; *********************
