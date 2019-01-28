@@ -36,12 +36,7 @@ COLS            equ     10 + 2  ; потому что стенки
         org     1000h
 
 ; Инициализация важных и нужных переменных
-        lxi     h, 0000
-        shld    FIG_X
-        lxi     h, FIG_1
-        shld    FIG_PTR
-        xra     a
-        sta     FIG_PHA                
+        call    InitFigure
 ; Чистим экран и рисуем нетленку
         call    ResetScroll
         call    ClearScreen
@@ -117,10 +112,19 @@ KeyFunctions
 
 ; *******************************************
 HouseKeeping
+
+        call    UpdateRng
+
         call    Dly
 ;        call    Anime
 ;        jmp     CurDown
         jmp     Begin
+
+UpdateRng
+        lda     Rng
+        inr     a
+        sta     Rng
+        ret
         
 ; *******************************************
 CurDown
@@ -159,9 +163,33 @@ MoveFig
 AreWeStuck
         call    DrawFigure
         call    DrawCTAKAH
+        
+        call    InitFigure
+        
+        jmp     Begin
+
+
+InitFigure
         lxi     h, 0000
         shld    FIG_X
-        jmp     Begin
+
+        lxi     h, FIG_1        ; заменить на генератор
+        lda     Rng
+        ani     7
+        cpi     7
+        jz      Same
+        add     a
+        add     a
+        add     a
+        mov     c, a
+        mvi     b, 0
+        dad     b
+        shld    FIG_PTR
+        
+Same        
+        xra     a
+        sta     FIG_PHA                
+        ret
 
 
 ; *******************************************
@@ -1086,6 +1114,9 @@ FIG_Y   db      0
 FIG_PTR dw      FIG_1
 ; Фаза текущей фигуры (0-3)
 FIG_PHA db      0
+
+; Псевдослучайность
+RNG     db      0
 
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
