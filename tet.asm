@@ -35,18 +35,18 @@ COLS            equ     10 + 2  ; потому что стенки
 
         org     1000h
 
-; Инициализация важных и нужных переменных
-        call    InitFigure
-; Чистим экран и рисуем нетленку
+
+; Чистим экран
         call    ResetScroll
         call    ClearScreen
-;        call    BuildTheWall
-        
+
+; Инициализация важных и нужных переменных
         call    InitCTAKAH
-        lxi     de, 06c0h;      0ffffh      ;       06c0h
-        call    UnpackFigure
-;        call    DrawFigure
-        
+        call    InitFigure
+
+;        lxi     de, 06c0h;      0ffffh      ;       06c0h
+;        call    UnpackFigure
+
         call    DrawCTAKAH
         
         call    PaintPentamino
@@ -188,7 +188,10 @@ InitFigure
         
 Same        
         xra     a
-        sta     FIG_PHA                
+        sta     FIG_PHA
+        
+        call    RenderPhase
+        
         ret
 
 
@@ -239,6 +242,7 @@ PrevPhase
                 ret
 
 RenderPhase
+                lda     FIG_PHA
                 ral
                 mov     c, a
                 mvi     b, 0
