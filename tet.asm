@@ -125,9 +125,6 @@ CurLeft
         jmp     MoveFig
 
 CurRight
-        
-        call    ErasePentamino
-        
         lhld    FIG_X
         inr     l
         jmp     MoveFig
@@ -145,6 +142,7 @@ MoveFig
         call    IfItFitsISits
         ora     a
         jnz     Begin
+        call    ErasePentamino
         shld    FIG_X
 
         call    PaintPentamino
@@ -346,18 +344,22 @@ DC0
 ; прямоугольника фигуры
 ; *******************************************
 ErasePentamino
-
+        push    hl
         lhld    FIG_X
         inr     l
-        call    CoordToPtr
+        call    CoordToPtr      ; --- ok
 
         lda     FIG_X
+        inr     a
+        inr     a
         mov     b, a
         lda     FIG_Y
+        inr     a
         mov     c, a
 
-        call    DrawCell
-        
+        call    DrawCell        ; B - COLS, C - ROWS
+
+        pop     hl
         ret
 
 ; *******************************************
