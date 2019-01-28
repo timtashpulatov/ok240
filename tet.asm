@@ -36,10 +36,13 @@ COLS            equ     10 + 2  ; потому что стенки
         org     1000h
 
 ; Инициализация важных и нужных переменных
-
-; Чистим экран и рисуем нетленку
         lxi     h, 0000
         shld    FIG_X
+        lxi     h, FIG_1
+        shld    FIG_PTR
+        xra     a
+        sta     FIG_PHA                
+; Чистим экран и рисуем нетленку
         call    ResetScroll
         call    ClearScreen
 ;        call    BuildTheWall
@@ -139,13 +142,8 @@ CurRight
         jmp     MoveFig
 
 CurUp
-        lhld    FIG_X
-        mov     a, h
-        ora     a
-        jz      Begin
-        dcr     h
-        jmp     MoveFig
-
+        call    Rotate
+        jmp     Begin
 
 MoveFig
         call    IfItFitsISits
@@ -164,6 +162,37 @@ AreWeStuck
         shld    FIG_X
         jmp     Begin
 
+
+; *******************************************
+; Повернуть фигуру
+; *******************************************
+Rotate
+        push    hl
+        push    bc
+        push    de
+; Следующая фаза
+        lda     FIG_PHA
+        inr     a
+        ani     3
+        sta     FIG_PHA
+        
+        ral
+        mov     c, a
+        mvi     b, 0
+        
+        lhld    FIG_PTR
+        dad     b
+        
+        mov     d, m
+        inx     h
+        mov     e, m
+        
+        call    UnpackFigure
+        
+        pop     de
+        pop     hl
+        pop     bc
+        ret
 
 ; *******************************************
 ; Проверить, свободны ли клетки в стакане
@@ -288,7 +317,7 @@ KeepGoin
 
 ; Нарисуем дно
         lxi     hl, CTAKAH + ROWS*COLS - 1
-        mvi     b, COLS
+        mvi     b, CTAKAH_COLS
 KG0
         mvi     m, 0ffh
         dcx     hl
@@ -306,7 +335,7 @@ DrawCTAKAH
         lxi     hl, CTAKAH + ROWS*COLS - 1  ; снизу вверх будем выводить, и справа налево
         mvi     c, ROWS
 NextRow
-        mvi     b, COLS
+        mvi     b, CTAKAH_COLS
 NextCol
         call    DrawCell
         dcx     hl
@@ -390,7 +419,7 @@ EP
         jnz     EP
         
         pop     hl
-        lxi     b, COLS
+        lxi     b, CTAKAH_COLS
         dad     b
         
         pop     bc
@@ -878,7 +907,7 @@ DFL1
         dcr     c
         jnz     DFL
         pop     hl
-        lxi     b, 12   ; перейти к следующей строке стакана
+        lxi     b, CTAKAH_COLS   ; перейти к следующей строке стакана
         dad     b
         ret
 
@@ -918,9 +947,14 @@ UnFH
 ;       . . . .         . . . .
 
 FIG_1   db      0b00000110, 0b11000000
-        db      0b01000110, 0b01100010
+        db      0b01000110, 0b00100000
         db      0b00000110, 0b11000000
-        db      0b01000110, 0b01100010
+        db      0b01000110, 0b00100000
+
+FIG_2   db      0b00000110, 0b00110000
+        db      0b00100110, 0b01000000
+        db      0b00000110, 0b00110000
+        db      0b00100110, 0b01000000
 
 ; *************************************************
 ; Битмапчики
@@ -989,6 +1023,11 @@ BmpPtr dw      0
 ; Координаты текущей фигуры
 FIG_X   db      4
 FIG_Y   db      0
+
+; Указатель на массив фаз фигуры
+FIG_PTR dw      FIG_1
+; Фаза текущей фигуры (0-3)
+FIG_PHA db      0
 
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
