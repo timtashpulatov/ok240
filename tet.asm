@@ -596,12 +596,6 @@ CycleBackColor
         out     VIDEO
         jmp     Begin
         
-
-
-
-
-
-
 DELAY   equ     8000
 ; *********************
 ; Маленькая задержечка
@@ -712,6 +706,7 @@ Cls     mvi     m, 0
         out     BANKING
         ei
         ret
+
 ; *************************************************
 ; BuildTheWall
 ; *************************************************
@@ -752,128 +747,6 @@ ResetScroll
         out     SCROLL_VH
         ret
 
-; *************************************************
-; Показать рабочий битмап в натуральную величину
-; *************************************************
-PREVIEW_X       equ     11
-PREVIEW_Y       equ     1
-WorkBitmapPreview
-
-        lxi     h, (PREVIEW_X-1)*512+PREVIEW_Y*8
-        mvi     c, '<'
-        call    MYCHAROUT
-        lxi     h, (PREVIEW_X+3)*512+PREVIEW_Y*8
-        mvi     c, '>'
-        call    MYCHAROUT
-
-        lxi     b, PREVIEW_X*512+PREVIEW_Y*8
-        lhld    BmpPtr
-        push    h
-        lxi     d, -16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
- 
-        lxi     b, (PREVIEW_X+1)*512+PREVIEW_Y*8
-        pop     hl
-        mvi     a, 3
-        push    hl
-        call    PaintBitmap
-
-        lxi     b, (PREVIEW_X+2)*512+PREVIEW_Y*8
-        pop     hl
-        lxi     d, 16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
-
-; Нарисуем красивую полосочку сверху        
-        lxi     b, PREVIEW_X*512
-        lxi     h, BOTLINE
-        mvi     a, 3
-        push    hl
-        call    PaintBitmap
-        
-        lxi     b, (PREVIEW_X+1)*512
-        mvi     a, 3
-        pop     hl
-        push    hl
-        call    PaintBitmap        
-
-        lxi     b, (PREVIEW_X+2)*512
-        mvi     a, 3
-        pop     hl
-        call    PaintBitmap        
-
-; И снизу        
-        lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
-        lxi     h, TOPLINE
-        mvi     a, 3
-        push    hl
-        call    PaintBitmap        
-
-        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
-        mvi     a, 3
-        pop     hl
-        push    hl
-        call    PaintBitmap        
-        
-        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
-        mvi     a, 3
-        pop     hl
-        call    PaintBitmap        
-        ret
-
-
-PALETTE_X       equ     2
-PALETTE_Y       equ     11
-; *************************************************
-; Нарисовать палитру
-; *************************************************
-DrawPalette
-        lxi     h, 0400h + 11*8
-        mvi     c, '1'
-        call    MYCHAROUT
-; Второй цвет        
-        lxi     h, 0900h + 11*8
-        inr     c
-        call    MYCHAROUT
-; Оба цвета
-        lxi     h, 0c00h + 11*8
-        inr     c
-        call    MYCHAROUT
-        lxi     h, 0d00h + 11*8
-        call    MYCHAROUT
-
-; Подписать
-;        mvi     a, 4
-;        sta     0xbfec
-;        lxi     h, String
-;        call    PrintString
-        ret
-
-GoFigure
-        lxi     b, 1600h + 11*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     b, 1800h + 11*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
-        
-        lxi     b, 1800h + 10*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     b, 1a00h + 11*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
-
-        ret
 
 Help
         lxi     b, 1a00h + 11*8
