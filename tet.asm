@@ -133,11 +133,12 @@ Drop
         lhld    FIG_X
 DropAgain        
         inr     h
-        shld    FIG_X
         call    IfItFitsISits
         ora     a
-        jnz     AreWeStuck
-        jmp     DropAgain
+        jz      DropAgain
+        dcr     h
+        shld    FIG_X
+        jmp     AreWeStuck
 
 CurDown
         lhld    FIG_X
@@ -174,7 +175,7 @@ MoveFig
 
 AreWeStuck
         call    DrawFigure
-        call    DrawCTAKAH
+        call    DrawCTAKAH      ; доооолго
         
         call    InitFigure
         
