@@ -130,6 +130,7 @@ UpdateRng
 ; *******************************************
 
 Drop
+        call    ErasePentamino
         lhld    FIG_X
 DropAgain        
         inr     h
