@@ -243,6 +243,65 @@ Same
 ; Удалить полностью заполненные строчки
 ; *******************************************
 Annihilate
+; Тоже начнем с дна стакана.
+; Выходим, как только встретим пустую строку
+; Ну или по достижении верха стакана
+        lxi     hl, CTAKAH + (ROWS - 2)*COLS + 1    ; донышко не трогаем
+        mvi     c, ROWS - 1
+
+Anni
+        call    SquishRow
+        dcr     c
+        jnz     Anni
+
+        ret
+
+SquishRow
+        push    bc
+        push    hl
+        mvi     b, COLS-2       ; не будем считать стенки
+        mvi     c, 0            ; счетчик клеток
+        xra     a
+SqR
+        cmp     m
+        jz      SqR1
+        inr     c
+SqR1
+        inx     h
+        dcr     b
+        jnz     SqR
+
+; Если строка заполнена, сдвигаем содержимое стакана вниз
+        mvi     a, COLS-2
+        cmp     c
+        jnz     SqContinue
+
+        push    hl
+        lxi     bc, -COLS
+        dad     b
+        pop     de
+        lxi     bc, CTAKAH+COLS ; закончим копировать, когда достигнем верхней строки
+
+SqCopy        
+        mov     a, m
+        stax    d
+        dcx     h
+        dcx     d
+        
+        mov     a, e
+        cmp     c
+        jnz     SqCopy
+        mov     a, d
+        cmp     b
+        jnz     SqCopy
+
+        ; Тут бы устроить рекурсию... или перерисовать стакан
+
+SqContinue
+        pop     hl
+        lxi     bc, -COLS
+        dad     b
+        pop     bc
         ret
 
 ; *******************************************
