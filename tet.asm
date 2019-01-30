@@ -259,6 +259,7 @@ Anni
 SquishRow
         push    bc
         push    hl
+        
         mvi     b, COLS-2       ; не будем считать стенки
         mvi     c, 0            ; счетчик клеток
         xra     a
@@ -296,6 +297,11 @@ SqCopy
         jnz     SqCopy
 
         ; Тут бы устроить рекурсию... или перерисовать стакан
+        
+        pop     hl
+        pop     bc
+        jmp     SquishRow       ; снова проверим эту же строку
+        
 
 SqContinue
         pop     hl
