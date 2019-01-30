@@ -153,12 +153,14 @@ CurLeft
         ora     a
         jz      Begin
         dcr     l
-        jmp     MoveFig
+        call    MoveFigure
+        jmp     Begin
 
 CurRight
         lhld    FIG_X
         inr     l
-        jmp     MoveFig
+        call    MoveFigure
+        jmp     Begin
 
 CurUp
         call    Rotate
@@ -175,12 +177,24 @@ MoveFig
         jmp     Begin
 
 AreWeStuck
-;        call    DrawFigure
-;        call    DrawCTAKAH      ; доооолго
+        call    DrawFigure
+        call    DrawCTAKAH      ; доооолго
         
-;        call    InitFigure
+        call    InitFigure
         
         jmp     Begin
+
+MoveFigure
+        call    IfItFitsISits
+        ora     a
+        push    a
+        jnz     CantMove
+        call    ErasePentamino
+        shld    FIG_X
+        call    PaintPentamino
+CantMove
+        pop     a
+        ret
 
 
 InitFigure
@@ -828,7 +842,7 @@ CTAKAH_COLS     equ     COLS
 ;
 ; *************************************************
 DrawFigure
-        lxi     hl, CTAKAH + 1      ; буфер стакана с отступом от стены
+        lxi     hl, CTAKAH      ; буфер стакана
         ; Добавить к указателю стакана координаты фигуры
         lda     FIG_Y
         lxi     d, CTAKAH_COLS
