@@ -138,7 +138,8 @@ UpdateRng
         ret
         
 ; *******************************************
-TicTac  lhld    CountDown
+TicTac  
+        lhld    CountDown
         dcx     h
         shld    CountDown
         ret
@@ -155,7 +156,7 @@ DropAgain
         jz      DropAgain
         dcr     h
         shld    FIG_X
-        jmp     AreWeStuck
+        jmp     WeAreStuck
 
 CurDown
         lhld    FIG_X
@@ -185,12 +186,13 @@ CurUp
 MoveFig
         call    MoveFigure
         ora     a
-        jnz     AreWeStuck
+        jnz     WeAreStuck
 
         jmp     Begin
 
-AreWeStuck
+WeAreStuck
         call    DrawFigure
+        call    Annihilate
         call    DrawCTAKAH      ; доооолго
         
         call    InitFigure
@@ -237,6 +239,11 @@ Same
         
         ret
 
+; *******************************************
+; Удалить полностью заполненные строчки
+; *******************************************
+Annihilate
+        ret
 
 ; *******************************************
 ; Повернуть фигуру
