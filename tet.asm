@@ -27,7 +27,7 @@ WORKBMP         equ     4000h
 CURSYS          equ     0bfedh
 
 
-CTAKAH_HORIZONTAL_OFFSET        equ     10
+CTAKAH_HORIZONTAL_OFFSET        equ     9
 CTAKAH_VERTICAL_OFFSET          equ     5
 ROWS            equ     20 + 1  ; потому что дно
 COLS            equ     10 + 2  ; потому что стенки
@@ -46,6 +46,10 @@ COLS            equ     10 + 2  ; потому что стенки
 
         lxi     h, HKCOUNT
         shld    CountDown
+        xra     a
+        sta     SCORE
+        
+        call    PaintScore
 
 ;        lxi     de, 06c0h;      0ffffh      ;       06c0h
 ;        call    UnpackFigure
@@ -53,7 +57,6 @@ COLS            equ     10 + 2  ; потому что стенки
         call    DrawCTAKAH
         
         call    PaintPentamino
-
 
 
 ; Эксперименты с выводом символа без курсора
@@ -296,7 +299,14 @@ SqCopy
         cmp     b
         jnz     SqCopy
 
+        ; Шай-бу!
+        lda     SCORE
+        inr     a
+        sta     SCORE
+
         ; Тут бы устроить рекурсию... или перерисовать стакан
+    
+        call    PaintScore
         
         pop     hl
         pop     bc
@@ -808,6 +818,40 @@ Cls     mvi     m, 0
         ei
         ret
 
+
+; *************************************************
+; Вывести счет
+; *************************************************
+PaintScore
+        push    hl
+        push    de
+        push    bc
+        lda     SCORE
+        mov     d, a
+        mvi     e, 8
+        lxi     b, 0
+PSLoop
+        lxi     h, SCORE_0
+        mov     a, d
+        rla
+        jnc     PS0
+        lxi     h, SCORE_1
+PS0        
+        mvi     a, 3
+        call    PaintBitmap
+        
+        inr     b
+        inr     b
+        
+        dcr     e
+        jnz     PSLoop
+        
+        pop     bc
+        pop     de
+        pop     hl
+        ret
+
+
 ; *************************************************
 ; BuildTheWall
 ; *************************************************
@@ -1056,7 +1100,7 @@ BITMAP1
 
 CTAKAH_BRICK
         db      0x7e, 0xc0, 128, 128, 128, 128, 128, 0
-        db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55          ; второй план отлично подходит от CHECKERS
+        db      0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa          ; второй план отлично подходит от CHECKERS
 
 CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
@@ -1078,6 +1122,13 @@ THREE   db      0ffh, 0e3h, 0ddh, 0e7h, 0ffh, 0ddh, 0e3h, 0ffh
 PENTABRICK
         db      7fh, 7fh, 5fh, 5fh, 5fh, 43h, 7fh, 0
         db      0, 1eh, 1eh, 1eh, 1eh, 0, 0, 0
+
+SCORE_0
+        db      0, 0xfe, 82h, 0bah, 0aah, 0bah, 082h, 0feh
+        db      0, 0xfe, 82h, 0bah, 0feh, 0feh, 0feh, 0feh
+SCORE_1
+        db      0, 3ch, 24h, 2ch, 28h, 0eeh, 82h, 0feh
+        db      0, 3ch, 24h, 2ch, 38h, 0feh, 0feh, 0feh
 
 COOLBRICK
         db      0b11111110
@@ -1126,7 +1177,8 @@ FIG_BMP dw      PENTABRICK
 RNG     db      0
 ; Обратный отсчет для хаускипера
 CountDown       dw      0
-
+; Score   (.)(.)
+SCORE   db      0
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
 
