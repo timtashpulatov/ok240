@@ -44,6 +44,9 @@ COLS            equ     10 + 2  ; потому что стенки
         call    InitCTAKAH
         call    InitFigure
 
+        lxi     h, HKCOUNT
+        shld    CountDown
+
 ;        lxi     de, 06c0h;      0ffffh      ;       06c0h
 ;        call    UnpackFigure
 
@@ -112,21 +115,34 @@ KeyFunctions
         dw      0
 
 ; *******************************************
+HKCOUNT equ     4000
 HouseKeeping
 
         call    UpdateRng
 
-        call    Dly
-;        call    Anime
-;        jmp     CurDown
-        jmp     Begin
+        call    TicTac
 
+        lhld    CountDown
+        mov     a, l
+        ora     h
+        jnz     Begin
+        lxi     h, HKCOUNT
+        shld    CountDown
+        jmp     CurDown        
+
+; *******************************************
 UpdateRng
         lda     Rng
         inr     a
         sta     Rng
         ret
         
+; *******************************************
+TicTac  lhld    CountDown
+        dcx     h
+        shld    CountDown
+        ret
+
 ; *******************************************
 
 Drop
@@ -167,13 +183,10 @@ CurUp
         jmp     Begin
 
 MoveFig
-        call    IfItFitsISits
+        call    MoveFigure
         ora     a
         jnz     AreWeStuck
-        call    ErasePentamino
-        shld    FIG_X
 
-        call    PaintPentamino
         jmp     Begin
 
 AreWeStuck
@@ -181,6 +194,7 @@ AreWeStuck
         call    DrawCTAKAH      ; доооолго
         
         call    InitFigure
+        call    PaintPentamino
         
         jmp     Begin
 
@@ -611,7 +625,7 @@ CycleBackColor
         out     VIDEO
         jmp     Begin
         
-DELAY   equ     8000
+DELAY   equ     4000
 ; *********************
 ; Маленькая задержечка
 ; *********************
@@ -1038,6 +1052,8 @@ FIG_PHA db      0
 FIG_BMP dw      PENTABRICK
 ; Псевдослучайность
 RNG     db      0
+; Обратный отсчет для хаускипера
+CountDown       dw      0
 
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
