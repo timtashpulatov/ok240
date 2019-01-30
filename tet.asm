@@ -9,7 +9,7 @@ VIDEO           equ     0E1h
 MAP32K          equ     0x01
 ENROM           equ     0x10
 
-XY              equ     0208h
+XY              equ     0005h
 SCREEN          equ     0c000h
 
 WARMBOOT        equ     0e003h
@@ -175,16 +175,16 @@ MoveFig
         jmp     Begin
 
 AreWeStuck
-        call    DrawFigure
-        call    DrawCTAKAH      ; доооолго
+;        call    DrawFigure
+;        call    DrawCTAKAH      ; доооолго
         
-        call    InitFigure
+;        call    InitFigure
         
         jmp     Begin
 
 
 InitFigure
-        lxi     h, 0000
+        lxi     h, XY
         shld    FIG_X
 
         lxi     h, FIG_1        ; заменить на генератор
@@ -277,7 +277,7 @@ RenderPhase
 ; *******************************************
 IfItFitsISits
         push    hl
-        inr     l
+;        inr     l
         call    CoordToPtr
         
         lxi     d, FIGBUF
@@ -523,7 +523,8 @@ PaintPentamino
 
         lda     FIG_X
         adi     CTAKAH_HORIZONTAL_OFFSET
-        adi     2       ; зачем? почему? потому что стенка стакана
+        adi     1
+;        adi     2       ; зачем? почему? потому что стенка стакана
         add     a
         mov     b, a            ; X (столбец по горизонтали)
         
