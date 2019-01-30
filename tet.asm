@@ -28,7 +28,7 @@ CURSYS          equ     0bfedh
 
 
 CTAKAH_HORIZONTAL_OFFSET        equ     10
-CTAKAH_VERTICAL_OFFSET          equ     6
+CTAKAH_VERTICAL_OFFSET          equ     5
 ROWS            equ     20 + 1  ; потому что дно
 COLS            equ     10 + 2  ; потому что стенки
 
@@ -460,7 +460,7 @@ DrawCell
 
         push    hl
         mov     a, m
-        lxi     hl, BITMAP1
+        lxi     hl, CTAKAH_BRICK ; BITMAP1
         ora     a
         jnz     DC0
         lxi     hl, CHECKERS; BITMAP0     ; CHECKERS
@@ -967,6 +967,10 @@ BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
 BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
+
+CTAKAH_BRICK
+        db      0x7e, 0xc0, 128, 128, 128, 128, 128, 0
+        db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55          ; второй план отлично подходит от CHECKERS
 
 CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
