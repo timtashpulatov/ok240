@@ -826,6 +826,7 @@ PaintScore
         push    hl
         push    de
         push    bc
+        
         lda     SCORE
         mov     d, a
         mvi     e, 8
@@ -833,7 +834,8 @@ PaintScore
 PSLoop
         lxi     h, SCORE_0
         mov     a, d
-        rla
+        ral
+        mov     d, a
         jnc     PS0
         lxi     h, SCORE_1
 PS0        
