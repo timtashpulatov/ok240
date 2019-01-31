@@ -827,17 +827,29 @@ PaintScore
         push    de
         push    bc
         
+        xra     a
+        sta     SuppressLeadingZeroes
+        
         lda     SCORE
         mov     d, a
         mvi     e, 8
         lxi     b, SCORE_COORDS
 PSLoop
-        lxi     h, SCORE_0
+        lxi     h, SCORE_0      ; а хорошо бы придавить ведущие нули как-то
+        lda     SuppressLeadingZeroes
+        ora     a
+        jnz      PS00
+        lxi     h, CHECKERS
+PS00        
         mov     a, d
-        ral
+        rlc
         mov     d, a
         jnc     PS0
         lxi     h, SCORE_1
+        ; прекратить дискриминацию ведущих нулей
+        ; (но пощадить последний)
+        sta     SuppressLeadingZeroes
+        
 PS0        
         mvi     a, 3
         call    PaintBitmap
@@ -1188,6 +1200,8 @@ RNG     db      0
 CountDown       dw      0
 ; Score   (.)(.)
 SCORE   db      0
+; Регистров вечно не хватает, а давить ведущие нули в счете хочется
+SuppressLeadingZeroes   db      0
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
 
