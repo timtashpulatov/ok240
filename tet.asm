@@ -818,7 +818,7 @@ Cls     mvi     m, 0
         ei
         ret
 
-
+SCORE_COORDS    equ     0208h
 ; *************************************************
 ; Вывести счет
 ; *************************************************
@@ -830,7 +830,7 @@ PaintScore
         lda     SCORE
         mov     d, a
         mvi     e, 8
-        lxi     b, 0
+        lxi     b, SCORE_COORDS
 PSLoop
         lxi     h, SCORE_0
         mov     a, d
