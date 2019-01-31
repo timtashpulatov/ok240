@@ -47,6 +47,13 @@ COLS            equ     10 + 2  ; потому что стенки
         
         call    PaintScore
 
+; пока счет ничейный и все нули давятся, нарисуем искусственный ноль
+        lxi     h, SCORE_0
+        lxi     b, SCORE_COORDS + 7*2*256
+        mvi     a, 3
+        call    PaintBitmap
+
+
 ;        lxi     de, 06c0h;      0ffffh      ;       06c0h
 ;        call    UnpackFigure
 
@@ -845,7 +852,7 @@ PSLoop
         lda     SuppressLeadingZeroes
         ora     a
         jnz      PS00
-        lxi     h, CHECKERS
+        lxi     h, BITMAP0; CHECKERS
 PS00        
         mov     a, d
         rlc
