@@ -48,7 +48,10 @@ SCORE_COORDS    equ     0218h
 ; Надпись "ЩЁТ"
         lxi     b, 0210h
         lxi     h, SCORE_LINE
+        call    PaintHorizontalBitmap
 
+        lxi     b, 3a10h
+        lxi     h, NEXT_LINE
         call    PaintHorizontalBitmap
 
         call    PaintScore
@@ -1189,6 +1192,9 @@ PENTABRICK
 SCORE_LINE   
         db      3
         db64    AAAAAAAAAAAAAMcAJyjHAAAAAAAAAAAAAADMANJSTAAAAAAAAAAAAAAAOQI4CTIA
+NEXT_LINE        
+        db      2
+        db64    AAAAAAAAAAAAAOcI6SnJAAAAAAAAAAAAAADqAERKigA=
 SCORE_0
         db      0, 0xfe, 82h, 0bah, 0aah, 0bah, 082h, 0feh
         db      0, 0xfe, 82h, 0bah, 0feh, 0feh, 0feh, 0feh
