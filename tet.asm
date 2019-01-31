@@ -17,13 +17,9 @@ KBDSTAT         equ     0e006h
 KBDREAD         equ     0e009h
 CHAROUT         equ     0e00ch  ; вывести символ из регистра C
 
-OFFSET_X        equ    2
-OFFSET_Y        equ    2
-
 Row             equ     CurPos
 Col             equ     CurPos+1
 
-WORKBMP         equ     4000h
 CURSYS          equ     0bfedh
 
 
@@ -220,7 +216,7 @@ InitFigure
         lxi     h, XY
         shld    FIG_X
 
-        lxi     h, FIG_1        ; заменить на генератор
+        lxi     h, FIG_1
         lda     Rng
 
         ani     7
@@ -240,6 +236,16 @@ Same
         
         call    RenderPhase
         
+        ; проверим, есть ли куда ногу поставить
+        lhld    FIG_X
+        call    IfItFitsISits
+        ora     a
+        jz      AllGood
+        
+        pop     a      ; неиспользованный адрес возврата
+        jmp     WarmBoot
+        
+AllGood        
         ret
 
 ; *******************************************
