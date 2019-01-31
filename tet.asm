@@ -27,7 +27,7 @@ CTAKAH_HORIZONTAL_OFFSET        equ     9
 CTAKAH_VERTICAL_OFFSET          equ     5
 ROWS            equ     20 + 1  ; потому что дно
 COLS            equ     10 + 2  ; потому что стенки
-
+SCORE_COORDS    equ     0218h
 
         org     1000h
 
@@ -44,7 +44,13 @@ COLS            equ     10 + 2  ; потому что стенки
         shld    CountDown
         xra     a
         sta     SCORE
-        
+
+; Надпись "ЩЁТ"
+        lxi     b, 0210h
+        lxi     h, SCORE_LINE
+
+        call    PaintHorizontalBitmap
+
         call    PaintScore
 
 ; пока счет ничейный и все нули давятся, нарисуем искусственный ноль
@@ -831,7 +837,7 @@ Cls     mvi     m, 0
         ei
         ret
 
-SCORE_COORDS    equ     0208h
+
 ; *************************************************
 ; Вывести счет
 ; *************************************************
@@ -1071,6 +1077,29 @@ UnFH
         ret
 
 ; *************************************************
+; Вывести горизонтально многоклеточный битмап из HL
+; Первый байт - длина
+; *************************************************
+PaintHorizontalBitmap
+        mov     e, m
+        inx     h
+PHLoop
+        push    bc
+        push    hl
+        mvi     a, 3
+        call    PaintBitmap
+        pop     hl
+        lxi     b, 16
+        dad     b
+        pop     bc
+
+        inr     b
+        inr     b
+        dcr     e
+        jnz     PHLoop
+        ret
+
+; *************************************************
 ; Тетрамино
 ; *************************************************
 ;       . . . .         . 1 . .
@@ -1157,6 +1186,9 @@ PENTABRICK
         db      7fh, 7fh, 5fh, 5fh, 5fh, 43h, 7fh, 0
         db      0, 1eh, 1eh, 1eh, 1eh, 0, 0, 0
 
+SCORE_LINE   
+        db      3
+        db64    AAAAAAAAAAAAAMcAJyjHAAAAAAAAAAAAAADMANJSTAAAAAAAAAAAAAAAOQI4CTIA
 SCORE_0
         db      0, 0xfe, 82h, 0bah, 0aah, 0bah, 082h, 0feh
         db      0, 0xfe, 82h, 0bah, 0feh, 0feh, 0feh, 0feh
