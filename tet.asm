@@ -1101,8 +1101,15 @@ BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
 
 CTAKAH_BRICK
-        db      0x7e, 0xc0, 128, 128, 128, 128, 128, 0
-        db      0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa          ; второй план отлично подходит от CHECKERS
+;        db      0x7e, 0xc0, 128, 128, 128, 128, 128, 0
+;        db      0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa          ; второй план отлично подходит от CHECKERS
+
+;        db      0ffh, 1, 7fh, 1, 7fh, 1, 7fh, 1
+;        db      0ffh, 1, 7fh, 1, 7fh, 1, 7fh, 1
+
+        db      0feh, 1, 7dh, 7dh, 7dh, 7dh, 7dh, 1
+        db      0feh, 1, 7dh, 7dh, 7dh, 7dh, 7dh, 1
+
 
 CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
