@@ -80,17 +80,10 @@ SCORE_COORDS    equ     0218h
         call    PaintPentamino
 
 
-; Эксперименты с выводом символа без курсора
-;        mvi     a, 4
-;       sta     0bfech  ; скажем НЕТ курсору
-; Вывести справку по командам
-        ;call    Help
-
+; *********************************************************************
+; Main, как говорится, Loop
+; *********************************************************************
 Begin
-        ;call    WorkBitmapPreview
-
-
-
         ; Ввод с клавиатуры
         call    KBDSTAT
         ora     a
@@ -143,9 +136,9 @@ KeyFunctions
 
 SND_DROP
         push    hl
-        lxi     h, 0400h
+        lxi     h, 0a000h
         shld    BELL_FREQ
-        lxi     h, 0020h
+        lxi     h, 0002h
         shld    BELL_LEN
         jmp     BEEP
 
