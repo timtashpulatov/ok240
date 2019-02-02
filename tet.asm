@@ -68,7 +68,15 @@ SCORE_COORDS    equ     0218h
 ;        call    UnpackFigure
 
         call    DrawCTAKAH
-        
+
+; превьюшка
+        lxi     h, 0fd0eh
+        shld    FIG_X
+        call    PaintPentamino
+
+; начальная фигура
+        lxi     h, XY
+        shld    FIG_X
         call    PaintPentamino
 
 
@@ -238,7 +246,7 @@ WeAreStuck
 
         call    Annihilate
         call    DrawCTAKAH      ; доооолго
-        
+
         call    InitFigure
         call    PaintPentamino
     
@@ -260,7 +268,7 @@ CantMove
 
 InitFigure
         lxi     h, HKCOUNT
-        shld    CountDown
+        shld    CountDown       ; освежить задержку
 
         lxi     h, XY
         shld    FIG_X
@@ -271,6 +279,7 @@ InitFigure
         ani     7
         cpi     7
         jz      Same
+        
         add     a
         add     a
         add     a
