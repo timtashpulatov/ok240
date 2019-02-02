@@ -166,6 +166,7 @@ HouseKeeping
         mov     a, l
         ora     h
         jnz     Begin
+        
         lxi     h, HKCOUNT
         shld    CountDown
         jmp     CurDown        
@@ -258,6 +259,9 @@ CantMove
 
 
 InitFigure
+        lxi     h, HKCOUNT
+        shld    CountDown
+
         lxi     h, XY
         shld    FIG_X
 
@@ -614,7 +618,7 @@ DrawCell
         lxi     hl, CTAKAH_BRICK ; BITMAP1
         ora     a
         jnz     DC0
-        lxi     hl, CHECKERS1; BITMAP0     ; CHECKERS
+        lxi     hl, CHECKERS; BITMAP0     ; CHECKERS
 DC0        
         mvi     a, 3
         call    PaintBitmap
@@ -630,7 +634,7 @@ DC0
 ; *******************************************
 ErasePentamino
         push    hl
-        lxi     h, CHECKERS1
+        lxi     h, CHECKERS
         shld    FIG_BMP
         call    PaintPentamino
         lxi     h, PENTABRICK
@@ -914,7 +918,7 @@ PS0
         
         dcr     e
         jnz     PSLoop
-        
+PSDone        
         pop     bc
         pop     de
         pop     hl
