@@ -46,12 +46,6 @@ SCORE_COORDS    equ     0218h
         xra     a
         sta     SCORE
 
-; Звук
-        lxi     h, 0200h
-        shld    BELL_FREQ
-        lxi     h, 0020h
-        shld    BELL_LEN
-
 ; Надпись "ЩЁТ"
         lxi     b, 0210h
         lxi     h, SCORE_LINE
@@ -137,6 +131,30 @@ KeyFunctions
         dw      0
 
 ; *******************************************
+; Звук
+
+SND_DROP
+        push    hl
+        lxi     h, 0400h
+        shld    BELL_FREQ
+        lxi     h, 0020h
+        shld    BELL_LEN
+        jmp     BEEP
+
+SND_CLICK
+        push    hl
+        lxi     h, 0200h
+        shld    BELL_FREQ
+        lxi     h, 0020h
+        shld    BELL_LEN
+        jmp     BEEP
+        
+BEEP    
+        pop     hl
+        mvi     c, 7
+        jmp     CHAROUT
+
+; *******************************************
 HKCOUNT equ     4000
 HouseKeeping
 
@@ -215,8 +233,7 @@ MoveFig
 WeAreStuck
         call    DrawFigure
 
-        mvi     c, 7
-        call    CHAROUT
+        call    SND_DROP
 
         call    Annihilate
         call    DrawCTAKAH      ; доооолго
@@ -316,9 +333,7 @@ SqR1
         cmp     c
         jnz     SqContinue
 
-        mvi     c, 7
-        call    CHAROUT
-
+        call    SND_CLICK
 
         push    hl
         lxi     bc, -COLS
