@@ -144,9 +144,9 @@ SND_DROP
 
 SND_CLICK
         push    hl
-        lxi     h, 0200h
+        lxi     h, 0400h
         shld    BELL_FREQ
-        lxi     h, 0020h
+        lxi     h, 0040h
         shld    BELL_LEN
         jmp     BEEP
         
