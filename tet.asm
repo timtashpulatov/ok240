@@ -21,7 +21,8 @@ Row             equ     CurPos
 Col             equ     CurPos+1
 
 CURSYS          equ     0bfedh
-
+BELL_FREQ       equ     0bff4h
+BELL_LEN        equ     0bff6h
 
 CTAKAH_HORIZONTAL_OFFSET        equ     9
 CTAKAH_VERTICAL_OFFSET          equ     5
@@ -44,6 +45,12 @@ SCORE_COORDS    equ     0218h
         shld    CountDown
         xra     a
         sta     SCORE
+
+; Звук
+        lxi     h, 0200h
+        shld    BELL_FREQ
+        lxi     h, 0020h
+        shld    BELL_LEN
 
 ; Надпись "ЩЁТ"
         lxi     b, 0210h
@@ -207,11 +214,16 @@ MoveFig
 
 WeAreStuck
         call    DrawFigure
+
+        mvi     c, 7
+        call    CHAROUT
+
         call    Annihilate
         call    DrawCTAKAH      ; доооолго
         
         call    InitFigure
         call    PaintPentamino
+    
         
         jmp     Begin
 
@@ -279,6 +291,8 @@ Anni
         dcr     c
         jnz     Anni
 
+        call    PaintScore
+
         ret
 
 SquishRow
@@ -301,6 +315,10 @@ SqR1
         mvi     a, COLS-2
         cmp     c
         jnz     SqContinue
+
+        mvi     c, 7
+        call    CHAROUT
+
 
         push    hl
         lxi     bc, -COLS
@@ -328,7 +346,7 @@ SqCopy
 
         ; Тут бы устроить рекурсию... или перерисовать стакан
     
-        call    PaintScore
+;        call    PaintScore
         
         pop     hl
         pop     bc
@@ -581,7 +599,7 @@ DrawCell
         lxi     hl, CTAKAH_BRICK ; BITMAP1
         ora     a
         jnz     DC0
-        lxi     hl, CHECKERS; BITMAP0     ; CHECKERS
+        lxi     hl, CHECKERS1; BITMAP0     ; CHECKERS
 DC0        
         mvi     a, 3
         call    PaintBitmap
@@ -597,7 +615,7 @@ DC0
 ; *******************************************
 ErasePentamino
         push    hl
-        lxi     h, CHECKERS
+        lxi     h, CHECKERS1
         shld    FIG_BMP
         call    PaintPentamino
         lxi     h, PENTABRICK
@@ -1167,10 +1185,12 @@ CTAKAH_BRICK
         db      0feh, 1, 7dh, 7dh, 7dh, 7dh, 7dh, 1
         db      0feh, 1, 7dh, 7dh, 7dh, 7dh, 7dh, 1
 
-
 CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
+CHECKERS1
+        db      88h, 0, 22h, 0, 88h, 0, 22h, 0
+        db      88h, 0, 22h, 0, 88h, 0, 22h, 0
 
 BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
         db      0, 1, 0, 1, 0, 1, 0, 0x55
@@ -1196,8 +1216,8 @@ NEXT_LINE
         db      2
         db64    AAAAAAAAAAAAAOcI6SnJAAAAAAAAAAAAAADqAERKigA=
 SCORE_0
-        db      0, 0xfe, 82h, 0bah, 0aah, 0bah, 082h, 0feh
-        db      0, 0xfe, 82h, 0bah, 0feh, 0feh, 0feh, 0feh
+        db      0, 0xfe, 82h, 0bah, 0aah, 0bah, 082h, 07eh
+        db      0, 0xfe, 82h, 0bah, 0feh, 0feh, 0feh, 07eh
 SCORE_1
         db      0, 3ch, 24h, 2ch, 28h, 0eeh, 82h, 0feh
         db      0, 3ch, 24h, 2ch, 38h, 0feh, 0feh, 0feh
