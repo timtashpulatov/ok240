@@ -70,9 +70,9 @@ SCORE_COORDS    equ     0218h
         call    DrawCTAKAH
 
 ; превьюшка
-        lxi     h, 0fd0eh
-        shld    FIG_X
-        call    PaintPentamino
+;        lxi     h, 0fd0eh
+;        shld    FIG_X
+;        call    PaintPentamino
 
 ; начальная фигура
         lxi     h, XY
@@ -263,9 +263,11 @@ InitFigure
         lxi     h, HKCOUNT
         shld    CountDown       ; освежить задержку
 
-        lxi     h, XY
-        shld    FIG_X
 
+; Переложим следующую фигуру в текущую
+        lhld    NEXTFIG_PTR
+        shld    FIG_PTR
+; И получим новую следующую
         lxi     h, FIG_1
         lda     Rng
 
@@ -279,12 +281,23 @@ InitFigure
         mov     c, a
         mvi     b, 0
         dad     b
-        shld    FIG_PTR
+        shld    NEXTFIG_PTR
         
 Same        
         xra     a
-        sta     FIG_PHA
-        
+        sta     FIG_PHA         ; обнулить фазу фигуры
+
+; Вывести превью следующей фигуры
+        lhld    NEXTFIG_PTR
+        call    RenderPhase
+        lxi     h, 0fd0eh
+        shld    FIG_X
+        call    PaintPentamino
+; Нарисовать текущую фигуру
+        lxi     h, XY
+        shld    FIG_X
+
+        lhld    FIG_PTR
         call    RenderPhase
         
         ; проверим, есть ли куда ногу поставить
@@ -393,6 +406,7 @@ Rotate
 
 ; Следующая фаза
         call    NextPhase
+        lhld    FIG_PTR
         call    RenderPhase
 ; Проверить, помещается ли. Если нет, вернуть предыдущую фазу
         push    hl
@@ -402,6 +416,7 @@ Rotate
         jz      RotateDone
         
         call    PrevPhase
+        lhld    FIG_PTR
         call    RenderPhase
 
 RotateDone        
@@ -425,13 +440,14 @@ PrevPhase
                 sta     FIG_PHA
                 ret
 
+; В HL указатель на массив фаз фигуры
 RenderPhase
                 lda     FIG_PHA
                 ral
                 mov     c, a
                 mvi     b, 0
                 
-                lhld    FIG_PTR
+;                lhld    FIG_PTR
                 dad     b
         
                 mov     d, m
@@ -1281,11 +1297,13 @@ FIG_X   db      4
 FIG_Y   db      0
 
 ; Указатель на массив фаз фигуры
-FIG_PTR dw      FIG_1
+FIG_PTR         dw      FIG_1
+; Указатель на следующую фигуру
+NEXTFIG_PTR     dw      FIG_1
 ; Фаза текущей фигуры (0-3)
-FIG_PHA db      0
+FIG_PHA         db      0
 ; Адрес битмапа, которым выводим фигуру (для рисования и стирания)
-FIG_BMP dw      PENTABRICK
+FIG_BMP         dw      PENTABRICK
 ; Псевдослучайность
 RNG     db      0
 ; Обратный отсчет для хаускипера
