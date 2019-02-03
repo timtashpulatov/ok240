@@ -259,10 +259,21 @@ CantMove
         ret
 
 
+PREVIEW_COORD   equ     0fd0eh
+
 InitFigure
         lxi     h, HKCOUNT
         shld    CountDown       ; освежить задержку
 
+        xra     a
+        sta     FIG_PHA         ; обнулить фазу фигуры
+
+; Сотрем старое превью
+        lhld    NEXTFIG_PTR
+        call    RenderPhase
+        lxi     h, PREVIEW_COORD
+        shld    FIG_X
+        call    ErasePentamino
 
 ; Переложим следующую фигуру в текущую
         lhld    NEXTFIG_PTR
@@ -284,13 +295,11 @@ InitFigure
         shld    NEXTFIG_PTR
         
 Same        
-        xra     a
-        sta     FIG_PHA         ; обнулить фазу фигуры
 
 ; Вывести превью следующей фигуры
         lhld    NEXTFIG_PTR
         call    RenderPhase
-        lxi     h, 0fd0eh
+        lxi     h, PREVIEW_COORD
         shld    FIG_X
         call    PaintPentamino
 ; Нарисовать текущую фигуру
