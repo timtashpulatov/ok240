@@ -28,7 +28,7 @@ CTAKAH_HORIZONTAL_OFFSET        equ     9
 CTAKAH_VERTICAL_OFFSET          equ     5
 ROWS            equ     20 + 1  ; потому что дно
 COLS            equ     10 + 2  ; потому что стенки
-SCORE_COORDS    equ     0218h
+SCORE_COORDS    equ     0238h
 SCORE_LINE_XY   equ     0600h + 5*8
 NEXT_LINE_XY    equ     3400h + 5*8
 PREVIEW_COORD   equ     020fh
@@ -37,6 +37,8 @@ PREVIEW_COORD   equ     020fh
 
 
 ; Чистим экран
+        mvi     a, 43h          ; палитра 3: черный, красный, малиновый, белый
+        out     VIDEO
         call    ResetScroll
         call    ClearScreen
 
