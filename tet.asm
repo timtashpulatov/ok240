@@ -273,7 +273,11 @@ InitFigure
         call    RenderPhase
         lxi     h, PREVIEW_COORD
         shld    FIG_X
-        call    ErasePentamino
+        lxi     h, BITMAP0
+        shld    FIG_BMP
+        call    PaintPentamino
+        lxi     h, PENTABRICK
+        shld    FIG_BMP
 
 ; Переложим следующую фигуру в текущую
         lhld    NEXTFIG_PTR
