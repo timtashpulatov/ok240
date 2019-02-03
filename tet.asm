@@ -29,6 +29,9 @@ CTAKAH_VERTICAL_OFFSET          equ     5
 ROWS            equ     20 + 1  ; потому что дно
 COLS            equ     10 + 2  ; потому что стенки
 SCORE_COORDS    equ     0218h
+SCORE_LINE_XY   equ     0600h + 5*8
+NEXT_LINE_XY    equ     3400h + 5*8
+PREVIEW_COORD   equ     020fh
 
         org     1000h
 
@@ -47,11 +50,11 @@ SCORE_COORDS    equ     0218h
         sta     SCORE
 
 ; Надпись "ЩЁТ"
-        lxi     b, 0210h
+        lxi     b, SCORE_LINE_XY
         lxi     h, SCORE_LINE
         call    PaintHorizontalBitmap
 
-        lxi     b, 3a10h
+        lxi     b, NEXT_LINE_XY
         lxi     h, NEXT_LINE
         call    PaintHorizontalBitmap
 
@@ -259,7 +262,7 @@ CantMove
         ret
 
 
-PREVIEW_COORD   equ     0fd0eh
+
 
 InitFigure
         lxi     h, HKCOUNT
