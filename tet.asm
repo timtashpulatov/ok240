@@ -159,6 +159,18 @@ BEEP
         pop     hl
         mvi     c, 7
         jmp     CHAROUT
+        
+;********************************************
+; Сыграть ноту
+;********************************************
+PlayNote
+        shld    BELL_FREQ
+        xchg
+        shld    BELL_LEN
+        mvi     c, 7
+        jmp     CHAROUT
+        ret
+
 
 ; *******************************************
 HKCOUNT equ     4000
@@ -212,6 +224,11 @@ CurDown
 
 
 CurLeft
+        lxi     h, C1
+        lxi     d, 13
+        call    PlayNote
+
+
         lhld    FIG_X
         mov     a, l
         ora     a
@@ -221,12 +238,21 @@ CurLeft
         jmp     Begin
 
 CurRight
+        lxi     h, E1
+        lxi     d, 16
+        call    PlayNote
+
         lhld    FIG_X
         inr     l
         call    MoveFigure
         jmp     Begin
 
 CurUp
+
+        lxi     h, D1
+        lxi     d, 14
+        call    PlayNote
+
         call    Rotate
         jmp     Begin
 
@@ -1174,6 +1200,22 @@ PHLoop
         dcr     e
         jnz     PHLoop
         ret
+
+; *************************************************
+; Нотки
+; *************************************************
+A1      equ     0d51h
+H1      equ     0bdch       
+C1      equ     0b34h
+D1      equ     9fbh
+E1      equ     8e4h
+
+; Длительности
+; A1 H1 C1 D1 E1 F1 G1 A2
+; 11 12 13 14 16 17 19 22
+
+
+
 
 ; *************************************************
 ; Тетрамино
