@@ -168,7 +168,7 @@ PlayNote
         xchg
         shld    BELL_LEN
         mvi     c, 7
-        jmp     CHAROUT
+;        jmp     CHAROUT
         ret
 
 
@@ -651,6 +651,14 @@ NextCol
 
         dcr     c
         jnz     NextRow
+        
+        
+        lxi     h, ANOTHER_BRICK
+        mvi     b, (CTAKAH_HORIZONTAL_OFFSET + 1) * 2
+        mvi     c, (CTAKAH_VERTICAL_OFFSET + 1) * 8
+        mvi     a, 3
+        call    PaintBitmap
+        
         ret
 
 
@@ -1281,6 +1289,10 @@ CTAKAH_BRICK
 
         db      0feh, 1, 7dh, 7dh, 7dh, 7dh, 7dh, 1
         db      0feh, 1, 7dh, 7dh, 7dh, 7dh, 7dh, 1
+
+ANOTHER_BRICK
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 0bdh, 43h, 5bh, 4bh, 43h, 3dh, 3
 
 CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
