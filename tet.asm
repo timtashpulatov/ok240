@@ -1048,46 +1048,6 @@ ResetScroll
         ret
 
 
-Help
-        lxi     b, 1a00h + 11*8
-        lxi     h, ONE
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     b, 1a00h + 12*8+2
-        lxi     h, TWO
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     b, 1a00h + 13*8+4
-        lxi     h, THREE
-        mvi     a, 3
-        call    PaintBitmap
-
-        ret
-
-Anime   
-        lda     AnimeFrame
-        inr     a
-        ani     3
-        sta     AnimeFrame
-
-        lxi     h, AnimeFrame1
-        cpi     1
-        jz      AnimeHai
-        lxi     h, AnimeFrame2
-        cpi     2
-        jz      AnimeHai
-        lxi     h, AnimeFrame3
-AnimeHai
-        lxi     b, 0
-        call    PaintBitmap
-        
-        ret
-
-AnimeFrame1     equ     ONE
-AnimeFrame2     equ     TWO
-AnimeFrame3     equ     THREE
 
 
 ; *************************************************
@@ -1401,16 +1361,6 @@ CHECKERS1
 BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
         db      0, 1, 0, 1, 0, 1, 0, 0x55
 
-MAZOK   db      255, 255, 255, 255, 255, 255, 255, 255, 255
-        db      255, 255, 255, 255, 255, 255, 255, 255, 255
-        
-ONE     db      0ffh, 0efh, 0efh, 0efh, 0efh, 0ffh, 83h, 0ffh
-        db      8, 12, 8, 8, 8, 3eh, 0, 0
-TWO     db      0ffh, 0e3h, 0ddh, 0efh, 0f7h, 0ffh, 0c1h, 0ffh
-        db      1ch, 22h, 10h, 8, 4, 3eh, 0, 0
-THREE   db      0ffh, 0e3h, 0ddh, 0e7h, 0ffh, 0ddh, 0e3h, 0ffh
-        db      1ch, 22h, 18h, 20h, 22h, 1ch, 0, 0
-
 PENTABRICK
         db      7fh, 7fh, 5fh, 5fh, 5fh, 43h, 7fh, 0
         db      0, 1eh, 1eh, 1eh, 1eh, 0, 0, 0
@@ -1439,12 +1389,6 @@ COOLBRICK
         db      0b00000000
         
         db      0, 0, 0, 0, 0, 0, 0, 0
-
-TOPLINE db      0, 255, 0, 0, 0, 0, 0, 0
-        db      0, 255, 0, 0, 0, 0, 0, 0
-        
-BOTLINE db      0, 0, 0, 0, 0, 0, 255, 0
-        db      0, 0, 0, 0, 0, 0, 255, 0
 
 BALL    db      4eh, 0c7h, 8bh, 0c5h, 83h, 0c0h, 0abh, 7eh
         db      34h, 17h, 2bh, 15h, 2bh, 15h, 0, 0
