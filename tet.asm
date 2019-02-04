@@ -42,6 +42,9 @@ PREVIEW_COORD   equ     020fh
         call    ResetScroll
         call    ClearScreen
 
+        call    PlayTune
+
+
 ; Инициализация важных и нужных переменных
         call    InitCTAKAH
         call    InitFigure
@@ -1217,12 +1220,89 @@ H1      equ     0bdch
 C1      equ     0b34h
 D1      equ     9fbh
 E1      equ     8e4h
-
+F1      equ     864h
+G1      equ     779h
+A2      equ     A1/2    ;6a8h
+H2      equ     H1/2
+C2      equ     C1/2
 ; Длительности
 ; A1 H1 C1 D1 E1 F1 G1 A2
 ; 11 12 13 14 16 17 19 22
 
+Notes
+        dw      A1
+        db      11
+        dw      H1
+        db      12
+        dw      C1
+        db      13
+        dw      D1
+        db      14
+        dw      E1
+        db      16
+        dw      F1
+        db      17
+        dw      G1
+        db      19
+        dw      A2
+        db      22
+        dw      H2
+        db      24
+        dw      C2
+        db      26
 
+
+
+;**************************************************
+; Номер ноты в аккуме
+;**************************************************
+PlayNote1
+        push    hl
+        push    de
+        push    bc
+        lxi     hl, Notes
+        ; умножим номер ноты на 3
+        mov     b, a
+        add     a
+        add     b
+        mov     c, a
+        mvi     b, 0
+        dad     b
+        
+        ; Добудем делитель
+        mov     e, m
+        inx     h
+        mov     d, m
+        inx     h
+        ; и длительность
+        mov     l, m
+        mvi     h, 0
+        shld    BELL_LEN
+        xchg
+        shld    BELL_FREQ
+        mvi     c, 7
+        call    CHAROUT
+        pop     bc
+        pop     de
+        pop     hl
+        ret
+
+; *************************************************
+; Тюнз
+; *************************************************
+Tune    db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255
+
+PlayTune
+        lxi     h, Tune
+PT0        
+        mov     a, m
+        cpi     255
+        jz      ThatsAllFolks
+        call    PlayNote1
+        inx     h
+        jmp     PT0
+ThatsAllFolks        
+        ret
 
 
 ; *************************************************
