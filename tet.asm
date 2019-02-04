@@ -399,7 +399,12 @@ SqR1
         cmp     c
         jnz     SqContinue
 
-        call    SND_CLICK
+;        call    SND_CLICK
+        push    hl
+        lxi     h, DropTune
+        call    PT0
+        pop     hl
+
 
         push    hl
         lxi     bc, -COLS
@@ -1228,11 +1233,15 @@ G1      equ     779h
 A2      equ     A1/2    ;6a8h
 H2      equ     H1/2
 C2      equ     C1/2
+Pause   equ     4bh
 ; Длительности
 ; A1 H1 C1 D1 E1 F1 G1 A2
 ; 11 12 13 14 16 17 19 22
+; Pause = 2*250
 
 Notes
+        dw      Pause
+        db      250
         dw      A1
         db      11
         dw      H1
@@ -1294,6 +1303,9 @@ PlayNote1
 ; Тюнз
 ; *************************************************
 Tune    db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255
+
+DropTune
+        db      3, 3, 0, 0, 5, 5, 0, 0, 7, 7, 255
 
 PlayTune
         lxi     h, Tune
