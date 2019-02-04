@@ -688,10 +688,13 @@ DrawCell
 
         push    hl
         mov     a, m
-        lxi     hl, CTAKAH_BRICK ; BITMAP1
+        lxi     hl, CHECKERS
         ora     a
-        jnz     DC0
-        lxi     hl, CHECKERS; BITMAP0     ; CHECKERS
+        jz     DC0
+        lxi     hl, ANOTHER_BRICK
+        cpi     0xff
+        jz      DC0
+        lxi     hl, CTAKAH_BRICK
 DC0        
         mvi     a, 3
         call    PaintBitmap
@@ -1372,7 +1375,8 @@ CTAKAH_BRICK
 
 ANOTHER_BRICK
         db      0, 0, 0, 0, 0, 0, 0, 0
-        db      0ffh, 0bdh, 43h, 5bh, 4bh, 43h, 3dh, 3
+;        db      0ffh, 0bdh, 43h, 5bh, 4bh, 43h, 3dh, 3
+        db      0, 3ch, 42h, 5ah, 4ah, 42h, 3ch, 0
 
 CHECKERS
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
