@@ -656,11 +656,11 @@ NextCol
         jnz     NextRow
         
         
-        lxi     h, ANOTHER_BRICK
-        mvi     b, (CTAKAH_HORIZONTAL_OFFSET + 1) * 2
-        mvi     c, (CTAKAH_VERTICAL_OFFSET + 1) * 8
-        mvi     a, 3
-        call    PaintBitmap
+;        lxi     h, ANOTHER_BRICK
+;        mvi     b, (CTAKAH_HORIZONTAL_OFFSET + 1) * 2
+;        mvi     c, (CTAKAH_VERTICAL_OFFSET + 1) * 8
+;        mvi     a, 3
+;        call    PaintBitmap
         
         ret
 
