@@ -267,6 +267,7 @@ MoveFig
         jmp     Begin
 
 WeAreStuck
+        call    PaintPentamino
         call    DrawFigure
 
         call    SND_DROP
