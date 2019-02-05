@@ -147,7 +147,9 @@ KeyFunctions
         dw      CurDown
         db      ' '
         dw      Drop
-
+        db      'F'
+        dw      CycleForeColor
+        
         db      1bh
         dw      WARMBOOT
         db      0
@@ -865,9 +867,10 @@ PPL1
 ; *******************************************
 ; *******************************************
 CycleForeColor
-        in      VIDEO
+        lda     FGCOLOR
         inr     a
         ani     7
+        sta     FGCOLOR
         ori     40h
         out     VIDEO
         jmp     Begin   ; неэкономно. C9 наше всё
@@ -1459,7 +1462,8 @@ SCORE   db      0
 SuppressLeadingZeroes   db      0
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
-
+; Палитра
+FGCOLOR         db      3
 ; Буфер для распакованной фигуры 4x4
 ;       . . . .
 ;       . . . .
