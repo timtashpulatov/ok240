@@ -1003,6 +1003,9 @@ PaintScore
         sta     SuppressLeadingZeroes
         
         lda     SCORE
+        ora     a
+        jz      PSDone          ; чего его выводить, если он нулевой
+        
         mov     d, a
         mvi     e, 8
         lxi     b, SCORE_COORDS
@@ -1354,8 +1357,6 @@ FIG_7   db      0b00101110, 0b00000000
         db      0b11000100, 0b01000000
         db      0b11101000, 0b00000000
         db      0b01000100, 0b01100000
-
-
 
 ; *************************************************
 ; Битмапчики
