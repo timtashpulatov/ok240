@@ -33,7 +33,7 @@ SCORE_LINE_XY   equ     0600h + 5*8
 NEXT_LINE_XY    equ     3400h + 5*8
 PREVIEW_COORD   equ     020fh
 
-        org     1000h
+        org     100h
 
 
 ; Чистим экран
@@ -94,6 +94,7 @@ InitialWait
         call    KBDSTAT
         ora     a
         jz      InitialWait
+        call    KBDREAD
         
         lda     Rng
         ora     a
@@ -109,7 +110,7 @@ Begin
         ; Ввод с клавиатуры
         call    KBDSTAT
         ora     a
-        jz     HouseKeeping
+        jz      HouseKeeping
         
         call    KBDREAD
 
