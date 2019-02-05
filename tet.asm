@@ -86,7 +86,11 @@ InitialWait
         call    Dly
         call    ErasePentamino
         call    Dly
-        call    UpdateRng
+
+        lda     Rng
+        inr     a
+        sta     Rng
+
         call    KBDSTAT
         ora     a
         jz      InitialWait
@@ -189,7 +193,7 @@ PlayNote
 HKCOUNT equ     4000
 HouseKeeping
 
-        call    UpdateRng
+        ; call    UpdateRng
 
         call    TicTac
 
@@ -203,11 +207,27 @@ HouseKeeping
         jmp     CurDown        
 
 ; *******************************************
+; Алгоритм бессовестно попячен тут:
+; https://zx-pk.ru/threads/23100-generator-psevdosluchajnykh-chisel.html?p=705136&viewfull=1#post705136
+; *******************************************
 UpdateRng
+
         lda     Rng
-        inr     a
+        mov     b, a 
+
+        rrc     ; multiply by 32
+        rrc
+        rrc
+        xri     0x1f
+
+        add     b
+        sbi     255 ; carry
+
         sta     Rng
         ret
+
+
+        
         
 ; *******************************************
 TicTac  
@@ -367,7 +387,8 @@ Same
         pop     a      ; неиспользованный адрес возврата
         jmp     WarmBoot
         
-AllGood        
+AllGood   
+        call    UpdateRng
         ret
 
 ; *******************************************
