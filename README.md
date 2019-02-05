@@ -9,5 +9,7 @@ https://svofski.github.io/pretty-8080-assembler/?https://raw.githubusercontent.c
 
 Literature:
 
-https://tetris.fandom.com/wiki/Random_Generator
-https://zx-pk.ru/threads/23100-generator-psevdosluchajnykh-chisel/page5.html
+<li>
+<ul>https://tetris.fandom.com/wiki/Random_Generator</ul>
+<ul>https://zx-pk.ru/threads/23100-generator-psevdosluchajnykh-chisel/page5.html</ul>
+</li>
