@@ -9,7 +9,7 @@ VIDEO           equ     0E1h
 MAP32K          equ     0x01
 ENROM           equ     0x10
 
-XY              equ     0005h
+XY              equ     0004h
 SCREEN          equ     0c000h
 
 WARMBOOT        equ     0e003h
@@ -82,9 +82,9 @@ PREVIEW_COORD   equ     020fh
 InitialWait
         lxi     h, XY
         shld    FIG_X
-        call    PaintPentamino
-        call    Dly
         call    ErasePentamino
+        call    Dly
+        call    PaintPentamino
         call    Dly
 
         lda     Rng
@@ -1327,16 +1327,16 @@ ThatsAllFolks
 ;       1 1 . .         . . 1 .
 ;       . . . .         . . . .
 
-FIG_1   db      0b00000110, 0b11000000
-        db      0b01000110, 0b00100000
-        db      0b00000110, 0b11000000
-        db      0b01000110, 0b00100000
+FIG_1   db      0b11000110, 0b00000000
+        db      0b01001100, 0b10000000
+        db      0b11000110, 0b00000000
+        db      0b01001100, 0b10000000
 
-FIG_2   db      0b00000110, 0b00110000
-        db      0b00100110, 0b01000000
-        db      0b00000110, 0b00110000
-        db      0b00100110, 0b01000000
-        
+FIG_2   db      0b01101100, 0b00000000
+        db      0b10001100, 0b01000000
+        db      0b01101100, 0b00000000
+        db      0b10001100, 0b01000000
+
 FIG_3   db      0b00001111, 0b00000000  ; Палка
         db      0b01000100, 0b01000100
         db      0b00001111, 0b00000000
