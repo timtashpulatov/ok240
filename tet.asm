@@ -77,15 +77,25 @@ PREVIEW_COORD   equ     020fh
 
         call    DrawCTAKAH
 
-; превьюшка
-;        lxi     h, 0fd0eh
-;        shld    FIG_X
-;        call    PaintPentamino
-
-; начальная фигура
+; Приглашение к танцу
+; заодно добудем семечко для ГСЧ
+InitialWait
         lxi     h, XY
         shld    FIG_X
         call    PaintPentamino
+        call    Dly
+        call    ErasePentamino
+        call    Dly
+        call    UpdateRng
+        call    KBDSTAT
+        ora     a
+        jz      InitialWait
+        
+        lda     Rng
+        ora     a
+        jnz     Begin
+        inr     a
+        sta     Rng
 
 
 ; *********************************************************************
@@ -848,7 +858,7 @@ CycleBackColor
         out     VIDEO
         jmp     Begin
         
-DELAY   equ     4000
+DELAY   equ     08000h
 ; *********************
 ; Маленькая задержечка
 ; *********************
