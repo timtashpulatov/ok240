@@ -150,6 +150,8 @@ KeyFunctions
         dw      Drop
         db      'F'
         dw      CycleForeColor
+        db      'B'
+        dw      CycleBackColor
         
         db      1bh
         dw      WARMBOOT
@@ -468,6 +470,9 @@ SqCopy
         ; Тут бы устроить рекурсию... или перерисовать стакан
     
 ;        call    PaintScore
+
+        call    DrawCtakah
+
         
         pop     hl
         pop     bc
@@ -872,13 +877,16 @@ CycleForeColor
         inr     a
         ani     7
         sta     FGCOLOR
-        ori     40h
-        out     VIDEO
-        jmp     Begin   ; неэкономно. C9 наше всё
+        jmp     ApplyColors
 CycleBackColor
-        in      VIDEO
+        lda     BGCOLOR
         adi     8
-        ani     3fh
+        ani     38h
+        sta     BGCOLOR
+ApplyColors        
+        mov     c, a
+        lda     FGCOLOR
+        ora     c
         ori     40h
         out     VIDEO
         jmp     Begin
@@ -1465,6 +1473,7 @@ SuppressLeadingZeroes   db      0
 AnimeFrame      ds      1
 ; Палитра
 FGCOLOR         db      3
+BGCOLOR         db      0
 ; Буфер для распакованной фигуры 4x4
 ;       . . . .
 ;       . . . .
