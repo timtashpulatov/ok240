@@ -471,7 +471,7 @@ SqCopy
     
 ;        call    PaintScore
 
-        call    DrawCtakah
+        call    DrawCTAKAH
 
         
         pop     hl
@@ -700,13 +700,6 @@ NextCol
         dcr     c
         jnz     NextRow
         
-        
-;        lxi     h, ANOTHER_BRICK
-;        mvi     b, (CTAKAH_HORIZONTAL_OFFSET + 1) * 2
-;        mvi     c, (CTAKAH_VERTICAL_OFFSET + 1) * 8
-;        mvi     a, 3
-;        call    PaintBitmap
-        
         ret
 
 
@@ -763,48 +756,6 @@ ErasePentamino
         pop     hl
         ret
 
-ErasePentamino0
-        push    hl
-        lhld    FIG_X
-        inr     l
-        call    CoordToPtr      ; --- ok
-
-        lda     FIG_X
-        inr     a
-        inr     a
-        mov     b, a
-        lda     FIG_Y
-        inr     a
-        mov     c, a
-
-; К этому моменту в HL указатель на фрагмент стакана,
-; а в BC - координаты (COL, ROW)
-        
-        mvi     d, 4    ; четыре строки в пентамино
-EP0
-        push    bc
-        push    hl
-        mvi     e, 4    ; в каждой по четыре клетки
-EP
-        push    de
-        call    DrawCell
-        pop     de
-        inr     b
-        inx     hl
-        dcr     e
-        jnz     EP
-        
-        pop     hl
-        lxi     b, CTAKAH_COLS
-        dad     b
-        
-        pop     bc
-        inr     c
-        dcr     d
-        jnz     EP0
-
-        pop     hl
-        ret
 
 ; *******************************************
 ; Нарисовать ФИГУРУ
