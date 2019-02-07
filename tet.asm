@@ -309,6 +309,9 @@ WeAreStuck
 
         call    Annihilate
         call    DrawCTAKAH      ; доооолго
+        
+        call    FastShift
+        
 
         call    InitFigure
         call    PaintPentamino
@@ -488,16 +491,55 @@ SqContinue
 
 ; *******************************************
 ; Быстрый сдвиг стакана на ряд (8 пикселей) вниз
+; BC - X и Y
 ; *******************************************
 FastShift
-        lxi     h, SCREEN
-        mov     d, b
-        mvi     e, 0
-        dad     d       ; hl = SCREEN + X*256
-        mvi     d, 0
-        mov     e, c
-        dad     d       ; hl = hl + Y
+        push    hl
+        push    de
+        push    bc
+        di
+        mvi     a, ENROM
+        out     BANKING         ; Отключить ПЗУ
 
+; Адрес стакана на экране вообще-то жестко вкомпилен,
+; нет нужды его вычислять всякий раз
+CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+1)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1) * 8
+
+        lxi     hl, CTAKAH_SCREEN_ADDR
+        lxi     de, CTAKAH_SCREEN_ADDR + 8
+
+        push    hl
+        push    de
+        mvi     b, 8+1
+
+FSLoop0
+        push    hl
+        push    de
+        mvi     c, (COLS-2)*2   ; сдвигать будем без стенок
+        
+        FSLoop
+                mov     a, m
+                stax    d
+                inr     h
+                inr     d
+                dcr     c
+                jnz     FSLoop
+                
+        pop     de
+        pop     hl
+        inx     de
+        inx     hl
+        dcr     b
+        jnz     FSLoop0
+        pop     de
+        pop     hl
+
+        xra     a
+        out     BANKING         ; Включить ПЗУ
+        ei
+        pop     bc
+        pop     de
+        pop     hl
         ret
 
 ; *******************************************
