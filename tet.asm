@@ -503,7 +503,7 @@ FastShift
 
 ; Адрес стакана на экране вообще-то жестко вкомпилен,
 ; нет нужды его вычислять всякий раз
-CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+1)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1) * 8
+CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+2)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1)*8
 
         lxi     hl, CTAKAH_SCREEN_ADDR
         lxi     de, CTAKAH_SCREEN_ADDR + 8
@@ -512,25 +512,25 @@ FSLoop_
         push    hl
         push    de
         
-        mvi     b, 8
+        mvi     b, (COLS-2)*2
 
                 FSLoop0
                 push    hl
                 push    de
-                mvi     c, (COLS-1)*2   ; сдвигать будем без стенок
+                mvi     c, (ROWS-1)*8   ; сдвигать будем без стенок
         
                         FSLoop
                         mov     a, m
                         stax    d
-                        inr     h
-                        inr     d
+                        dcx     hl
+                        dcx     de
                         dcr     c
                         jnz     FSLoop
                 
                 pop     de
                 pop     hl
-                inx     de
-                inx     hl
+                inr     d
+                inr     h
                 dcr     b
                 jnz     FSLoop0
                 
