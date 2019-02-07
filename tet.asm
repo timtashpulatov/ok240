@@ -503,7 +503,7 @@ FastShift
 
 ; Адрес стакана на экране вообще-то жестко вкомпилен,
 ; нет нужды его вычислять всякий раз
-CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+2)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1)*8
+CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+2)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1)*8 - 1
 
         lxi     hl, CTAKAH_SCREEN_ADDR
         lxi     de, CTAKAH_SCREEN_ADDR + 8
