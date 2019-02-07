@@ -307,10 +307,10 @@ WeAreStuck
 
         call    SND_DROP
 
-;        call    Annihilate
+        call    Annihilate
 ;        call    DrawCTAKAH      ; доооолго
         
-        call    FastShift
+;        call    FastShift
         
 
         call    InitFigure
@@ -418,6 +418,7 @@ Anni
 
         ret
 
+; C - номер проверяемой строки
 SquishRow
         push    bc
         push    hl
@@ -439,12 +440,12 @@ SqR1
         cmp     c
         jnz     SqContinue
 
-;        call    SND_CLICK
+; ------  call    SND_CLICK
         push    hl
         lxi     h, DropTune
         call    PT0
         pop     hl
-
+; --------------------
 
         push    hl
         lxi     bc, -COLS
@@ -474,11 +475,14 @@ SqCopy
     
 ;        call    PaintScore
 
-        call    DrawCTAKAH
+;        call    DrawCTAKAH
 
         
         pop     hl
         pop     bc
+        
+        call    FastShift
+        
         jmp     SquishRow       ; снова проверим эту же строку
         
 
@@ -491,7 +495,7 @@ SqContinue
 
 ; *******************************************
 ; Быстрый сдвиг стакана на ряд (8 пикселей) вниз
-; BC - X и Y
+; C - номер текущей строки
 ; *******************************************
 FastShift
         push    hl
@@ -503,21 +507,37 @@ FastShift
 
 ; Адрес стакана на экране вообще-то жестко вкомпилен,
 ; нет нужды его вычислять всякий раз
-CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+2)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1)*8 - 1
+;CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+2)*2*256 + (CTAKAH_VERTICAL_OFFSET+ROWS-1)*8 - 1
+CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+2)*2*256 + CTAKAH_VERTICAL_OFFSET*8 - 1
+
 
         lxi     hl, CTAKAH_SCREEN_ADDR
         lxi     de, CTAKAH_SCREEN_ADDR + 8
 
-FSLoop_
-        push    hl
-        push    de
-        
-        mvi     b, (COLS-2)*2
+ ;       push    bc
+        mov     a, c
+        ral
+        ral
+        ral
+        mov     c, a
+        mvi     b, 0
+        dad     b       ; HL = адрес начала экрана + номер рабочей строки*8
+        xchg
+        dad     b
+        xchg
+;        pop     bc
 
-                FSLoop0
+FSLoop_
+;        push    hl
+;        push    de
+        
+        mvi     b, (COLS-2)*2   
+                ; -------------- сдвинуть столбик вниз -------------------------------
+                FSLoop0         
                 push    hl
                 push    de
-                mvi     c, (ROWS-1)*8   ; сдвигать будем без стенок
+                push    bc
+                ;mvi     c, (ROWS-1)*8   ; <-- а высоту столбика мы уже знаем (в C передан номер рабочей строки)
         
                         FSLoop
                         mov     a, m
@@ -527,16 +547,17 @@ FSLoop_
                         dcr     c
                         jnz     FSLoop
                 
+                pop     bc
                 pop     de
                 pop     hl
                 inr     d
                 inr     h
                 dcr     b
                 jnz     FSLoop0
-                
+                ; ---------------------------------------------------------------------
                         
-        pop     de
-        pop     hl
+ ;       pop     de
+  ;      pop     hl
 
         xra     a
         out     BANKING         ; Включить ПЗУ
