@@ -307,8 +307,8 @@ WeAreStuck
 
         call    SND_DROP
 
-        call    Annihilate
-        call    DrawCTAKAH      ; доооолго
+;        call    Annihilate
+;        call    DrawCTAKAH      ; доооолго
         
         call    FastShift
         
@@ -508,29 +508,33 @@ CTAKAH_SCREEN_ADDR      equ     SCREEN + (CTAKAH_HORIZONTAL_OFFSET+1)*2*256 + (C
         lxi     hl, CTAKAH_SCREEN_ADDR
         lxi     de, CTAKAH_SCREEN_ADDR + 8
 
+FSLoop_
         push    hl
         push    de
-        mvi     b, 8+1
-
-FSLoop0
-        push    hl
-        push    de
-        mvi     c, (COLS-2)*2   ; сдвигать будем без стенок
         
-        FSLoop
-                mov     a, m
-                stax    d
-                inr     h
-                inr     d
-                dcr     c
-                jnz     FSLoop
+        mvi     b, 8
+
+                FSLoop0
+                push    hl
+                push    de
+                mvi     c, (COLS-1)*2   ; сдвигать будем без стенок
+        
+                        FSLoop
+                        mov     a, m
+                        stax    d
+                        inr     h
+                        inr     d
+                        dcr     c
+                        jnz     FSLoop
                 
-        pop     de
-        pop     hl
-        inx     de
-        inx     hl
-        dcr     b
-        jnz     FSLoop0
+                pop     de
+                pop     hl
+                inx     de
+                inx     hl
+                dcr     b
+                jnz     FSLoop0
+                
+                        
         pop     de
         pop     hl
 
