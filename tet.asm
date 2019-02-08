@@ -559,6 +559,9 @@ FSLoop_
  ;       pop     de
   ;      pop     hl
 
+        call    RestoreTopLine
+
+
         xra     a
         out     BANKING         ; Включить ПЗУ
         ei
@@ -566,6 +569,31 @@ FSLoop_
         pop     de
         pop     hl
         ret
+
+; *******************************************
+; Требуйте долива после отстоя!
+; *******************************************
+RestoreTopLine
+        lxi     hl, CTAKAH_SCREEN_ADDR+9
+        mvi     c, (COLS-2)*2
+        mvi     a, 0aah
+RTL0        
+        mvi     b, 8
+        push    hl
+RTL1
+        mov     m, a
+        rrc
+        inx     hl
+        dcr     b
+        jnz     RTL1
+        
+        pop     hl
+        inr     h
+        dcr     c
+        jnz     RTL0
+        
+        ret
+
 
 ; *******************************************
 ; Повернуть фигуру
