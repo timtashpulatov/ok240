@@ -482,7 +482,8 @@ SqCopy
         pop     bc
         
         call    FastShift
-        
+
+
         jmp     SquishRow       ; снова проверим эту же строку
         
 
@@ -559,7 +560,7 @@ FSLoop_
  ;       pop     de
   ;      pop     hl
 
-        call    RestoreTopLine
+;        call    RestoreTopLine
 
 
         xra     a
@@ -574,6 +575,7 @@ FSLoop_
 ; Требуйте долива после отстоя!
 ; *******************************************
 RestoreTopLine
+
         lxi     hl, CTAKAH_SCREEN_ADDR+9
         mvi     c, (COLS-2)*2
         mvi     a, 0aah
@@ -808,7 +810,20 @@ NextCol
 
         dcr     c
         jnz     NextRow
-        
+     
+; Нарисуем верхний ряд пышной пены, чтобы процедуре быстрого сдвига
+; было откуда черпать
+        mvi     e, 10
+        mvi     b, (CTAKAH_HORIZONTAL_OFFSET+2)*2
+        mvi     c, CTAKAH_VERTICAL_OFFSET*8
+AddTopLine        
+        lxi     hl, CHECKERS 
+        mvi     a, 3
+        call    PaintBitmap
+        inr     b
+        inr     b
+        dcr     e
+        jnz     AddTopLine
         ret
 
 
