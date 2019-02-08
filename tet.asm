@@ -1315,6 +1315,10 @@ G1      equ     779h
 A2      equ     A1/2    ;6a8h
 H2      equ     H1/2
 C2      equ     C1/2
+D2      equ     D1/2
+E2      equ     E1/2
+F2      equ     F1/2
+G2      equ     G1/2
 Pause   equ     4bh
 ; Длительности
 ; A1 H1 C1 D1 E1 F1 G1 A2
@@ -1344,6 +1348,14 @@ Notes
         db      24
         dw      C2
         db      26
+        dw      D2
+        db      28
+        dw      E2
+        db      32
+        dw      F2
+        db      34
+        dw      G2
+        db      28
 
 
 
@@ -1388,6 +1400,9 @@ Tune    db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255
 
 DropTune
         db      3, 0, 5, 0, 7, 255
+        db      5, 0, 7, 0, 10, 255
+        db      7, 0, 10, 0, 12, 255
+        db      10, 0, 12, 0, 15, 255
 
 PlayTune
         lxi     h, Tune
