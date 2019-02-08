@@ -410,6 +410,9 @@ Annihilate
         mvi     c, ROWS - 1
 
 Anni
+        xra     a
+        sta     TuneCount
+
         call    SquishRow
         dcr     c
         jnz     Anni
@@ -442,7 +445,18 @@ SqR1
 
 ; ------  call    SND_CLICK
         push    hl
+        lda     TuneCount
+        inr     a
+        sta     TuneCount
+        dcr     a
+        ral
+        ral
+        ral
+        mov     c, a
+        mvi     b, 0
+
         lxi     h, DropTune
+        dad     b
         call    PT0
         pop     hl
 ; --------------------
@@ -1319,6 +1333,9 @@ D2      equ     D1/2
 E2      equ     E1/2
 F2      equ     F1/2
 G2      equ     G1/2
+A3      equ     A2/2
+H3      equ     H2/3
+C3      equ     C2/2
 Pause   equ     4bh
 ; Длительности
 ; A1 H1 C1 D1 E1 F1 G1 A2
@@ -1355,7 +1372,13 @@ Notes
         dw      F2
         db      34
         dw      G2
-        db      28
+        db      38
+        dw      A3
+        db      44
+        dw      H3
+        db      48
+        dw      C3
+        db      52
 
 
 
@@ -1399,10 +1422,10 @@ PlayNote1
 Tune    db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255
 
 DropTune
-        db      3, 0, 5, 0, 7, 255
-        db      5, 0, 7, 0, 10, 255
-        db      7, 0, 10, 0, 12, 255
-        db      10, 0, 12, 0, 15, 255
+        db      3, 0, 5, 0, 7, 255, 0, 0
+        db      5, 0, 7, 0, 10, 255, 0, 0
+        db      7, 0, 10, 0, 12, 255, 0, 0
+        db      10, 0, 12, 0, 15, 255, 0, 0
 
 PlayTune
         lxi     h, Tune
@@ -1564,6 +1587,8 @@ AnimeFrame      ds      1
 ; Палитра
 FGCOLOR         db      3
 BGCOLOR         db      0
+; Градус тюнза
+TuneCount       db      0
 ; Буфер для распакованной фигуры 4x4
 ;       . . . .
 ;       . . . .
