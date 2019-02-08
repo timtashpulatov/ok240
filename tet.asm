@@ -1387,7 +1387,7 @@ PlayNote1
 Tune    db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 255
 
 DropTune
-        db      3, 5, 7, 255
+        db      3, 0, 5, 0, 7, 255
 
 PlayTune
         lxi     h, Tune
