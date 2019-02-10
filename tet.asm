@@ -302,6 +302,8 @@ MoveFig
         jmp     Begin
 
 WeAreStuck
+        lxi     hl, CTAKAH_BRICK
+        shld    FIG_BMP
         call    PaintPentamino
         call    DrawFigure
 
