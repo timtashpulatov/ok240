@@ -31,6 +31,7 @@ COLS            equ     10 + 2  ; потому что стенки
 SCORE_COORDS    equ     0238h
 SCORE_LINE_XY   equ     0600h + 5*8
 NEXT_LINE_XY    equ     3400h + 5*8
+LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 
         org     100h
@@ -61,6 +62,10 @@ PREVIEW_COORD   equ     020fh
 
         lxi     b, NEXT_LINE_XY
         lxi     h, NEXT_LINE
+        call    PaintHorizontalBitmap
+
+        lxi     b, LEVEL_LINE_XY
+        lxi     h, LEVEL_LINE
         call    PaintHorizontalBitmap
 
         call    PaintScore
@@ -1408,6 +1413,7 @@ PlayNote1
         ; и длительность
         mov     l, m
         mvi     h, 0
+        
         shld    BELL_LEN
         xchg
         shld    BELL_FREQ
@@ -1428,6 +1434,9 @@ DropTune
         db      5, 0, 7, 0, 10, 255, 0, 0
         db      7, 0, 10, 0, 12, 255, 0, 0
         db      10, 0, 12, 0, 14, 255, 0, 0
+
+StickTune
+        db      
 
 PlayTune
         lxi     h, Tune
@@ -1530,6 +1539,9 @@ SCORE_LINE
 NEXT_LINE        
         db      2
         db64    AAAAAAAAAAAAAOcI6SnJAAAAAAAAAAAAAADqAERKigA=
+LEVEL_LINE
+        db      3
+        db64    AAAAAAAAAAAAAHEAcRFmAAAAAAAAAAAAAADpAOklwgAAAAAAAAAAAAAAAgACAgwA
 SCORE_0
         db      0, 0xfe, 82h, 0bah, 0aah, 0bah, 082h, 07eh
         db      0, 0xfe, 82h, 0bah, 0feh, 0feh, 0feh, 07eh
