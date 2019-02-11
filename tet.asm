@@ -29,6 +29,7 @@ CTAKAH_VERTICAL_OFFSET          equ     5
 ROWS            equ     20 + 1  ; потому что дно
 COLS            equ     10 + 2  ; потому что стенки
 SCORE_COORDS    equ     0238h
+LEVEL_COORDS    equ     0258h
 SCORE_LINE_XY   equ     0600h + 5*8
 NEXT_LINE_XY    equ     3400h + 5*8
 LEVEL_LINE_XY   equ     0600h + 9*8
@@ -69,6 +70,7 @@ PREVIEW_COORD   equ     020fh
         call    PaintHorizontalBitmap
 
         call    PaintScore
+        call    PaintLevel
 
 ; пока счет ничейный и все нули давятся, нарисуем искусственный ноль
         lxi     h, SCORE_0
@@ -1103,7 +1105,7 @@ Cls     mvi     m, 0
 ; Вывести счет
 ; *************************************************
 PaintScore
-        push    hl
+        
         push    de
         push    bc
         
@@ -1117,7 +1119,38 @@ PaintScore
         mov     d, a
         mvi     e, 8
         lxi     b, SCORE_COORDS
+        call    PSLoop
+
+PSDone        
+        pop     bc
+        pop     de
+        
+        ret
+
+; *************************************************
+; Вывести уровень
+; *************************************************
+PaintLevel
+        push    de
+        push    bc
+        
+        xra     a
+        sta     SuppressLeadingZeroes
+
+        lda     LEVEL        
+        mov     d, a
+        mvi     e, 8
+        lxi     b, LEVEL_COORDS
+        call    PSLoop
+
+        pop     bc
+        pop     de
+        
+        ret        
+        
 PSLoop
+        push    hl
+PSLoop0        
         lxi     h, SCORE_0      ; а хорошо бы придавить ведущие нули как-то
         lda     SuppressLeadingZeroes
         ora     a
@@ -1141,10 +1174,8 @@ PS0
         inr     b
         
         dcr     e
-        jnz     PSLoop
-PSDone        
-        pop     bc
-        pop     de
+        jnz     PSLoop0
+        
         pop     hl
         ret
 
@@ -1594,6 +1625,8 @@ RNG     db      0
 CountDown       dw      0
 ; Score   (.)(.)
 SCORE   db      0
+; Level
+LEVEL   db      1
 ; Регистров вечно не хватает, а давить ведущие нули в счете хочется
 SuppressLeadingZeroes   db      0
 ; Патч для KDE под FreeBSD
