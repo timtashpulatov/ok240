@@ -51,7 +51,7 @@ PREVIEW_COORD   equ     020fh
         call    InitCTAKAH
         call    InitFigure
 
-        lxi     h, HKCOUNT
+        lhld    SPEED
         shld    CountDown
         xra     a
         sta     SCORE
@@ -214,7 +214,7 @@ HouseKeeping
         ora     h
         jnz     Begin
         
-        lxi     h, HKCOUNT
+        lhld    SPEED
         shld    CountDown
         jmp     CurDown        
 
@@ -251,6 +251,12 @@ TicTac
 ; *******************************************
 
 Drop
+        lhld    SPEED
+        lxi     b, -16
+        dad     b
+    
+        shld    SPEED
+
         call    ErasePentamino
         lhld    FIG_X
 DropAgain        
@@ -1627,6 +1633,8 @@ CountDown       dw      0
 SCORE   db      0
 ; Level
 LEVEL   db      1
+; Стремительность
+SPEED   dw      HKCOUNT
 ; Регистров вечно не хватает, а давить ведущие нули в счете хочется
 SuppressLeadingZeroes   db      0
 ; Патч для KDE под FreeBSD
