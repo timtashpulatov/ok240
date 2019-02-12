@@ -252,7 +252,7 @@ TicTac
 
 Drop
         lhld    SPEED
-        lxi     b, -16
+        lxi     b, -4
         dad     b
     
         shld    SPEED
