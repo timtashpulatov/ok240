@@ -350,7 +350,7 @@ CantMove
 
 
 InitFigure
-        lxi     h, HKCOUNT
+        lhld    SPEED
         shld    CountDown       ; освежить задержку
 
         xra     a
