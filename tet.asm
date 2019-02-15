@@ -34,7 +34,7 @@ SCORE_LINE_XY   equ     0600h + 5*8
 NEXT_LINE_XY    equ     3400h + 5*8
 LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
-HKCOUNT         equ     4000
+HKCOUNT         equ     8000
 
         org     100h
 
