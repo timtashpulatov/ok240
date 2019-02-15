@@ -258,6 +258,11 @@ Drop
     
         shld    SPEED
 
+; Дроп достоин награды
+        lda     SCORE
+        inr     a
+        sta     SCORE
+
         call    ErasePentamino
         lhld    FIG_X
 DropAgain        
@@ -425,13 +430,23 @@ Annihilate
         lxi     hl, CTAKAH + (ROWS - 2)*COLS + 1    ; донышко не трогаем
         mvi     c, ROWS - 1
 
-Anni
         xra     a
         sta     TuneCount
+
+Anni
 
         call    SquishRow
         dcr     c
         jnz     Anni
+
+        lda     Score
+        mov     c, a
+        lda     TuneCount
+        rlc
+        rlc
+        add     c
+        sta     Score
+        
 
         call    PaintScore
 
@@ -464,6 +479,7 @@ SqR1
         lda     TuneCount
         inr     a
         sta     TuneCount
+        
         dcr     a
         ral
         ral
@@ -497,9 +513,9 @@ SqCopy
         jnz     SqCopy
 
         ; Шай-бу!
-        lda     SCORE
-        inr     a
-        sta     SCORE
+;        lda     SCORE
+;        inr     a
+;        sta     SCORE
 
         ; Тут бы устроить рекурсию... или перерисовать стакан
     
