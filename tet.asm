@@ -439,10 +439,11 @@ Anni
         dcr     c
         jnz     Anni
 
+; Начислим бонусы
         lda     Score
         mov     c, a
         lda     TuneCount
-        rlc
+;        rlc
         rlc
         add     c
         sta     Score
