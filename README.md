@@ -12,4 +12,5 @@ Literature:
 <ul>
 <li>https://tetris.fandom.com/wiki/Random_Generator
 <li>https://zx-pk.ru/threads/23100-generator-psevdosluchajnykh-chisel/page5.html
+<li>https://tetris.fandom.com/wiki/Scoring
 </ul>
