@@ -10,8 +10,10 @@
 
         lda     COLOR
         inr     a
-        ani     7
         sta     COLOR
+        
+        ani     3fh
+        
         ori     40h
         
         out     0e1h
@@ -64,13 +66,13 @@ DoPat
         inr     h
         mvi     m, 0
         inr     h
-        mvi     m, 0
-        inr     h
-        mvi     m, 255
-        inr     h
         mvi     m, 255
         inr     h
         mvi     m, 0
+        inr     h
+        mvi     m, 0
+        inr     h
+        mvi     m, 255
         inr     h
         mvi     m, 255
         inr     h
