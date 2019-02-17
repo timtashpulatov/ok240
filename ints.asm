@@ -1,4 +1,8 @@
  	.project okeah
+
+BANKING	equ	0c1h		; регистр управления банками ОЗУ и ПЗУ
+VIDEO	equ	0e1h		; регистр управления цветом и режимами видео
+
 	
 ; Обработчик прерывания от Таймера 0	
 	.org 20h
@@ -8,6 +12,17 @@
 	
 ; Полезная работа	
 
+;        mvi     a, 40h
+;        out     VIDEO
+;        mvi     a, 41h
+;        out     VIDEO
+;        mvi     a, 42h
+;        out     VIDEO
+;        mvi     a, 43h
+;        out     VIDEO
+;        mvi     a, 40h
+;        out     VIDEO;
+
         lda     COLOR
         inr     a
         sta     COLOR
@@ -16,7 +31,9 @@
         
         ori     40h
         
-        out     0e1h
+        out     VIDEO
+        
+        
 	
 NOTYET	
         ei
@@ -27,8 +44,6 @@ COLOR   db      41h
 	
 ;	.org 8000h
 
-BANKING	equ	0c1h		; регистр управления банками ОЗУ и ПЗУ
-VIDEO	equ	0e1h		; регистр управления цветом и режимами видео
 
 
 ; Дождемся кадрового ретрейса
@@ -41,6 +56,17 @@ WaitForVRDone
         in      41h
         ani     2
         jnz     WaitForVRDone
+WaitForVR1
+        in      41h
+        ani     2
+        jz     WaitForVR1
+
+WaitForHR
+        in      41h
+        ani      1
+        jz      WaitForHR
+
+
         
         mvi     a, 36h
         out     63h
@@ -62,22 +88,10 @@ WaitForVRDone
         
 DoPat   
         push    hl
-        mvi     m, 0
-        inr     h
-        mvi     m, 0
-        inr     h
-        mvi     m, 255
-        inr     h
-        mvi     m, 0
-        inr     h
-        mvi     m, 0
-        inr     h
-        mvi     m, 255
-        inr     h
-        mvi     m, 255
-        inr     h
-        mvi     m, 255
-        
+        call    DoPatSub
+        call    DoPatSub        
+        call    DoPatSub        
+        call    DoPatSub        
         pop     hl
         inr     l
         dcr     c
@@ -92,4 +106,24 @@ DoPat
         jmp     .
         
 	jmp	0e003h		; теплый старт "Монитора"
+
+DoPatSub
+        mvi     m, 0
+        inr     h
+        mvi     m, 0
+        inr     h
+        mvi     m, 255
+        inr     h
+        mvi     m, 0
+        inr     h
+        mvi     m, 0
+        inr     h
+        mvi     m, 255
+        inr     h
+        mvi     m, 255
+        inr     h
+        mvi     m, 255
+        inr     h
+
+        ret
 
