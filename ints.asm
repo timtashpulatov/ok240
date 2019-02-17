@@ -5,29 +5,19 @@
 	
 	mvi     a, 20h
 	out     80h
-	ei
 	
 ; Полезная работа	
-	lhld    COUNT
-	inx     h
-	shld    COUNT
-	
-	mov     a,l
-	cpi     2
-	jnz     NOTYET
-	lxi     h, 0
-	shld    COUNT
-	
 
-  lda     COLOR
-  inr     a
-  ani     3
-  sta     COLOR
-  ori     40h
+        lda     COLOR
+        inr     a
+        ani     7
+        sta     COLOR
+        ori     40h
         
-  out     0e1h
+        out     0e1h
 	
 NOTYET	
+        ei
 	ret
 	
 COUNT   dw      0
@@ -41,9 +31,9 @@ VIDEO	equ	0e1h		; регистр управления цветом и режим
 
         mvi     a, 36h
         out     63h
-        mvi     a, 0aah
+        mvi     a, 080h
         out     60h
-        mvi     a, 0eh
+        mvi     a, 01h
         out     60h
 
 ; OCW1
