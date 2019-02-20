@@ -38,7 +38,7 @@ HKCOUNT         equ     8000
 
         org     100h
 
-
+VeryBegin
 ; Чистим экран
         mvi     a, 43h          ; палитра 3: черный, красный, малиновый, белый
         out     VIDEO
@@ -414,10 +414,43 @@ Same
         jz      AllGood
         
         pop     a      ; неиспользованный адрес возврата
-        jmp     WarmBoot
+        call    GameOver
+        jmp     VeryBegin
         
 AllGood   
         call    UpdateRng
+        ret
+
+; *******************************************
+; Удалить полностью заполненные строчки
+; *******************************************
+GameOver
+        lxi     hl, GameOverTune
+        call    PT0
+GOWait        
+        call    KBDSTAT
+        ora     a
+        jz      GO1
+        call    KBDREAD
+GO1
+        lda     FGColor
+        inr     a
+        sta     FGColor
+        ani     7
+        ori     40h
+        out     VIDEO
+        
+        lda     Rng
+        call    UpdateRng
+        
+        ani     0fh
+        call    PlayNote1
+        
+;        call    Dly
+        call    KBDSTAT
+        ora     a
+        jz      GO1
+        
         ret
 
 ; *******************************************
@@ -1489,6 +1522,9 @@ DropTune
         db      5, 0, 7, 0, 10, 255, 0, 0
         db      7, 0, 10, 0, 12, 255, 0, 0
         db      10, 0, 12, 0, 14, 255, 0, 0
+
+GameOverTune
+        db      7, 0, 7, 0, 7, 0, 3, 3, 3, 3, 3, 3, 3, 3, 255
 
 StickTune
         db      
