@@ -1227,48 +1227,12 @@ PS0
         pop     hl
         ret
 
-
-; *************************************************
-; BuildTheWall
-; *************************************************
-BuildTheWall
-        lxi     h, WALL
-BTW        
-        mov     a, m
-        cpi     0ffh
-        jz      WallDone
-        
-        ora     a
-        ral
-        ral
-        ral
-        mov     c, a
-        inx     h
-        mov     a, m
-        ral
-        mov     b, a
-        inx     h
-        call    LayBrick
-        jmp     BTW
-WallDone        
-        ret
-
-LayBrick
-        push    h
-        lxi     h, COOLBRICK
-        mvi     a, 1
-        call    PaintBitmap
-        pop     h
-        ret
-
 ; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
 ResetScroll
         xra     a
         out     SCROLL_V
         out     SCROLL_VH
         ret
-
-
 
 
 ; *************************************************
@@ -1645,14 +1609,6 @@ COOLBRICK
 
 BALL    db      4eh, 0c7h, 8bh, 0c5h, 83h, 0c0h, 0abh, 7eh
         db      34h, 17h, 2bh, 15h, 2bh, 15h, 0, 0
-
-WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
-        db      9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9, 9
-        db      0, 9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9
-        db      0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8
-        db      0ffh, 0ffh
-        
-
 
 BmpPtr dw      0
 
