@@ -191,17 +191,6 @@ BEEP
         mvi     c, 7
         jmp     CHAROUT
         
-;********************************************
-; Сыграть ноту
-;********************************************
-PlayNote
-        shld    BELL_FREQ
-        xchg
-        shld    BELL_LEN
-        mvi     c, 7
-;        jmp     CHAROUT
-        ret
-
 
 ; *******************************************
 HouseKeeping
@@ -281,11 +270,6 @@ CurDown
 
 
 CurLeft
-        lxi     h, C1
-        lxi     d, 13
-        call    PlayNote
-
-
         lhld    FIG_X
         mov     a, l
         ora     a
@@ -295,21 +279,12 @@ CurLeft
         jmp     Begin
 
 CurRight
-        lxi     h, E1
-        lxi     d, 16
-        call    PlayNote
-
         lhld    FIG_X
         inr     l
         call    MoveFigure
         jmp     Begin
 
 CurUp
-
-        lxi     h, D1
-        lxi     d, 14
-        call    PlayNote
-
         call    Rotate
         jmp     Begin
 
@@ -904,6 +879,22 @@ AddTopLine
         inr     b
         dcr     e
         jnz     AddTopLine
+
+; Нарастить стенки стакана, чтобы пена не выплескивалась
+        mvi     b, (CTAKAH_HORIZONTAL_OFFSET+2)*2 - 2
+        mvi     c, CTAKAH_VERTICAL_OFFSET*8
+        lxi     hl, ANOTHER_BRICK
+        mvi     a, 3
+        call    PaintBitmap
+
+        mvi     b, (CTAKAH_HORIZONTAL_OFFSET+COLS)*2
+        mvi     c, CTAKAH_VERTICAL_OFFSET*8
+        lxi     hl, ANOTHER_BRICK
+        mvi     a, 3
+        call    PaintBitmap
+
+
+
         ret
 
 
