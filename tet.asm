@@ -17,8 +17,8 @@ KBDSTAT         equ     0e006h
 KBDREAD         equ     0e009h
 CHAROUT         equ     0e00ch  ; вывести символ из регистра C
 
-Row             equ     CurPos
-Col             equ     CurPos+1
+;Row             equ     CurPos
+;Col             equ     CurPos+1
 
 CURSYS          equ     0bfedh
 BELL_FREQ       equ     0bff4h
