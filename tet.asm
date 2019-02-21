@@ -454,13 +454,13 @@ Anni
         lda     Score
         mov     c, a
         lda     TuneCount
-        ral
-        ral
+        rlc
         add     c
         sta     Score
         jnc     Anni1
         
-        xra     a
+; Сыграем туш        
+        mvi     a, 1
         sta     Score
         lda     LEVEL
         inr     a
