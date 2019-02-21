@@ -454,13 +454,21 @@ Anni
         lda     Score
         mov     c, a
         lda     TuneCount
-;        rlc
-        rlc
+        ral
+        ral
         add     c
         sta     Score
+        jnc     Anni1
         
-
+        xra     a
+        sta     Score
+        lda     LEVEL
+        inr     a
+        sta     LEVEL
+        
+Anni1
         call    PaintScore
+        call    PaintLevel
 
         ret
 
