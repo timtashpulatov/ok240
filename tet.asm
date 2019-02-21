@@ -1402,20 +1402,28 @@ NewPlayNote
         
         lxi     hl, NoteDivisors
         ani     0fh     ; выделить номер ноты
-        ral             ; умножить номер на 2, чтобы использовать как индекс в таблице делителей
         mov     c, a
         mvi     b, 0
+        dad     b       ; умножить номер на 2, чтобы использовать как индекс в таблице делителей
         dad     b       ; получили указатель на нужный делитель в HL
-        
+
         mov     e, m
         inx     hl
         mov     d, m    ; загрузили делитель в DE
         
-        dcr     c
         lxi     hl, NoteDurations
         dad     b
         mov     l, m    ; загрузили длительность в L
         mvi     h, 0    ;
+ 
+        ;jmp     NPN1       
+        
+;        shld    1000h
+;        xchg
+;        shld    1002h
+        
+;        pop     psw
+;        jmp     0e003h
         
         ora     a       ; проверим на паузу, чтобы не возиться зря с октавой
         jz      NPN1
@@ -1429,6 +1437,7 @@ NewPlayNote
         rar
         ani     0fh
         mov     c, a
+ 
         
 ; Теперь магия: номер октавы - это счетчик. Длительности складываем, делители пополамим
 IterateOctave
@@ -1449,12 +1458,14 @@ IterateOctave
         jmp     IterateOctave
         
 NPN1        
-; К этому моменту у нас с HL частота писка (делитель), в DE длительность
+; К этому моменту у нас в DE частота писка (делитель), в HL длительность
+
+        dad     hl
 
         
-        shld    BELL_FREQ
-        xchg
         shld    BELL_LEN
+        xchg
+        shld    BELL_FREQ
         mvi     c, 7
         call    CHAROUT
 
@@ -1463,8 +1474,25 @@ NPN1
 
 
 NewNoteTest
+        mvi     a, 01h
+        call    NewPlayNote
         mvi     a, 11h
         call    NewPlayNote
+        mvi     a, 21h
+        call    NewPlayNote
+        mvi     a, 31h
+        call    NewPlayNote
+        mvi     a, 05h
+        call    NewPlayNote
+        mvi     a, 06h
+        call    NewPlayNote
+        mvi     a, 07h
+        call    NewPlayNote
+        mvi     a, 08h
+        call    NewPlayNote
+        
+        jmp     NewNoteTest
+        
         ret
 
 ; КОНЕЦ НОВОЙ МУЗЫКАЛЬНОЙ СИСТЕМЫ
