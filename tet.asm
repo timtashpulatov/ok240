@@ -38,7 +38,7 @@ HKCOUNT         equ     8000
 
         org     100h
 
-        call    NewNoteTest
+    ;    call    NewNoteTest
 
 
 VeryBegin
@@ -1416,15 +1416,6 @@ NewPlayNote
         mov     l, m    ; загрузили длительность в L
         mvi     h, 0    ;
  
-        ;jmp     NPN1       
-        
-;        shld    1000h
-;        xchg
-;        shld    1002h
-        
-;        pop     psw
-;        jmp     0e003h
-        
         ora     a       ; проверим на паузу, чтобы не возиться зря с октавой
         jz      NPN1
         
