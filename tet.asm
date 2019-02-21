@@ -38,6 +38,9 @@ HKCOUNT         equ     8000
 
         org     100h
 
+        call    NewNoteTest
+
+
 VeryBegin
 ; Чистим экран
         mvi     a, 43h          ; палитра 3: черный, красный, малиновый, белый
@@ -1399,6 +1402,7 @@ NewPlayNote
         
         lxi     hl, NoteDivisors
         ani     0fh     ; выделить номер ноты
+        ral             ; умножить номер на 2, чтобы использовать как индекс в таблице делителей
         mov     c, a
         mvi     b, 0
         dad     b       ; получили указатель на нужный делитель в HL
@@ -1407,6 +1411,7 @@ NewPlayNote
         inx     hl
         mov     d, m    ; загрузили делитель в DE
         
+        dcr     c
         lxi     hl, NoteDurations
         dad     b
         mov     l, m    ; загрузили длительность в L
@@ -1418,10 +1423,10 @@ NewPlayNote
         pop     psw     ; снова примемся за ноту
         push    psw
         
-        ral             ; выделим номер октавы
-        ral
-        ral
-        ral
+        rar             ; выделим номер октавы
+        rar
+        rar
+        rar
         ani     0fh
         mov     c, a
         
@@ -1440,11 +1445,26 @@ IterateOctave
         rar
         mov     e, a
         
+        dcr     c
         jmp     IterateOctave
         
 NPN1        
+; К этому моменту у нас с HL частота писка (делитель), в DE длительность
+
         
+        shld    BELL_FREQ
+        xchg
+        shld    BELL_LEN
+        mvi     c, 7
+        call    CHAROUT
+
         pop     psw
+        ret
+
+
+NewNoteTest
+        mvi     a, 11h
+        call    NewPlayNote
         ret
 
 ; КОНЕЦ НОВОЙ МУЗЫКАЛЬНОЙ СИСТЕМЫ
