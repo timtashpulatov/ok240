@@ -466,6 +466,10 @@ Anni
         inr     a
         sta     LEVEL
         
+        lxi     hl, LevelUpTune
+        call    PT0
+        
+        
 Anni1
         call    PaintScore
         call    PaintLevel
@@ -1612,6 +1616,9 @@ DropTune
 GameOverTune
         db      7, 0, 7, 0, 7, 0, 3, 3, 3, 3, 3, 3, 3, 3, 255
 
+LevelUpTune
+        db      3, 10, 3, 10, 30, 10, 30, 10, 255
+        
 StickTune
         db      
 
