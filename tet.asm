@@ -1405,13 +1405,29 @@ NewPlayNote
         
         mov     e, m
         inx     hl
-        mov     d, m    ; делитель в DE
+        mov     d, m    ; загрузили делитель в DE
         
         lxi     hl, NoteDurations
         dad     b
-        mov     l, m    ; длительность в L
+        mov     l, m    ; загрузили длительность в L
+        mvi     h, 0    ;
         
-        ora     a       ; проверим на паузу
+        ora     a       ; проверим на паузу, чтобы не возиться зря с октавой
+        jz      NPN1
+        
+        pop     psw     ; снова примемся за ноту
+        push    psw
+        
+        ral             ; выделим номер октавы
+        ral
+        ral
+        ral
+        ani     0fh
+        
+; Теперь магия: номер октавы - это счетчик. Длительности складываем, делители пополамим
+
+        
+NPN1        
         
         pop     psw
         ret
