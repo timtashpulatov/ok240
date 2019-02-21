@@ -17,8 +17,8 @@ KBDSTAT         equ     0e006h
 KBDREAD         equ     0e009h
 CHAROUT         equ     0e00ch  ; вывести символ из регистра C
 
-;Row             equ     CurPos
-;Col             equ     CurPos+1
+Row             equ     CurPos
+Col             equ     CurPos+1
 
 CURSYS          equ     0bfedh
 BELL_FREQ       equ     0bff4h
@@ -397,7 +397,7 @@ AllGood
         ret
 
 ; *******************************************
-; Конец игры
+; Удалить полностью заполненные строчки
 ; *******************************************
 GameOver
         lxi     hl, GameOverTune
@@ -1423,9 +1423,24 @@ NewPlayNote
         ral
         ral
         ani     0fh
+        mov     c, a
         
 ; Теперь магия: номер октавы - это счетчик. Длительности складываем, делители пополамим
-
+IterateOctave
+        xra     a
+        ora     c
+        jz      NPN1
+        
+        dad     hl      ; удвоим длительность
+        
+        mov     a, d
+        rar
+        mov     d, a
+        mov     a, e
+        rar
+        mov     e, a
+        
+        jmp     IterateOctave
         
 NPN1        
         
