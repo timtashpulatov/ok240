@@ -456,10 +456,14 @@ Anni
         jnz     Anni
 
 ; Начислим бонусы
+; А лучше за каждый убранный слой начислять по прогрессивной схеме 1-2-4-8
         lda     Score
         mov     c, a
         lda     TuneCount
-        rlc
+        ral
+        ral
+;        ral
+        
         add     c
         sta     Score
         jnc     Anni1
