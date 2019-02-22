@@ -220,7 +220,7 @@ HouseKeeping
 ; *******************************************
 UpdateScore
         lda     SCORE
-        inr     a
+        adi     1
         sta     SCORE
         ret
 
@@ -229,7 +229,8 @@ UpdateScore
 ; Если флаг переноса Carry установлен, то поздравляем
 ; *******************************************
 UpgradeLevel
-        jc      ULDone
+        jnc      ULDone
+        
         mvi     c, 8
 LuLoop
         lda     Score
