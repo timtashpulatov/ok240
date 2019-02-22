@@ -60,8 +60,6 @@ VeryBegin
         shld    CountDown
         xra     a
         
-        mvi a, 0f0h
-        
         sta     SCORE
 
 ; Надпись "ЩЁТ"
@@ -474,8 +472,22 @@ Anni
         
 ; Сыграем туш        
 LevelUpgradeFun
+
+        mvi     c, 8
+LuLoop  lda     Score
+        rar
+        sta     Score
+
+        call    PaintScore
+        lxi     hl, LevelUpTune
+        call    PT0
+
+        dcr     c
+        jnz     LuLoop
+
         mvi     a, 1
         sta     Score
+
         lda     LEVEL
         inr     a
         sta     LEVEL
