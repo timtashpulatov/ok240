@@ -59,6 +59,9 @@ VeryBegin
         shld    SPEED
         shld    CountDown
         xra     a
+        
+        mvi a, 0f0h
+        
         sta     SCORE
 
 ; Надпись "ЩЁТ"
@@ -465,10 +468,12 @@ Anni
 ;        ral
         
         add     c
+        jc      LevelUpgradeFun
         sta     Score
-        jnc     Anni1
+        jmp     Anni1
         
 ; Сыграем туш        
+LevelUpgradeFun
         mvi     a, 1
         sta     Score
         lda     LEVEL
