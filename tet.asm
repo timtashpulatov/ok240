@@ -289,6 +289,11 @@ CurRight
 
 CurUp
         call    Rotate
+        
+;        lxi     hl, LevelUpTune
+;        call    PT0
+        
+        
         jmp     Begin
 
 MoveFig
@@ -1617,7 +1622,7 @@ GameOverTune
         db      7, 0, 7, 0, 7, 0, 3, 3, 3, 3, 3, 3, 3, 3, 255
 
 LevelUpTune
-        db      3, 10, 3, 10, 30, 10, 30, 10, 255
+        db      3, 10, 3, 10, 3, 10, 3, 10, 255
         
 StickTune
         db      
