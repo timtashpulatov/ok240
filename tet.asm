@@ -59,6 +59,7 @@ VeryBegin
         shld    SPEED
         shld    CountDown
         xra     a
+mvi a, 0xf0
         sta     SCORE
         inr     a
         sta     LEVEL
@@ -213,6 +214,47 @@ HouseKeeping
         shld    CountDown
         jmp     CurDown        
 
+
+; *******************************************
+; UpdateScore
+; *******************************************
+UpdateScore
+        lda     SCORE
+        inr     a
+        sta     SCORE
+        ret
+
+; *******************************************
+; UpgradeLevel
+; Если флаг переноса Carry установлен, то поздравляем
+; *******************************************
+UpgradeLevel
+        jc      ULDone
+        mvi     c, 8
+LuLoop
+        lda     Score
+        rar
+        sta     Score
+
+        call    PaintScore
+        lxi     hl, LevelUpTune
+        call    PT0
+
+        dcr     c
+        jnz     LuLoop
+
+        mvi     a, 1
+        sta     Score
+
+        lda     LEVEL
+        inr     a
+        sta     LEVEL
+        
+        lxi     hl, LevelUpTune
+        call    PT0
+ULDone
+        ret
+
 ; *******************************************
 ; Алгоритм бессовестно попячен тут:
 ; https://zx-pk.ru/threads/23100-generator-psevdosluchajnykh-chisel.html?p=705136&viewfull=1#post705136
@@ -253,10 +295,8 @@ Drop
         shld    SPEED
 
 ; Дроп достоин награды
-        lda     SCORE
-        inr     a
-        sta     SCORE
-
+        call    UpdateScore
+        call    UpgradeLevel
         call    ErasePentamino
         lhld    FIG_X
 DropAgain        
@@ -471,33 +511,11 @@ Anni
         jc      LevelUpgradeFun
         sta     Score
         jmp     Anni1
-        
-; Сыграем туш        
+
+; Сыграем туш
 LevelUpgradeFun
+        call    UpgradeLevel
 
-        mvi     c, 8
-LuLoop  lda     Score
-        rar
-        sta     Score
-
-        call    PaintScore
-        lxi     hl, LevelUpTune
-        call    PT0
-
-        dcr     c
-        jnz     LuLoop
-
-        mvi     a, 1
-        sta     Score
-
-        lda     LEVEL
-        inr     a
-        sta     LEVEL
-        
-        lxi     hl, LevelUpTune
-        call    PT0
-        
-        
 Anni1
         call    PaintScore
         call    PaintLevel
