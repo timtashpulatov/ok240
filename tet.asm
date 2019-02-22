@@ -59,8 +59,9 @@ VeryBegin
         shld    SPEED
         shld    CountDown
         xra     a
-        
         sta     SCORE
+        inr     a
+        sta     LEVEL
 
 ; Надпись "ЩЁТ"
         lxi     b, SCORE_LINE_XY
@@ -461,6 +462,7 @@ Anni
         lda     Score
         mov     c, a
         lda     TuneCount
+        ora     a       ; сбросить Carry, if any
         ral
         ral
 ;        ral
