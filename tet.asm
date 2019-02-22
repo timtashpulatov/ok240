@@ -59,9 +59,9 @@ VeryBegin
         shld    SPEED
         shld    CountDown
         xra     a
-mvi a, 0xf0
+;mvi a, 0xf0
         sta     SCORE
-        inr     a
+        mvi     a, 1
         sta     LEVEL
 
 ; Надпись "ЩЁТ"
