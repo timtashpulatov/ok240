@@ -167,11 +167,19 @@ KeyFunctions
         dw      CycleForeColor
         db      'B'
         dw      CycleBackColor
+        db      'T'
+        dw      Test
         
         db      1bh
         dw      WARMBOOT
         db      0
         dw      0
+
+; *******************************************
+Test
+        lxi     hl, LevelUpTune
+        call    PT0
+        jmp     Begin
 
 ; *******************************************
 ; Звук
@@ -506,7 +514,7 @@ Anni
         ora     a       ; сбросить Carry, if any
         ral
         ral
-;        ral
+        ral
         
         add     c
         jc      LevelUpgradeFun
@@ -1664,7 +1672,7 @@ GameOverTune
         db      7, 0, 7, 0, 7, 0, 3, 3, 3, 3, 3, 3, 3, 3, 255
 
 LevelUpTune
-        db      3, 10, 3, 10, 3, 10, 3, 10, 255
+        db      3, 0, 7, 0, 7, 0, 255
         
 StickTune
         db      
