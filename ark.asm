@@ -43,7 +43,7 @@ HKCOUNT         equ     8000
 
 VeryBegin
 ; Чистим экран
-        mvi     a, 41h          ; палитра 1: черный, красный, зеленый, синий
+        mvi     a, 40h          ; палитра 1: черный, красный, зеленый, синий
         ;mvi     a, 43h          ; палитра 3: черный, красный, малиновый, белый
         out     VIDEO
         call    ResetScroll
@@ -66,7 +66,62 @@ VeryBegin
         sta     LEVEL
 
 
+; Кирпич 1
+        lxi     bc, 0a0ah
+        lxi     hl, BRICK1
+        mvi     a, 3
+        call    PaintBitmap
 
+        lxi     bc, 0c0ah
+        lxi     hl, BRICK1+16
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 0e0ah
+        lxi     hl, BRICK1
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 100ah
+        lxi     hl, BRICK1+16
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 120ah
+        lxi     hl, BRICK1
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 140ah
+        lxi     hl, BRICK1+16
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 0e12h
+        lxi     hl, BRICK2
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 1012h
+        lxi     hl, BRICK2+16
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 1212h
+        lxi     hl, BRICK2
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     bc, 1412h
+        lxi     hl, BRICK2+16
+        mvi     a, 3
+        call    PaintBitmap
+
+
+        lxi     bc, 1818h
+        lxi     hl, BALL
+        mvi     a, 3
+        call    PaintBitmap
 
 ; *********************************************************************
 ; Main, как говорится, Loop
@@ -409,6 +464,16 @@ PHLoop
 ; *************************************************
 ; Битмапчики
 ; *************************************************
+
+BRICK1  db      0, 54h, 0aah, 54h, 0aah, 54h, 0aah, 0
+        db      255, 255, 255, 255, 255, 255, 255, 0
+        db      0, 55h, 2ah, 55h, 2ah, 55h, 2ah, 0
+        db      7fh, 7fh, 7fh, 7fh, 7fh, 7fh, 7fh, 0
+
+BRICK2  db      0, 0aah, 54h, 0aah, 54h, 0aah, 54h, 0
+        db      0feh, 55h, 0abh, 55h, 0abh, 55h, 0aah, 0
+        db      0, 2ah, 55h, 2ah, 55h, 2ah, 15h, 0
+        db      3fh, 55h, 2ah, 55h, 2ah, 55h, 2ah, 0
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
