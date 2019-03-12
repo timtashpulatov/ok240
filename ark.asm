@@ -49,7 +49,7 @@ VeryBegin
         call    ResetScroll
         call    ClearScreen
 
-        call    PlayTune
+
 
 
 ; Инициализация важных и нужных переменных
@@ -147,7 +147,8 @@ CurUp
 
         jmp     Begin
 
-
+HouseKeeping
+        jmp     Begin
 
 
 
@@ -477,20 +478,9 @@ BALL    db      4eh, 0c7h, 8bh, 0c5h, 83h, 0c0h, 0abh, 7eh
 
 BmpPtr dw      0
 
-; ТЕТРИСОВЫЯ ПЕРЕМЕННЫЯ
 
-; Координаты текущей фигуры
-FIG_X   db      4
-FIG_Y   db      0
 
-; Указатель на массив фаз фигуры
-FIG_PTR         dw      FIG_1
-; Указатель на следующую фигуру
-NEXTFIG_PTR     dw      FIG_1
-; Фаза текущей фигуры (0-3)
-FIG_PHA         db      0
-; Адрес битмапа, которым выводим фигуру (для рисования и стирания)
-FIG_BMP         dw      PENTABRICK
+
 ; Псевдослучайность
 RNG     db      0
 ; Обратный отсчет для хаускипера
@@ -510,6 +500,7 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
-
+; Игровое поле
+GAMEFIELD  equ     .
         
   
