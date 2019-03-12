@@ -538,8 +538,8 @@ COOLBRICK
         
         db      0, 0, 0, 0, 0, 0, 0, 0
 
-BALL    db      4eh, 0c7h, 8bh, 0c5h, 83h, 0c0h, 0abh, 7eh
-        db      34h, 17h, 2bh, 15h, 2bh, 15h, 0, 0
+BALL    db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 18h, 2ch, 52h, 4ah, 34h, 18h, 0
 
 BmpPtr dw      0
 
