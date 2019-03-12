@@ -198,16 +198,18 @@ Loo     mvi     m, 0
         jmp     Begin
 
 CycleForeColor
-        in      VIDEO
+        lda     FORECOLOR
         inr     a
         ani     7
+        sta     FORECOLOR
         ori     40h
         out     VIDEO
         jmp     Begin   ; неэкономно. C9 наше всё
 CycleBackColor
-        in      VIDEO
+        lda     BACKCOLOR
         adi     8
         ani     3fh
+        sta     BACKCOLOR
         ori     40h
         out     VIDEO
         jmp     Begin
@@ -837,6 +839,9 @@ INV     db      0
 CurPos  dw      0
 
 BmpPtr dw      0
+
+FORECOLOR       db      0
+BACKCOLOR       db      0
 
 ; Клипборд
 CLIPBOARD       equ     .
