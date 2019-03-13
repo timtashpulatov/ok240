@@ -67,45 +67,26 @@ VeryBegin
 
 
 ; Кирпич 1
-        lxi     bc, 0a0ah
+        lxi     bc, 0400h
         lxi     hl, BRICK1
         call    PaintBrick
 
-        lxi     bc, 0e0ah
+        lxi     bc, 0808h
         lxi     hl, BRICK1
         call    PaintBrick
 
-
-        lxi     bc, 120ah
+        lxi     bc, 0c08h
         lxi     hl, BRICK1
-        mvi     a, 3
-        call    PaintBitmap
+        call    PaintBrick
 
-        lxi     bc, 140ah
-        lxi     hl, BRICK1+16
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     bc, 0e12h
+        lxi     bc, 1010h
         lxi     hl, BRICK2
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     bc, 1012h
-        lxi     hl, BRICK2+16
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     bc, 1212h
+        call    PaintBrick
+        
+        lxi     bc, 1410h
         lxi     hl, BRICK2
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     bc, 1412h
-        lxi     hl, BRICK2+16
-        mvi     a, 3
-        call    PaintBitmap
-
+        call    PaintBrick
+        
         call    PaintBall
 
 
