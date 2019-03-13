@@ -69,23 +69,12 @@ VeryBegin
 ; Кирпич 1
         lxi     bc, 0a0ah
         lxi     hl, BRICK1
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     bc, 0c0ah
-        lxi     hl, BRICK1+16
-        mvi     a, 3
-        call    PaintBitmap
+        call    PaintBrick
 
         lxi     bc, 0e0ah
         lxi     hl, BRICK1
-        mvi     a, 3
-        call    PaintBitmap
+        call    PaintBrick
 
-        lxi     bc, 100ah
-        lxi     hl, BRICK1+16
-        mvi     a, 3
-        call    PaintBitmap
 
         lxi     bc, 120ah
         lxi     hl, BRICK1
@@ -208,6 +197,27 @@ HouseKeeping
         call    PaintBall
         jmp     Begin
 
+
+; *******************************************
+; PaintBrick
+; *******************************************
+PaintBrick
+        push    hl
+        push    bc
+        mvi     a, 3
+        call    PaintBitmap
+
+        pop     bc
+        inr     b
+        inr     b
+        lxi     hl, 16
+        pop     de
+        dad     d
+
+        mvi     a, 3
+        call    PaintBitmap
+
+        ret
 
 ; *******************************************
 ; PaintBall
