@@ -200,7 +200,7 @@ CurUp
         jmp     Begin
 
 HouseKeeping
-;        call    Delay
+        call    Dly
         lhld    BallCoords
         inr     h
         shld    BallCoords
@@ -214,8 +214,8 @@ HouseKeeping
 PaintBall
         ;lxi     bc, 0000        ; 1818h
         lhld    BallCoords
-        mov     h, b
-        mov     l, c
+        mov     b, h
+        mov     c, l
         lxi     hl, BALL
         mvi     a, 3
         call    PaintBitmap
@@ -582,6 +582,12 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
 ; Игровое поле
+;           1111111111222222222233
+; 01234567890123456789012345678901
+; ................................
+; ....112233445566778899aabbcc....
+; ................................
+;
 GAMEFIELD  equ     .
         
   
