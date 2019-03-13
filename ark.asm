@@ -117,11 +117,8 @@ VeryBegin
         mvi     a, 3
         call    PaintBitmap
 
+        call    PaintBall
 
-        lxi     bc, 1818h
-        lxi     hl, BALL
-        mvi     a, 3
-        call    PaintBitmap
 
 ; *********************************************************************
 ; Main, как говорится, Loop
@@ -203,9 +200,27 @@ CurUp
         jmp     Begin
 
 HouseKeeping
+;        call    Delay
+        lhld    BallCoords
+        inr     h
+        shld    BallCoords
+        call    PaintBall
         jmp     Begin
 
 
+; *******************************************
+; PaintBall
+; *******************************************
+PaintBall
+        ;lxi     bc, 0000        ; 1818h
+        lhld    BallCoords
+        mov     h, b
+        mov     l, c
+        lxi     hl, BALL
+        mvi     a, 3
+        call    PaintBitmap
+
+        ret
 
 ; *******************************************
 ; *******************************************
@@ -541,21 +556,22 @@ COOLBRICK
 BALL    db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 18h, 2ch, 52h, 4ah, 34h, 18h, 0
 
-BmpPtr dw      0
 
+BmpPtr          dw      0
 
-
+; Координаты мячика
+BallCoords      dw      0
 
 ; Псевдослучайность
-RNG     db      0
+RNG             db      0
 ; Обратный отсчет для хаускипера
 CountDown       dw      0
 ; Score   (.)(.)
-SCORE   db      0
+SCORE           db      0
 ; Level
-LEVEL   db      1
+LEVEL           db      1
 ; Стремительность
-SPEED   dw      HKCOUNT
+SPEED           dw      HKCOUNT
 ; Регистров вечно не хватает, а давить ведущие нули в счете хочется
 SuppressLeadingZeroes   db      0
 ; Патч для KDE под FreeBSD
