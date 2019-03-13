@@ -201,8 +201,9 @@ CurUp
 
 HouseKeeping
         call    Dly
+        call    EraseBall
         lhld    BallCoords
-        inr     h
+        inr     l
         shld    BallCoords
         call    PaintBall
         jmp     Begin
@@ -219,8 +220,21 @@ PaintBall
         lxi     hl, BALL
         mvi     a, 3
         call    PaintBitmap
-
         ret
+
+; *******************************************
+; EraseBall
+; *******************************************
+EraseBall
+        lhld    BallCoords
+        mov     b, h
+        mov     c, l
+        lxi     hl, BITMAP0
+        mvi     a, 3
+        call    PaintBitmap
+        ret
+        ret
+
 
 ; *******************************************
 ; *******************************************
