@@ -17,9 +17,6 @@ KBDSTAT         equ     0e006h
 KBDREAD         equ     0e009h
 CHAROUT         equ     0e00ch  ; вывести символ из регистра C
 
-Row             equ     CurPos
-Col             equ     CurPos+1
-
 CURSYS          equ     0bfedh
 BELL_FREQ       equ     0bff4h
 BELL_LEN        equ     0bff6h
@@ -58,8 +55,10 @@ VeryBegin
         shld    SPEED
         shld    CountDown
         xra     a
-
         sta     SCORE
+        sta     X
+        sta     Y
+        
         mvi     a, 1
         sta     LEVEL
 
@@ -184,17 +183,46 @@ HouseKeeping
 DrawLevel
         mvi     b, HEIGHT
         mvi     c, WIDTH
+      
+        mvi     e, 35
+DLLoop
+        lhld    X
+        mov     b, l
+        mov     c, h
+
+        mov     a, e
+        mvi     a, 1
         
-        mvi     a, 0
-        lxi     bc, 1800h
+;        lxi     bc, 1800h
         call    PaintBrick1
+
+        lda     X
+        adi     4
+        sta     X
+        mov     b, a
+        cpi     60
+        jnz     DDL0
+        xra     a
+        sta     X
+        lda     Y
+        adi     8
+        sta     Y
+        mov     c, a
+DDL0
+
+
+        dcr     e
+        jnz     DLLoop
         
         ret
+        
+
 ; *************************************************
 ; Отложить кирпич
 ; A - номер кирпича (0 - пусто и т.д.)
 ; *************************************************
 PaintBrick1
+        push    de
         rrc             ; кирпич весит 32 байта
         rrc    
         rrc
@@ -205,6 +233,7 @@ PaintBrick1
         dad     d
         
         call    PaintBrick
+        pop     de
         ret
 
 
@@ -605,6 +634,9 @@ LEVEL_1_END
 ; *********************************************************************
 ; Переменные
 ; *********************************************************************
+
+X             db      0
+Y             db      0
 
 BmpPtr          dw      0
 
