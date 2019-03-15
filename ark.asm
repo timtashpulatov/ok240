@@ -226,9 +226,14 @@ PaintBrick1
         rrc             ; кирпич весит 32 байта
         rrc    
         rrc
+        mov     d, a
         ani     0e0h
         mov     e, a
-        mvi     d, 0
+        
+        mov     a, d
+        ani     1fh
+        mov     d, a
+;        mvi     d, 0
         lxi     hl, BRICK0
         dad     d
         
