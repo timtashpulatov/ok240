@@ -194,9 +194,6 @@ DLLoop
         mov     b, l
         mov     c, h
 
-        mov     a, e
-;        mvi     a, 1
-        
 ;        lxi     bc, 1800h
         call    PaintBrick1
 
