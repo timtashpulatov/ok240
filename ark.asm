@@ -184,8 +184,12 @@ DrawLevel
         mvi     b, HEIGHT
         mvi     c, WIDTH
       
-        mvi     e, 35
+        mvi     e, 254
+        lxi     hl, LEVEL_1
 DLLoop
+        mov     a, m
+        inx     hl
+        push    hl
         lhld    X
         mov     b, l
         mov     c, h
@@ -200,7 +204,7 @@ DLLoop
         adi     4
         sta     X
         mov     b, a
-        cpi     60
+        cpi     64
         jnz     DDL0
         xra     a
         sta     X
@@ -209,8 +213,7 @@ DLLoop
         sta     Y
         mov     c, a
 DDL0
-
-
+        pop     hl
         dcr     e
         jnz     DLLoop
         
@@ -642,7 +645,9 @@ BALL    db      0, 0, 0, 0, 0, 0, 0, 0
 ; 00 - пустое место
 ; *********************************************************************
 
-LEVEL_1 db      1,      2,      3,      4,      5,      6,      7,      8
+LEVEL_1 db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15
+        db      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+        db      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 LEVEL_1_END
         ds      WIDTH*HEIGHT
         
