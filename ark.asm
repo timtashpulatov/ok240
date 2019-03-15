@@ -87,6 +87,10 @@ VeryBegin
         call    PaintBall
 
         call    DrawLevel
+        
+        lxi     hl, BATTY
+        lxi     bc, 18f0h
+        call    PaintHorizontalBitmap
 
 
 ; *********************************************************************
