@@ -589,6 +589,12 @@ BRICK2  db      0, 0aah, 54h, 0aah, 54h, 0aah, 54h, 0
         db      0, 2ah, 55h, 2ah, 55h, 2ah, 15h, 0
         db      3fh, 55h, 2ah, 55h, 2ah, 55h, 2ah, 0
 
+BRICK3  db      0ffh, 55h, 0abh, 55h, 0abh, 55h, 0abh, 0
+	ds      8
+	db      7fh, 55h, 2ah, 55h, 2ah, 55h, 2ah, 0
+	ds      8
+
+
 BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
@@ -644,6 +650,11 @@ SCORE_1
 
 BALL    db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 18h, 2ch, 52h, 4ah, 34h, 18h, 0
+
+; Дубина
+BATTY   db      3
+	db64    /AIBBQWpAvwAAAAAAAAAAAD/AAAA/wD/AAAAAAAAAAAAAP+AgEAgHwAAAAAAAAAA
+
 
 
 
