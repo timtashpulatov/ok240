@@ -62,6 +62,9 @@ VeryBegin
         mvi     a, 1
         sta     LEVEL
 
+        mvi     a, 10
+        sta     BattyPos
+
 
 ; Кирпич 1
         lxi     bc, 0400h
@@ -87,10 +90,8 @@ VeryBegin
         call    PaintBall
 
         call    DrawLevel
-        
-        lxi     hl, BATTY
-        lxi     bc, 18f0h
-        call    PaintHorizontalBitmap
+
+        call    PaintBatty        
 
 
 ; *********************************************************************
@@ -163,9 +164,28 @@ CurDown
 
 
 CurLeft
+        call    EraseBatty
+        lda     BattyPos
+        cpi     8
+        jc      CurLeft0
+        dcr     a
+        dcr     a
+        sta     BattyPos
+CurLeft0
+        call    PaintBatty
         jmp     Begin
 
 CurRight
+        call    EraseBatty
+        lda     BattyPos
+        cpi     26
+        jnc      CurR
+        inr     a
+        inr     a
+        sta     BattyPos
+CurR
+        call    PaintBatty
+
         jmp     Begin
 
 CurUp
@@ -180,6 +200,19 @@ HouseKeeping
         shld    BallCoords
         call    PaintBall
         jmp     Begin
+
+EraseBatty
+        lxi     hl, NOBATTY
+        jmp     GoBatty
+PaintBatty
+        lxi     hl, BATTY
+GoBatty        
+        mvi     c, 0f0h
+        lda     BattyPos
+        mov     b, a
+
+        call    PaintHorizontalBitmap
+        ret
 
 ; *************************************************
 ; Нарисовать уровень
@@ -669,7 +702,9 @@ BALL    db      0, 0, 0, 0, 0, 0, 0, 0
 BATTY   db      3
 	db64    /AIBBQWpAvwAAAAAAAAAAAD/AAAA/wD/AAAAAAAAAAAAAP+AgEAgHwAAAAAAAAAA
 
-
+; Нет дубины
+NOBATTY db      3
+        ds      48
 
 
 ; *********************************************************************
@@ -708,7 +743,8 @@ BmpPtr          dw      0
 
 ; Координаты мячика
 BallCoords      dw      0
-
+; Позиция ракетки
+BattyPos        db      10
 ; Псевдослучайность
 RNG             db      0
 ; Обратный отсчет для хаускипера
