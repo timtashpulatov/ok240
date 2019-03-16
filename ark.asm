@@ -175,9 +175,8 @@ CurDown
 CurLeft
         call    EraseBatty
         lda     BattyPos
-        cpi     2
-        jc      CurLeft0
-        dcr     a
+        ora     a
+        jz      CurLeft0
         dcr     a
         sta     BattyPos
 CurLeft0
@@ -187,9 +186,8 @@ CurLeft0
 CurRight
         call    EraseBatty
         lda     BattyPos
-        cpi     30
-        jnc      CurR
-        inr     a
+        cpi     50
+        jnc     CurR
         inr     a
         sta     BattyPos
 CurR
@@ -210,6 +208,9 @@ HouseKeeping
         call    PaintBall
         jmp     Begin
 
+; *************************************************
+; Нарисовать/стереть дубину
+; *************************************************
 EraseBatty
         lxi     hl, NOBATTY
         jmp     GoBatty
@@ -218,6 +219,10 @@ PaintBatty
 GoBatty        
         mvi     c, 0f0h
         lda     BattyPos
+        rar
+        rar
+        rar
+        ani     31
         mov     b, a
 
         call    PaintHorizontalBitmap
@@ -632,14 +637,6 @@ ShiftBitmap
         pop     hl
         dad     bc
         call    ShiftBitmapPlane
-        
-;        lxi     hl, BATTYBUF
-;        lxi     de, BATTYBUF+64
-;        call    ShiftBitmapPlane
-;        lxi     hl, BATTYBUF+8
-;        lxi     de, BATTYBUF+64+8
-;        call    ShiftBitmapPlane
-        
         ret
 
 ShiftBitmapPlane
@@ -841,8 +838,7 @@ BATTY1  db      4
         db      6, 15, 13, 14, 13, 15, 6, 0
         db      0, 0, 3, 3, 3, 0, 0, 0
         ds      16
-        
-BATTYEND
+
 ; Нет дубины
 NOBATTY db      3
         ds      48
