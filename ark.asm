@@ -88,11 +88,12 @@ VeryBegin
         call    PaintBrick
 
         call    FillBattyBuf
+        call    FillBallPhases
 
 
-        lxi     bc, 00e8h
-        lxi     hl, BATTYBUF-1
-        call    PaintHorizontalBitmap
+;        lxi     bc, 00e8h
+ ;       lxi     hl, BATTYBUF-1
+  ;      call    PaintHorizontalBitmap
 
 
 
@@ -618,6 +619,26 @@ FillBallPhases
         lxi     hl, BALL
         lxi     de, BALLPHASES
         call    ShiftBitmap
+ 
+        lxi     hl, BALLPHASES
+        lxi     de, BALLPHASES+32
+        mvi     a, 7       
+ L3b6
+         push    a
+         push    hl
+         push    de
+         call    ShiftBitmap
+         lxi     bc, 32
+         pop     hl
+         dad     bc
+         xchg
+         pop     hl
+         dad     bc
+        
+         pop     a
+         dcr     a
+         jnz     L3b6
+        
         ret
 
 
@@ -847,7 +868,8 @@ SCORE_1
         db      0, 0, 0, 0, 0, 0, 0, 0
 
 BALL    db      0, 0, 0, 0, 0, 0, 0, 0
-        db      0, 18h, 2ch, 52h, 4ah, 34h, 18h, 0
+;        db      0, 18h, 2ch, 52h, 4ah, 34h, 18h, 0
+        db      12, 16h, 29h, 25h, 1ah, 12, 0
         ds      16
 
 ; Дубина
@@ -940,11 +962,12 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
 
-BALLPHASES      ds      16*8
-        
+
         db      24        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
+; Фазы мячика
+BALLPHASES      ds      16*8
 
 ; Игровое поле
 ;           1111111111222222222233
