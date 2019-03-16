@@ -374,7 +374,7 @@ ApplyColors
         out     VIDEO
         jmp     Begin
         
-DELAY   equ     08000h
+DELAY   equ     0500h
 ; *********************
 ; Маленькая задержечка
 ; *********************
