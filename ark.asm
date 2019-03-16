@@ -86,6 +86,9 @@ VeryBegin
         lxi     bc, 1410h
         lxi     hl, BRICK2
         call    PaintBrick
+
+        call    FillBattyBuf
+
         
         call    PaintBall
 
@@ -580,6 +583,36 @@ PHLoop
         jnz     PHLoop
         ret
 
+; *************************************************
+; Заполнить Буфер Сдвинутых Ракеток
+; *************************************************
+FillBattyBuf
+        lxi     hl, BATTY1+1
+        lxi     de, BATTYBUF
+        
+        ora     a
+        mov     a, m
+        rar
+        stax    de
+        
+        inx     hl
+        inx     de
+
+        mov     a, m
+        rar
+        stax    de
+        
+        inx     hl
+        inx     de
+        
+        mov     a, m
+        rar
+        stax    de
+        
+                
+
+        
+        ret
 
 ; *************************************************
 ; Битмапчики
@@ -782,6 +815,8 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
+; Буфер Сдвинутых Ракеток
+BATTYBUF        ds      6*8
 ; Игровое поле
 ;           1111111111222222222233
 ; 01234567890123456789012345678901
