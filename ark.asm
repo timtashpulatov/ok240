@@ -90,7 +90,7 @@ VeryBegin
         call    FillBattyBuf
 
 
-        lxi     bc, 0ae8h
+        lxi     bc, 00e8h
         lxi     hl, BATTYBUF-1
         call    PaintHorizontalBitmap
 
@@ -175,7 +175,7 @@ CurDown
 CurLeft
         call    EraseBatty
         lda     BattyPos
-        cpi     8
+        cpi     2
         jc      CurLeft0
         dcr     a
         dcr     a
@@ -187,7 +187,7 @@ CurLeft0
 CurRight
         call    EraseBatty
         lda     BattyPos
-        cpi     26
+        cpi     30
         jnc      CurR
         inr     a
         inr     a
@@ -596,6 +596,26 @@ FillBattyBuf
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
         call    ShiftBitmap
+
+        lxi     hl, BATTYBUF
+        lxi     de, BATTYBUF+64
+        mvi     a, 3
+ FBBLoop
+        push    a
+        push    hl
+        push    de
+        call    ShiftBitmap
+        lxi     bc, 64
+        pop     hl
+        dad     bc
+        xchg
+        pop     hl
+        dad     bc
+        
+        pop     a
+        dcr     a
+        jnz     SBPLoop
+        
         ret
 
 ; *************************************************
@@ -628,7 +648,7 @@ ShiftBitmapPlane
         mvi     a, 8
         sta     Count   ; 
      
-FBBLoop
+SBPLoop
         push    hl
         push    de
 
@@ -638,7 +658,7 @@ FBBLoop
         ora     a
         push    a
         
-FBBLoop1        
+SBPLoop1        
         pop     a
         mov     a, m
         ral
@@ -654,7 +674,7 @@ FBBLoop1
         lda     Count1
         dcr     a
         sta     Count1
-        jnz     FBBLoop1
+        jnz     SBPLoop1
 
 ;
         pop     a
@@ -670,7 +690,7 @@ FBBLoop1
         dcr     a
         sta     Count
         
-        jnz     FBBLoop
+        jnz     SBPLoop
 
         ret
 
@@ -805,14 +825,23 @@ BALL    db      0, 0, 0, 0, 0, 0, 0, 0
 BATTY   db      3
 	db64    /AIBBQWpAvwAAAAAAAAAAAD/AAAA/wD/AAAAAAAAAAAAAP+AgEAgHwAAAAAAAAAA
 
-BATTY1  db      3
-        db      18h, 0fch, 0ach, 5ch, 0ach, 0fch, 18h, 0
-        db      0, 0, 0f0h, 0f0h, 0f0h, 0, 0, 0
-        db      0, 255, 0aah, 55h, 0aah, 255, 0, 0
+BATTY1  db      4
+        ; db      18h, 0fch, 0ach, 5ch, 0ach, 0fch, 18h, 0
+        ; db      0, 0, 0f0h, 0f0h, 0f0h, 0, 0, 0
+        ; db      0, 255, 0aah, 55h, 0aah, 255, 0, 0
+        ; db      0, 0, 255, 255, 255, 0, 0, 0
+        ; db      18h, 3fh, 3ah, 35h, 3ah, 3fh, 18h, 0
+        ; db      0, 0, 15, 15, 15, 0, 0, 0
+        ; ds      16
+
+        db      6, 255, 57h, 0abh, 57h, 255, 6, 0
+        db      0, 0, 0fch, 0fch, 0fch, 0, 0, 0
+        db      0, 255, 55h, 0aah, 55h, 255, 0, 0
         db      0, 0, 255, 255, 255, 0, 0, 0
-        db      18h, 3fh, 3ah, 35h, 3ah, 3fh, 18h, 0
-        db      0, 0, 15, 15, 15, 0, 0, 0
+        db      6, 15, 13, 14, 13, 15, 6, 0
+        db      0, 0, 3, 3, 3, 0, 0, 0
         ds      16
+        
 BATTYEND
 ; Нет дубины
 NOBATTY db      3
@@ -883,10 +912,10 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
         .org 9ffh
-        db      16        
+        db      24        
 ; Буфер Сдвинутых Ракеток
-BATTYBUF        ds      4*2*8
-BATTYBUFEND
+BATTYBUF        ds      64*8
+
 ; Игровое поле
 ;           1111111111222222222233
 ; 01234567890123456789012345678901
