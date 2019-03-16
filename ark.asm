@@ -186,7 +186,7 @@ CurLeft0
 CurRight
         call    EraseBatty
         lda     BattyPos
-        cpi     50
+        cpi     120
         jnc     CurR
         inr     a
         sta     BattyPos
@@ -221,8 +221,8 @@ GoBatty
         lda     BattyPos
         rar
         rar
-        rar
-        ani     31
+;        rar
+        ani     0b00011110
         mov     b, a
 
         call    PaintHorizontalBitmap
@@ -907,7 +907,7 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
-        .org 9ffh
+        ;.org 9ffh
         db      24        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
