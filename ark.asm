@@ -607,11 +607,28 @@ PHLoop
         jnz     PHLoop
         ret
 
+; *************************************************
+; Породить фазы мячика
+; *************************************************
+FillBallPhases
+
+        mvi     a, 2
+        sta     BitmapWidth
+
+        lxi     hl, BALL
+        lxi     de, BALLPHASES
+        call    ShiftBitmap
+        ret
+
 
 ; *************************************************
 ; Заполнить Буфер Сдвинутых Ракеток
 ; *************************************************
 FillBattyBuf
+
+        mvi     a, 4
+        sta     BitmapWidth
+
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
         call    ShiftBitmap
@@ -663,7 +680,7 @@ SBPLoop
         push    hl
         push    de
 
-        mvi     a, 4
+        lda     BitmapWidth
         sta     Count1  ; счетчик байт в растровой строке битмапа (ширина битмапа в байтах)
 
         ora     a
@@ -831,6 +848,7 @@ SCORE_1
 
 BALL    db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 18h, 2ch, 52h, 4ah, 34h, 18h, 0
+        ds      16
 
 ; Дубина
 BATTY   db      3
@@ -894,7 +912,7 @@ Y             db      0
 ; Переменная
 Count           db      0
 Count1          db      0
-
+BitmapWidth     db      0
 
 BmpPtr          dw      0
 
@@ -921,7 +939,9 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
-        ;.org 9ffh
+
+BALLPHASES      ds      16*8
+        
         db      24        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
