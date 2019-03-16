@@ -212,10 +212,21 @@ HouseKeeping
 ; Нарисовать/стереть дубину
 ; *************************************************
 EraseBatty
-        lxi     hl, NOBATTY
+        lxi     hl, NOBATTY+1
         jmp     GoBatty
 PaintBatty
-        lxi     hl, BATTY1
+        lxi     hl, BATTY1+1
+        lda     BattyPos
+        ani     7
+        jz      GoBatty
+        lxi     hl, BATTYBUF
+        lxi     bc, 64
+PaintBattyLoop        
+        dcr     a
+        jz      GoBatty
+        dad     bc
+        jmp     PaintBattyLoop
+        
 GoBatty        
         mvi     c, 0f0h
         lda     BattyPos
@@ -225,7 +236,7 @@ GoBatty
         ani     0b00011110
         mov     b, a
 
-        call    PaintHorizontalBitmap
+        call    PaintHorizontalBitmap4
         ret
 
 ; *************************************************
@@ -569,7 +580,9 @@ MYCHAROUT
         ret
 
 
-
+PaintHorizontalBitmap4
+        mvi     e, 4
+        jmp     PHLoop
 
 ; *************************************************
 ; Вывести горизонтально многоклеточный битмап из HL
@@ -593,6 +606,7 @@ PHLoop
         dcr     e
         jnz     PHLoop
         ret
+
 
 ; *************************************************
 ; Заполнить Буфер Сдвинутых Ракеток
@@ -840,8 +854,8 @@ BATTY1  db      4
         ds      16
 
 ; Нет дубины
-NOBATTY db      3
-        ds      48
+NOBATTY db      4
+        ds      64
 
 
 ; *********************************************************************
