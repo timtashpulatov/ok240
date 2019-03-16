@@ -91,7 +91,7 @@ VeryBegin
 
 
         lxi     bc, 0ae8h
-        lxi     hl, BATTYBUF
+        lxi     hl, BATTYBUF-1
         call    PaintHorizontalBitmap
 
         
@@ -596,63 +596,51 @@ FillBattyBuf
         lxi     de, BATTYBUF
         lxi     bc, 16
 
-        mvi     a, 16
-        sta     Count
+        mvi     a, 8
+        sta     Count   ; счетчик растровых строк битмапа
      
 FBBLoop
-        ora     a
-        
-        mov     a, m
-        rar
-        stax    de
-        
         push    hl
         push    de
 
+        mvi     a, 4
+        sta     Count1
+
+        ora     a
         push    a
-        dad     bc
-        xchg
-        dad     bc
-        xchg
+FBBLoop1        
         pop     a
-        
         mov     a, m
         rar
         stax    de
-
-        push    a
-        dad     bc
-        xchg
-        dad     bc
-        xchg
-        pop     a
+        push    a 
         
-        mov     a, m
-        rar
-        stax    de
+        ; перейдем к следующему байту в растровой строке битмапа
+        dad     bc
+        xchg
+        dad     bc
+        xchg
 
-        push    a
-        dad     bc
-        xchg
-        dad     bc
-        xchg
+        lda     Count1
+        dcr     a
+        sta     Count1
+        jnz     FBBLoop1
+
+;
         pop     a
 
-        mov     a, m
-        rar
-        stax    de
-        
         pop     de
         pop     hl                
 
         inx     hl
         inx     de
+        
         lda     Count
         dcr     a
         sta     Count
+        
         jnz     FBBLoop
 
-        
         ret
 
 ; *************************************************
@@ -794,7 +782,7 @@ BATTY1  db      3
         db      18h, 3fh, 3ah, 35h, 3ah, 3fh, 18h, 0
         db      0, 0, 15, 15, 15, 0, 0, 0
         ds      16
-
+BATTYEND
 ; Нет дубины
 NOBATTY db      3
         ds      48
@@ -832,6 +820,12 @@ LEVEL_1_END
 X             db      0
 Y             db      0
 
+
+; Переменная
+Count           db      0
+Count1          db      0
+
+
 BmpPtr          dw      0
 
 ; Координаты мячика
@@ -857,12 +851,11 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
-; Переменная
-Count           db      0
         .org 8ffh
         db      4        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      4*2*8
+BATTYBUFEND
 ; Игровое поле
 ;           1111111111222222222233
 ; 01234567890123456789012345678901
