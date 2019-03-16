@@ -599,8 +599,8 @@ FillBattyBuf
 
         lxi     hl, BATTYBUF
         lxi     de, BATTYBUF+64
-        mvi     a, 3
- FBBLoop
+        mvi     a, 7
+ FBPLoop
         push    a
         push    hl
         push    de
@@ -614,7 +614,7 @@ FillBattyBuf
         
         pop     a
         dcr     a
-        jnz     SBPLoop
+        jnz     FBPLoop
         
         ret
 
