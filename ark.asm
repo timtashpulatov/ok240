@@ -593,12 +593,21 @@ COOLBRICK
         db      0feh, 0fch, 80h, 0, 0efh, 0cfh, 8, 0
         ds      8
 LEFTBRICK
+;        ds      16
+;        db      0feh, 0fch, 80h, 0, 0efh, 0cfh, 8, 0
+;        ds      8
         ds      16
-        db      0feh, 0fch, 80h, 0, 0efh, 0cfh, 8, 0
-        ds      8
+        db      3ch, 42h, 81h, 81h, 81h, 81h, 42h, 3ch
+        db      3ch, 42h, 89h, 85h, 85h, 81h, 42h, 3ch
+
 RIGHTBRICK
-        db      0feh, 0fch, 80h, 0, 0efh, 0cfh, 8, 0
-        ds      24
+;        db      0feh, 0fch, 80h, 0, 0efh, 0cfh, 8, 0
+;        ds      24
+POPS    db      3ch, 42h, 81h, 81h, 81h, 81h, 42h, 3ch
+        db      3ch, 42h, 89h, 85h, 85h, 81h, 42h, 3ch
+        ds      16
+
+
 
         db      255, 255, 255, 255, 255, 255, 255, 0
         db      0,0,0,0,0,0,0,0
@@ -674,6 +683,7 @@ BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
 PENTABRICK
         db      7fh, 7fh, 5fh, 5fh, 5fh, 43h, 7fh, 0
         db      0, 1eh, 1eh, 1eh, 1eh, 0, 0, 0
+
 
 SCORE_LINE   
         db      3
