@@ -594,7 +594,7 @@ PHLoop
 FillBattyBuf
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
-        lxi     bc, 16
+        lxi     bc, 8
 
         mvi     a, 8
         sta     Count   ; счетчик растровых строк битмапа
@@ -603,11 +603,12 @@ FBBLoop
         push    hl
         push    de
 
-        mvi     a, 4
+        mvi     a, 8
         sta     Count1
 
         ora     a
         push    a
+        
 FBBLoop1        
         pop     a
         mov     a, m
