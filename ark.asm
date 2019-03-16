@@ -94,7 +94,8 @@ VeryBegin
         lxi     hl, BATTYBUF-1
         call    PaintHorizontalBitmap
 
-        
+
+
         call    PaintBall
 
         call    DrawLevel
@@ -594,17 +595,24 @@ PHLoop
 FillBattyBuf
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
-        lxi     bc, 8
+        call    FillBattyBuf0
+        lxi     hl, BATTY1+1+8
+        lxi     de, BATTYBUF+8
+        call    FillBattyBuf0
+        ret
+
+FillBattyBuf0
+        lxi     bc, 16  ; инкремент к следующему байту в растровой строке
 
         mvi     a, 8
-        sta     Count   ; счетчик растровых строк битмапа
+        sta     Count   ; 
      
 FBBLoop
         push    hl
         push    de
 
-        mvi     a, 8
-        sta     Count1
+        mvi     a, 4
+        sta     Count1  ; счетчик байт в растровой строке битмапа (ширина битмапа в байтах)
 
         ora     a
         push    a
@@ -612,7 +620,7 @@ FBBLoop
 FBBLoop1        
         pop     a
         mov     a, m
-        rar
+        ral
         stax    de
         push    a 
         
@@ -633,6 +641,7 @@ FBBLoop1
         pop     de
         pop     hl                
 
+        ; перейдем к следующей растровой строке
         inx     hl
         inx     de
         
@@ -852,7 +861,7 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
-        .org 8ffh
+        .org 9ffh
         db      4        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      4*2*8
