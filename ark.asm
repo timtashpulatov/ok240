@@ -89,6 +89,11 @@ VeryBegin
 
         call    FillBattyBuf
 
+
+        lxi     bc, 0ae8h
+        lxi     hl, BATTYBUF
+        call    PaintHorizontalBitmap
+
         
         call    PaintBall
 
@@ -644,7 +649,7 @@ FBBLoop
         inx     de
         lda     Count
         dcr     a
-        sta     count
+        sta     Count
         jnz     FBBLoop
 
         
@@ -854,7 +859,8 @@ BGCOLOR         db      0
 TuneCount       db      0
 ; Переменная
 Count           db      0
-        .org 900h
+        .org 8ffh
+        db      4        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      4*2*8
 ; Игровое поле
