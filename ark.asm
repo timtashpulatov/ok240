@@ -589,27 +589,63 @@ PHLoop
 FillBattyBuf
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
-        
+        lxi     bc, 16
+
+        mvi     a, 16
+        sta     Count
+     
+FBBLoop
         ora     a
+        
         mov     a, m
         rar
         stax    de
         
-        inx     hl
-        inx     de
+        push    hl
+        push    de
+
+        push    a
+        dad     bc
+        xchg
+        dad     bc
+        xchg
+        pop     a
+        
+        mov     a, m
+        rar
+        stax    de
+
+        push    a
+        dad     bc
+        xchg
+        dad     bc
+        xchg
+        pop     a
+        
+        mov     a, m
+        rar
+        stax    de
+
+        push    a
+        dad     bc
+        xchg
+        dad     bc
+        xchg
+        pop     a
 
         mov     a, m
         rar
         stax    de
         
+        pop     de
+        pop     hl                
+
         inx     hl
         inx     de
-        
-        mov     a, m
-        rar
-        stax    de
-        
-                
+        lda     Count
+        dcr     a
+        sta     count
+        jnz     FBBLoop
 
         
         ret
@@ -752,6 +788,7 @@ BATTY1  db      3
         db      0, 0, 255, 255, 255, 0, 0, 0
         db      18h, 3fh, 3ah, 35h, 3ah, 3fh, 18h, 0
         db      0, 0, 15, 15, 15, 0, 0, 0
+        ds      16
 
 ; Нет дубины
 NOBATTY db      3
@@ -815,8 +852,11 @@ FGCOLOR         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
+; Переменная
+Count           db      0
+        .org 900h
 ; Буфер Сдвинутых Ракеток
-BATTYBUF        ds      6*8
+BATTYBUF        ds      4*2*8
 ; Игровое поле
 ;           1111111111222222222233
 ; 01234567890123456789012345678901
