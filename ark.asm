@@ -205,7 +205,7 @@ EraseBatty
         lxi     hl, NOBATTY
         jmp     GoBatty
 PaintBatty
-        lxi     hl, BATTY
+        lxi     hl, BATTY1
 GoBatty        
         mvi     c, 0f0h
         lda     BattyPos
@@ -701,6 +701,14 @@ BALL    db      0, 0, 0, 0, 0, 0, 0, 0
 ; Дубина
 BATTY   db      3
 	db64    /AIBBQWpAvwAAAAAAAAAAAD/AAAA/wD/AAAAAAAAAAAAAP+AgEAgHwAAAAAAAAAA
+
+BATTY1  db      3
+        db      18h, 0fch, 0ach, 5ch, 0ach, 0fch, 18h, 0
+        db      0, 0, 0f0h, 0f0h, 0f0h, 0, 0, 0
+        db      0, 255, 0aah, 55h, 0aah, 255, 0, 0
+        db      0, 0, 255, 255, 255, 0, 0, 0
+        db      18h, 3fh, 3ah, 35h, 3ah, 3fh, 18h, 0
+        db      0, 0, 15, 15, 15, 0, 0, 0
 
 ; Нет дубины
 NOBATTY db      3
