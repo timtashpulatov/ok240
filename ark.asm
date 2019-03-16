@@ -595,21 +595,34 @@ PHLoop
 FillBattyBuf
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
-        call    FillBattyBuf0
-        lxi     hl, BATTY1+1+8
-        lxi     de, BATTYBUF+8
-        call    FillBattyBuf0
+        call    ShiftBitmap
+        ret
+
+; *************************************************
+; Сдвинуть битмап на 1 бит
+; *************************************************
+ShiftBitmap        
+        push    hl
+        push    de
+        call    ShiftBitmapPlane
+        lxi     bc, 8
+        pop     hl
+        dad     bc
+        xchg
+        pop     hl
+        dad     bc
+        call    ShiftBitmapPlane
         
-        lxi     hl, BATTYBUF
-        lxi     de, BATTYBUF+64
-        call    FillBattyBuf0
-        lxi     hl, BATTYBUF+8
-        lxi     de, BATTYBUF+64+8
-        call    FillBattyBuf0
+;        lxi     hl, BATTYBUF
+;        lxi     de, BATTYBUF+64
+;        call    ShiftBitmapPlane
+;        lxi     hl, BATTYBUF+8
+;        lxi     de, BATTYBUF+64+8
+;        call    ShiftBitmapPlane
         
         ret
 
-FillBattyBuf0
+ShiftBitmapPlane
         lxi     bc, 16  ; инкремент к следующему байту в растровой строке
 
         mvi     a, 8
