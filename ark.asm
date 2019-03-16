@@ -599,6 +599,14 @@ FillBattyBuf
         lxi     hl, BATTY1+1+8
         lxi     de, BATTYBUF+8
         call    FillBattyBuf0
+        
+        lxi     hl, BATTYBUF
+        lxi     de, BATTYBUF+64
+        call    FillBattyBuf0
+        lxi     hl, BATTYBUF+8
+        lxi     de, BATTYBUF+64+8
+        call    FillBattyBuf0
+        
         ret
 
 FillBattyBuf0
@@ -862,7 +870,7 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
         .org 9ffh
-        db      4        
+        db      16        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      4*2*8
 BATTYBUFEND
