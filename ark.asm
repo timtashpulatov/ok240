@@ -36,6 +36,8 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
+DEFAULTBALLX    equ     16
+DEFAULTBALLY    equ     128
 DEFAULTBALLDX   equ     1
 DEFAULTBALLDY   equ     1
 
@@ -78,6 +80,11 @@ VeryBegin
 
         mvi     a, DEFAULTBATTYDELAY
         sta     BattyDelay
+        
+        mvi     a, DEFAULTBALLX
+        sta     BallX
+        mvi     a, DEFAULTBALLY
+        sta     BallY
         
         mvi     a, DEFAULTBALLDX
         sta     BallDX
@@ -278,10 +285,15 @@ L1ea
         sta     BallDelay
         
         call    EraseBall
-        lhld    BallCoords
-        inr     l
-        inr     h
-        shld    BallCoords
+
+        lda     BallX
+        inr     a
+        sta     BallX
+
+        lda     BallY
+        inr     a
+        sta     BallY
+
         call    PaintBall
         ret
 
@@ -289,6 +301,8 @@ L1ea
 ; А мячик скиньте?
 ; *************************************************
 EraseBall
+        lxi     hl, NOBATTY+1
+        jmp     GoBall
 PaintBall
         lxi     hl, BALL
         lda     BallX
