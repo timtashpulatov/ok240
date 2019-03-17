@@ -229,6 +229,8 @@ MoveRight
         lda     BattyPos
         cpi     200
         jnz     L20f
+        mvi     a, BATTY_STOP
+        sta     BattyDirection
 MoveDone        
         call    PaintBatty
         ret
