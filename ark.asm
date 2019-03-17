@@ -191,17 +191,6 @@ CurRight
         sta     BattyDirection
         jmp     Begin
 
-        call    EraseBatty
-        lda     BattyPos
-        cpi     120
-        jnc     CurR
-        inr     a
-        sta     BattyPos
-CurR
-        call    PaintBatty
-
-        jmp     Begin
-
 CurUp
         mvi     a, BATTY_STOP
         sta     BattyDirection
@@ -252,8 +241,11 @@ MoveLeft
         call    EraseBatty
         lda     BattyPos
         ora     a
-        jz      MoveDone
-        
+        jnz     MoveLeftJa
+        mvi     a, BATTY_STOP   ; Как насчет отталкиваться?
+        sta     BattyDirection
+        jmp     MoveDone
+MoveLeftJa        
         dcr     a
         sta     BattyPos
         jmp     MoveDone
