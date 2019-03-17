@@ -986,14 +986,14 @@ PhaseSize       db      0
 
 BmpPtr          dw      0
 
-; Координаты мячика
-BallCoords      dw      0
-; Скорость мячика
-BallDelay
-; Позиция ракетки
-BattyPos        db      10
-; Скорость ракетки
-BattyDelay      db      DEFAULTBattyDelay
+
+BallCoords      dw      0                       ; Координаты мячика
+BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
+
+BattyPos        db      10                      ; Позиция ракетки
+BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
+BattyDirection  db      0
+
 ; Псевдослучайность
 RNG             db      0
 ; Обратный отсчет для хаускипера
