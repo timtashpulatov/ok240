@@ -626,23 +626,24 @@ FillBallPhases
         lxi     hl, BALLPHASES
         lxi     de, BALLPHASES+32
         mvi     a, 7       
- L3b6
-         push    a
-         push    hl
-         push    de
-         call    ShiftBitmap
-         lxi     bc, 32
-         pop     hl
-         dad     bc
-         xchg
-         pop     hl
-         dad     bc
+        jmp     FBPLoop
+;  L3b6
+;          push    a
+;          push    hl
+;          push    de
+;          call    ShiftBitmap
+;          lxi     bc, 32
+;          pop     hl
+;          dad     bc
+;          xchg
+;          pop     hl
+;          dad     bc
         
-         pop     a
-         dcr     a
-         jnz     L3b6
+;          pop     a
+;          dcr     a
+;          jnz     L3b6
         
-        ret
+;         ret
 
 
 ; *************************************************
