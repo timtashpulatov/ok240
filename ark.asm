@@ -890,6 +890,10 @@ BRICK5  db      0ffh, 55h, 0abh, 55h, 0abh, 55h, 0abh, 0
         db      7fh, 55h, 2ah, 55h, 2ah, 55h, 2ah, 0
         db      7fh, 55h, 2ah, 55h, 2ah, 55h, 2ah, 0
 
+BRICK6  db      255, 255, 255, 255, 255, 255, 255, 0
+        db      0, 0aah, 54h, 0aah, 54h, 0aah, 54h, 0      
+        db      7fh, 7fh, 7fh, 7fh, 7fh, 7fh, 7fh, 0
+        db      0, 2ah, 55h, 2ah, 55h, 2ah, 55h, 0
 
 BITMAP1
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
