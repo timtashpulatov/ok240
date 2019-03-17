@@ -32,7 +32,7 @@ PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
 DEFAULTBALLDELAY        equ     5
-DEFAULTBattyDelay       equ     3
+DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
@@ -73,6 +73,9 @@ VeryBegin
 
         mvi     a, DEFAULTBALLDELAY
         sta     BallDelay
+
+        mvi     a, DEFAULTBATTYDELAY
+        sta     BattyDelay
 
 ; Кирпич 1
         lxi     bc, 0400h
