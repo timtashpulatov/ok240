@@ -33,6 +33,9 @@ HKCOUNT         equ     8000
 
 DEFAULTBALLDELAY        equ     5
 DEFAULTBattyDelay       equ     3
+BATTY_STOP      equ     0
+BATTY_RIGHT     equ     1
+BATTY_LEFT      equ     2
 
         org     100h
 
@@ -179,17 +182,15 @@ CurDown
 
 
 CurLeft
-        call    EraseBatty
-        lda     BattyPos
-        ora     a
-        jz      CurLeft0
-        dcr     a
-        sta     BattyPos
-CurLeft0
-        call    PaintBatty
+        mvi     a, BATTY_LEFT
+        sta     BattyDirection
         jmp     Begin
 
 CurRight
+        mvi     a, BATTY_LEFT
+        sta     BattyDirection
+        jmp     Begin
+
         call    EraseBatty
         lda     BattyPos
         cpi     120
@@ -202,7 +203,8 @@ CurR
         jmp     Begin
 
 CurUp
-
+        mvi     a, BATTY_STOP
+        sta     BattyDirection
         jmp     Begin
 
 HouseKeeping
@@ -224,7 +226,38 @@ ProcessBatty
 L1F2        
         mvi     a, DEFAULTBattyDelay
         sta     BattyDelay
+
+; Камо грядеши
+        lda     BattyDirection
+        cpi     1
+        jz      MoveRight
+        cpi     2
+        jz      MoveLeft
         ret
+
+MoveRight
+        call    EraseBatty
+        lda     BattyPos
+        cpi     200
+        jnz     L20f
+MoveDone        
+        call    PaintBatty
+        ret
+L20f
+        inr     a
+        sta     BattyPos
+        jmp     MoveDone
+
+MoveLeft
+        call    EraseBatty
+        lda     BattyPos
+        ora     a
+        jz      MoveDone
+        
+        dcr     a
+        sta     BattyPos
+        jmp     MoveDone
+
 
 ; *************************************************
 ; Мячевой процессинг
