@@ -31,6 +31,9 @@ LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
+BALLINITSPEED           equ     5
+DEFAULTBATTYSPEED       equ     3
+
         org     100h
 
     ;    call    NewNoteTest
@@ -65,6 +68,8 @@ VeryBegin
         mvi     a, 10
         sta     BattyPos
 
+        mvi     a, BALLINITSPEED
+        sta     BallSpeed
 
 ; Кирпич 1
         lxi     bc, 0400h
@@ -202,12 +207,45 @@ CurUp
 
 HouseKeeping
         call    Dly
+        call    ProcessBall
+        call    ProcessBatty
+        jmp     Begin
+
+; *************************************************
+; Дубопроцессор
+; *************************************************
+ProcessBatty
+        lda     BattySpeed
+        ora     a
+        jz      L1F2
+        dcr     a
+        sta     BattySpeed
+        ret
+L1F2        
+        mvi     a, DEFAULTBATTYSPEED
+        sta     BattySpeed
+        ret
+
+; *************************************************
+; Мячевой процессинг
+; *************************************************
+ProcessBall
+        lda     BallSpeed
+        ora     a
+        jz      L1ea
+        dcr     a
+        sta     BallSpeed
+        ret
+L1ea
+        mvi     a, BALLINITSPEED
+        sta     BallSpeed
+        
         call    EraseBall
         lhld    BallCoords
         inr     l
         shld    BallCoords
         call    PaintBall
-        jmp     Begin
+        ret
 
 ; *************************************************
 ; Нарисовать/стереть дубину
@@ -950,8 +988,12 @@ BmpPtr          dw      0
 
 ; Координаты мячика
 BallCoords      dw      0
+; Скорость мячика
+BallSpeed
 ; Позиция ракетки
 BattyPos        db      10
+; Скорость ракетки
+BattySpeed      db      DEFAULTBATTYSPEED
 ; Псевдослучайность
 RNG             db      0
 ; Обратный отсчет для хаускипера
