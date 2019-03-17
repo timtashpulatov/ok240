@@ -286,6 +286,26 @@ L1ea
         ret
 
 ; *************************************************
+; А мячик скиньте?
+; *************************************************
+EraseBall
+PaintBall
+        lxi     hl, BALL
+        lda     BallX
+        ani     7
+        jz      GoBall
+
+GoBall
+        lda     BallX
+        rar
+        rar
+        ani     3eh
+        mov     b, a
+        
+        call    PaintHorizontalBitmap2
+        ret
+
+; *************************************************
 ; Нарисовать/стереть дубину
 ; *************************************************
 EraseBatty
@@ -405,28 +425,28 @@ PaintBrick
 ; *******************************************
 ; PaintBall
 ; *******************************************
-PaintBall
-        ;lxi     bc, 0000        ; 1818h
-        lhld    BallCoords
-        mov     b, h
-        mov     c, l
-        lxi     hl, BALL
-        mvi     a, 3
-        call    PaintBitmap
-        ret
+; PaintBall
+;         ;lxi     bc, 0000        ; 1818h
+;         lhld    BallCoords
+;         mov     b, h
+;         mov     c, l
+;         lxi     hl, BALL
+;         mvi     a, 3
+;         call    PaintBitmap
+;         ret
 
 ; *******************************************
 ; EraseBall
 ; *******************************************
-EraseBall
-        lhld    BallCoords
-        mov     b, h
-        mov     c, l
-        lxi     hl, BITMAP0
-        mvi     a, 3
-        call    PaintBitmap
-        ret
-        ret
+; EraseBall
+;         lhld    BallCoords
+;         mov     b, h
+;         mov     c, l
+;         lxi     hl, BITMAP0
+;         mvi     a, 3
+;         call    PaintBitmap
+;         ret
+;         ret
 
 
 ; *******************************************
@@ -656,6 +676,9 @@ MYCHAROUT
         call    CHAROUT
         ret
 
+PaintHorizontalBitmap2
+        mvi     e, 2
+        jmp     PHLoop
 
 PaintHorizontalBitmap4
         mvi     e, 4
@@ -1033,6 +1056,8 @@ BmpPtr          dw      0
 
 
 BallCoords      dw      0                       ; Координаты мячика
+BallX           db      0
+BallY           db      0
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
