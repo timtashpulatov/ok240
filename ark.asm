@@ -227,8 +227,8 @@ L1F2
 MoveRight
         call    EraseBatty
         lda     BattyPos
-        cpi     200
-        jnz     L20f
+        cpi     220
+        jp      L20f
         mvi     a, BATTY_STOP
         sta     BattyDirection
 MoveDone        
@@ -421,10 +421,10 @@ EraseBall
 ; *******************************************
 ; *******************************************
 CycleForeColor
-        lda     FGCOLOR
+        lda     PALETTE
         inr     a
         ani     7
-        sta     FGCOLOR
+        sta     PALETTE
         jmp     ApplyColors
 CycleBackColor
         lda     BGCOLOR
@@ -433,7 +433,7 @@ CycleBackColor
         sta     BGCOLOR
 ApplyColors        
         mov     c, a
-        lda     FGCOLOR
+        lda     PALETTE
         ora     c
         ori     40h
         out     VIDEO
@@ -1036,7 +1036,7 @@ SuppressLeadingZeroes   db      0
 ; Патч для KDE под FreeBSD
 AnimeFrame      ds      1
 ; Палитра
-FGCOLOR         db      3
+PALETTE         db      3
 BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
