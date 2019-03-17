@@ -187,7 +187,7 @@ CurLeft
         jmp     Begin
 
 CurRight
-        mvi     a, BATTY_LEFT
+        mvi     a, BATTY_RIGHT
         sta     BattyDirection
         jmp     Begin
 
