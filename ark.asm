@@ -228,7 +228,7 @@ MoveRight
         call    EraseBatty
         lda     BattyPos
         cpi     220
-        jp      L20f
+        jnz     L20f
         mvi     a, BATTY_STOP
         sta     BattyDirection
 MoveDone        
@@ -299,7 +299,7 @@ GoBatty
         rar
         rar
 ;        rar
-        ani     0b00011110
+        ani     0b00111110
         mov     b, a
 
         call    PaintHorizontalBitmap4
