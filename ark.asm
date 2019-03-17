@@ -294,6 +294,13 @@ PaintBall
         lda     BallX
         ani     7
         jz      GoBall
+        lxi     hl, BALLPHASES
+        lxi     bc, 32
+PaintBallLoop
+        dcr     a
+        jz      GoBall
+        dad     bc
+        jmp     PaintBallLoop
 
 GoBall
         lda     BallX
