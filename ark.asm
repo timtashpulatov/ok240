@@ -317,6 +317,8 @@ PaintBallLoop
         jmp     PaintBallLoop
 
 GoBall
+        lda     BallY
+        mov     c, a
         lda     BallX
         rar
         rar
