@@ -36,6 +36,8 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
+DEFAULTBALLDX   equ     1
+DEFAULTBALLDY   equ     1
 
         org     100h
 
@@ -76,6 +78,11 @@ VeryBegin
 
         mvi     a, DEFAULTBATTYDELAY
         sta     BattyDelay
+        
+        mvi     a, DEFAULTBALLDX
+        sta     BallDX
+        mvi     a, DEFAULTBALLDY
+        sta     BallDY
 
 ; Кирпич 1
         lxi     bc, 0400h
@@ -273,6 +280,7 @@ L1ea
         call    EraseBall
         lhld    BallCoords
         inr     l
+        inr     h
         shld    BallCoords
         call    PaintBall
         ret
@@ -1026,6 +1034,8 @@ BmpPtr          dw      0
 
 BallCoords      dw      0                       ; Координаты мячика
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
+BallDX          db      0
+BallDY          db      0
 
 BattyPos        db      10                      ; Позиция ракетки
 BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
