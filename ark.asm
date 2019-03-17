@@ -616,6 +616,9 @@ FillBallPhases
         mvi     a, 2
         sta     BitmapWidth
 
+        mvi     a, 32
+        sta    PhaseSize
+
         lxi     hl, BALL
         lxi     de, BALLPHASES
         call    ShiftBitmap
@@ -650,6 +653,10 @@ FillBattyBuf
         mvi     a, 4
         sta     BitmapWidth
 
+        lxi     hl, 64
+        shld    PhaseSize
+
+
         lxi     hl, BATTY1+1
         lxi     de, BATTYBUF
         call    ShiftBitmap
@@ -662,7 +669,9 @@ FillBattyBuf
         push    hl
         push    de
         call    ShiftBitmap
-        lxi     bc, 64
+        lda     PhaseSize
+        mov     c, a
+        mvi     b, 0
         pop     hl
         dad     bc
         xchg
@@ -935,6 +944,7 @@ Y             db      0
 Count           db      0
 Count1          db      0
 BitmapWidth     db      0
+PhaseSize       db      0
 
 BmpPtr          dw      0
 
