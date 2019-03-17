@@ -31,8 +31,8 @@ LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
-BALLINITSPEED           equ     5
-DEFAULTBATTYSPEED       equ     3
+DEFAULTBALLDELAY        equ     5
+DEFAULTBattyDelay       equ     3
 
         org     100h
 
@@ -68,8 +68,8 @@ VeryBegin
         mvi     a, 10
         sta     BattyPos
 
-        mvi     a, BALLINITSPEED
-        sta     BallSpeed
+        mvi     a, DEFAULTBALLDELAY
+        sta     BallDelay
 
 ; Кирпич 1
         lxi     bc, 0400h
@@ -215,30 +215,30 @@ HouseKeeping
 ; Дубопроцессор
 ; *************************************************
 ProcessBatty
-        lda     BattySpeed
+        lda     BattyDelay
         ora     a
         jz      L1F2
         dcr     a
-        sta     BattySpeed
+        sta     BattyDelay
         ret
 L1F2        
-        mvi     a, DEFAULTBATTYSPEED
-        sta     BattySpeed
+        mvi     a, DEFAULTBattyDelay
+        sta     BattyDelay
         ret
 
 ; *************************************************
 ; Мячевой процессинг
 ; *************************************************
 ProcessBall
-        lda     BallSpeed
+        lda     BallDelay
         ora     a
         jz      L1ea
         dcr     a
-        sta     BallSpeed
+        sta     BallDelay
         ret
 L1ea
-        mvi     a, BALLINITSPEED
-        sta     BallSpeed
+        mvi     a, DEFAULTBALLDELAY
+        sta     BallDelay
         
         call    EraseBall
         lhld    BallCoords
@@ -989,11 +989,11 @@ BmpPtr          dw      0
 ; Координаты мячика
 BallCoords      dw      0
 ; Скорость мячика
-BallSpeed
+BallDelay
 ; Позиция ракетки
 BattyPos        db      10
 ; Скорость ракетки
-BattySpeed      db      DEFAULTBATTYSPEED
+BattyDelay      db      DEFAULTBattyDelay
 ; Псевдослучайность
 RNG             db      0
 ; Обратный отсчет для хаускипера
