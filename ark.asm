@@ -286,13 +286,10 @@ L1ea
         
         call    EraseBall
 
-
-
         lda     BallDX
         mov     c, a
         ora     a
         jm      DcrX
-        
         
         lda     BallX
         add     c
@@ -313,16 +310,33 @@ DcrX
         mvi     a, 1
         sta     BallDX
 
-
-
-
-
-        
 CheckY        
+        lda     BallDY
+        mov     c, a
+        ora     a
+        jm      DcrY
+        
         lda     BallY
-        inr     a
+        add     c
         sta     BallY
+        cpi     240
+        jnz     ContY
+        mvi     a, -1
+        sta     BallDY
+ContY
+        jmp     CheckDone
 
+DcrY
+        lda     BallY
+        add     c
+        sta     BallY
+        cpi     16
+        jnz     CheckDone
+        mvi     a, 1
+        sta     BallDY
+
+CheckDone
+        
         call    PaintBall
         ret
 
@@ -522,7 +536,7 @@ ApplyColors
         out     VIDEO
         jmp     Begin
         
-DELAY   equ     0500h
+DELAY   equ     0100h
 ; *********************
 ; Маленькая задержечка
 ; *********************
