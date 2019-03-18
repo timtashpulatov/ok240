@@ -347,7 +347,19 @@ CheckDone
 ; *************************************************
 CheckBrick
         lxi     hl, LEVEL_1
+        mvi     b, 0
+        lda     BallY
+        ani     0b11111000
+        ral
+        mov     c, a
+        mvi     a, 0
+        adc     b
+        mov     b, a
+        dad     bc      ; теперь в HL указатель на кирпич
         
+        mvi     m, 255
+        
+
         ret
 
 ; *************************************************
