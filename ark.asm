@@ -337,7 +337,17 @@ DcrY
 
 CheckDone
         
+        call    CheckBrick
+        
         call    PaintBall
+        ret
+
+; *************************************************
+; Вот сошлись кирпич и мяч
+; *************************************************
+CheckBrick
+        lxi     hl, LEVEL_1
+        
         ret
 
 ; *************************************************
@@ -368,7 +378,8 @@ GoBall
         ani     3eh
         mov     b, a
         
-        call    PaintHorizontalBitmap2
+        ;call    PaintHorizontalBitmap2
+        call    PaintHorizontalBitmap1
         ret
 
 ; *************************************************
@@ -742,6 +753,10 @@ MYCHAROUT
         call    CHAROUT
         ret
 
+PaintHorizontalBitmap1
+        mvi     e, 1
+        jmp     PHLoop
+        
 PaintHorizontalBitmap2
         mvi     e, 2
         jmp     PHLoop
