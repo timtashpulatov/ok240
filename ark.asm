@@ -367,6 +367,9 @@ CheckBrick
         mvi     b, 0
         dad     bc
         
+        mov     a, m
+        ora     a
+        jz      .+5
         mvi     m, 255
         
 
