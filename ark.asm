@@ -355,7 +355,17 @@ CheckBrick
         mvi     a, 0
         adc     b
         mov     b, a
-        dad     bc      ; теперь в HL указатель на кирпич
+        dad     bc      ; теперь в HL указатель на строку с кирпичом
+        
+        lda     BallX
+        ora     a
+        rar
+        rar
+        rar
+        rar
+        mov     c, a
+        mvi     b, 0
+        dad     bc
         
         mvi     m, 255
         
