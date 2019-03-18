@@ -286,18 +286,39 @@ L1ea
         
         call    EraseBall
 
-        lda     BallX
+
+
+        lda     BallDX
         mov     c, a
-        lda     BallDX
-        add     c
-        jnc     CheckY
-        lda     BallDX
-        cma
-        sta     BallDX
-        add     c
-CheckY
-        sta     BallX
+        ora     a
+        jm      DcrX
         
+        
+        lda     BallX
+        add     c
+        sta     BallX
+        cpi     240
+        jnz     ContX
+        mvi     a, -1
+        sta     BallDX
+ContX           
+        jmp     CheckY
+
+DcrX
+        lda     BallX
+        add     c
+        sta     BallX
+        cpi     16
+        jnz     CheckY
+        mvi     a, 1
+        sta     BallDX
+
+
+
+
+
+        
+CheckY        
         lda     BallY
         inr     a
         sta     BallY
