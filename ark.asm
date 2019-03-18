@@ -294,7 +294,7 @@ L1ea
         lda     BallX
         add     c
         sta     BallX
-        cpi     240
+        cpi     216
         jnz     ContX
         mvi     a, -1
         sta     BallDX
@@ -305,7 +305,7 @@ DcrX
         lda     BallX
         add     c
         sta     BallX
-        cpi     16
+        cpi     32
         jnz     CheckY
         mvi     a, 1
         sta     BallDX
@@ -319,7 +319,7 @@ CheckY
         lda     BallY
         add     c
         sta     BallY
-        cpi     240
+        cpi     232
         jnz     ContY
         mvi     a, -1
         sta     BallDY
@@ -536,7 +536,7 @@ ApplyColors
         out     VIDEO
         jmp     Begin
         
-DELAY   equ     0100h
+DELAY   equ     0200h
 ; *********************
 ; Маленькая задержечка
 ; *********************
