@@ -36,10 +36,10 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
-DEFAULTBALLX    equ     75h
-DEFAULTBALLY    equ     75h
+DEFAULTBALLX    equ     32
+DEFAULTBALLY    equ     224
 DEFAULTBALLDX   equ     1
-DEFAULTBALLDY   equ     1
+DEFAULTBALLDY   equ     -1
 
         org     100h
 
@@ -347,26 +347,39 @@ CheckDone
 ; *************************************************
 CheckBrick
         lxi     hl, LEVEL_1
-        mvi     b, 0
+        
         lda     BallY
-        ani     0b11111000
-        ral
-        mov     c, a
+        rlc
+        push    a
+        
         mvi     a, 0
-        adc     b
-        mov     b, a
-        dad     bc      ; теперь в HL указатель на строку с кирпичом
+        adc     h
+        mov     h, a
+        pop     a
+        ani     0b11110000
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
         
+             ; теперь в HL указатель на строку с кирпичом
+
         lda     BallX
-        ora     a
         rar
         rar
         rar
         rar
-        mov     c, a
-        mvi     b, 0
-        dad     bc
+
+        ani     0fh
+
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
         
+
         mov     a, m
         ora     a
         jz      .+5
@@ -1116,7 +1129,7 @@ BATTY1  db      4
 NOBATTY db      4
         ds      64
 
-
+        .org 900h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
