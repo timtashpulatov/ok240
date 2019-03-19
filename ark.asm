@@ -36,8 +36,8 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
-DEFAULTBALLX    equ     16
-DEFAULTBALLY    equ     128
+DEFAULTBALLX    equ     75h
+DEFAULTBALLY    equ     75h
 DEFAULTBALLDX   equ     1
 DEFAULTBALLDY   equ     1
 
@@ -370,7 +370,7 @@ CheckBrick
         mov     a, m
         ora     a
         jz      .+5
-        mvi     m, 255
+        mvi     m, 1
         
 
         ret
@@ -572,7 +572,7 @@ ApplyColors
         out     VIDEO
         jmp     Begin
         
-DELAY   equ     0200h
+DELAY   equ     0100h
 ; *********************
 ; Маленькая задержечка
 ; *********************
