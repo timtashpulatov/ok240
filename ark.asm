@@ -383,20 +383,21 @@ CheckBrick
         mov     a, m
         ora     a
         jz      CheckBrickDone
-        mvi     m, 0
+        ;mvi     m, 0
         
         ; стереть кирпич на экране
         ;
         lda     BallX
         rar
         rar
-        ani     03fh
+        
+        ani     03ch
         mov     b, a
         
-;        lda     BallY
- ;       ani     0f8h
-  ;      mov     b, a
-        mvi    c, 0     
+        lda     BallY
+        ani     0f8h
+        mov    c, a
+        ;mvi    c, 0     
         
         xra   a
         call  PaintBrick1
