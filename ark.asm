@@ -297,13 +297,11 @@ DcrX
         add     c
         sta     BallX
         cmp     b
-        jnz     ContX
+        jnz     CheckY
         lda     BallDX
         cma
         inr     a
         sta     BallDX
-ContX           
-        jmp     CheckY
 
 CheckY        
         lda     BallDY
