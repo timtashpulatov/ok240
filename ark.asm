@@ -289,26 +289,21 @@ L1ea
         lda     BallDX
         mov     c, a
         ora     a
+        mvi     b, 32
         jm      DcrX
-        
+        mvi     b, 216
+DcrX        
         lda     BallX
         add     c
         sta     BallX
-        cpi     216
+        cmp     b
         jnz     ContX
-        mvi     a, -1
+        lda     BallDX
+        cma
+        inr     a
         sta     BallDX
 ContX           
         jmp     CheckY
-
-DcrX
-        lda     BallX
-        add     c
-        sta     BallX
-        cpi     32
-        jnz     CheckY
-        mvi     a, 1
-        sta     BallDX
 
 CheckY        
         lda     BallDY
