@@ -336,9 +336,19 @@ DcrY
         sta     BallDY
 
 CheckDone
+
+        lda     BallY
+        ani     7
+        jnz      CheckDone1
+        
+         call    PaintBall
+        call    KBDSTAT
+        jz      CheckDone
+        call    KBDREAD
         
         call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
                                 ; границы кирпичной сетки
+CheckDone1                                
         
         call    PaintBall
         ret
@@ -441,8 +451,8 @@ GoBall
         ani     3eh
         mov     b, a
         
-        ;call    PaintHorizontalBitmap2
-        call    PaintHorizontalBitmap1
+        call    PaintHorizontalBitmap2
+        ;call    PaintHorizontalBitmap1
         ret
 
 ; *************************************************
