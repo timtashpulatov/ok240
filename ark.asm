@@ -337,7 +337,8 @@ DcrY
 
 CheckDone
         
-        call    CheckBrick
+        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
+                                ; границы кирпичной сетки
         
         call    PaintBall
         ret
@@ -383,10 +384,18 @@ CheckBrick
         mov     a, m
         ora     a
         jz      CheckBrickDone
-        ;mvi     m, 0
+        mvi     m, 0
         
-        ; стереть кирпич на экране
-        ;
+        call    DestroyBrick
+        
+CheckBrickDone
+        
+        ret
+        
+; *************************************************
+; Стереть кирпич
+; *************************************************
+DestroyBrick
         lda     BallX
         rar
         rar
@@ -397,13 +406,10 @@ CheckBrick
         lda     BallY
         ani     0f8h
         mov    c, a
-        ;mvi    c, 0     
+        mvi    c, 0     
         
         xra   a
         call  PaintBrick1
-        
-CheckBrickDone
-        
 
         ret
 
