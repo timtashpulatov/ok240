@@ -406,7 +406,7 @@ DestroyBrick
         lda     BallY
         ani     0f8h
         mov    c, a
-        mvi    c, 0     
+        ;mvi    c, 0     
         
         xra   a
         call  PaintBrick1
