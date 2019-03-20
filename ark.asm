@@ -309,25 +309,18 @@ CheckY
         lda     BallDY
         mov     c, a
         ora     a
+        mvi     b, 16
         jm      DcrY
-        
+        mvi     b, 232
+DcrY        
         lda     BallY
         add     c
         sta     BallY
-        cpi     232
-        jnz     ContY
-        mvi     a, -1
-        sta     BallDY
-ContY
-        jmp     CheckDone
-
-DcrY
-        lda     BallY
-        add     c
-        sta     BallY
-        cpi     16
+        cmp     b
         jnz     CheckDone
-        mvi     a, 1
+        lda     BallDY
+        cma
+        inr     a
         sta     BallDY
 
 CheckDone
