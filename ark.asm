@@ -53,14 +53,8 @@ VeryBegin
         out     VIDEO
         call    ResetScroll
         call    ClearScreen
-
-
-
-
-; Инициализация важных и нужных переменных
-        ;call    InitCTAKAH
         
-
+; Инициализация важных и нужных переменных
         lxi     hl, HKCOUNT
         shld    SPEED
         shld    CountDown
@@ -400,7 +394,15 @@ CheckBrick
         adc     h
         mov     h, a
 ; теперь в HL указатель на строку с кирпичом
+        mvi     c, 0
+        lda     BallDX
+        rlc
+        jc      .+5
+        mvi     c, 7
+        
         lda     BallX
+        add     c
+        
         rar
         rar
         rar
@@ -424,8 +426,17 @@ CheckBrick
 DestroyBrick
         push    hl
         push    bc
+
+; hack
+        mvi     c, 0
+        lda     BallDX
+        rlc
+        jc      .+5
+        mvi     c, 7
+
         
         lda     BallX
+        add     c       ; hack
         rar
         rar
         
