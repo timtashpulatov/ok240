@@ -294,11 +294,17 @@ L1ea
         jm      DcrX
         mvi     b, 216
 DcrX        
-        ldax    de
-        add     m
-        mov     m, a
+        ldax    de              ; взять шаг
+        add     m               ; прибавить к X
+        mov     m, a            ; и записать
+; проверить на границы поля        
         cmp     b
+        jz      ReflectX
+; проверить на кирпич
         jnz     CheckY
+        
+; изменить направление движения по горизонтали
+ReflectX
         ldax    de
         cma
         inr     a
