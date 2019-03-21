@@ -374,7 +374,6 @@ CheckDone1
 ; *************************************************
 CheckBrick
         lxi     hl, LEVEL_1
-        
         lda     BallY
         
 ;        adi     7       ; hack
@@ -385,6 +384,7 @@ CheckBrick
         mvi     a, 0
         adc     h
         mov     h, a
+        
         pop     a
         ani     0b11110000
         add     l
@@ -407,7 +407,6 @@ CheckBrick
         adc     h
         mov     h, a
 ; а теперь в HL указатель на конкретный кирпич
-
         mov     a, m
         ora     a
         ret
