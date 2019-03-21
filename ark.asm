@@ -38,7 +38,7 @@ BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     40h     ;32
 DEFAULTBALLY    equ     20h     ;224
-DEFAULTBALLDX   equ     1
+DEFAULTBALLDX   equ     0       ; debug Y first ; 1
 DEFAULTBALLDY   equ     1       ;-1
 
         org     100h
@@ -377,7 +377,7 @@ CheckBrick
         
         lda     BallY
         
-        adi     7       ; hack
+;        adi     7       ; hack
         
         rlc
         push    a
@@ -428,7 +428,7 @@ DestroyBrick
         
         lda     BallY
         
-        adi     7       ; hack
+ ;       adi     7       ; hack
         
         ani     0f8h
         mov    c, a
