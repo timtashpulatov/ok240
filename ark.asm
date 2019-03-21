@@ -38,8 +38,8 @@ BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     40h     ;32
 DEFAULTBALLY    equ     20h     ;224
-DEFAULTBALLDX   equ     0       ; debug Y first ; 1
-DEFAULTBALLDY   equ     1       ;-1
+DEFAULTBALLDX   equ     1       ; debug Y first ; 1
+DEFAULTBALLDY   equ     -1
 
         org     100h
 
@@ -345,15 +345,15 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-         call    PaintBall
-        call    KBDSTAT
-        jz      CheckDone
-        call    KBDREAD
-        cpi     1bh
-        jnz     CheckDone1
-        call    PaintBall
-        pop     a
-        jmp     WARMBOOT
+        ;  call    PaintBall
+        ; call    KBDSTAT
+        ; jz      CheckDone
+        ; call    KBDREAD
+        ; cpi     1bh
+        ; jnz     CheckDone1
+        ; call    PaintBall
+        ; pop     a
+        ; jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
