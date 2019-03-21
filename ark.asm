@@ -287,22 +287,22 @@ L1ea
         call    EraseBall
 
         lxi     hl, BallX
-        lda     BallDX
-        mov     c, a
+        lxi     de, BallDX
+        ldax    de      ;lda     BallDX
         ora     a
         mvi     b, 32
         jm      DcrX
         mvi     b, 216
 DcrX        
-        mov     a, c
+        ldax    de
         add     m
         mov     m, a
         cmp     b
         jnz     CheckY
-        lda     BallDX
+        ldax    de
         cma
         inr     a
-        sta     BallDX
+        stax    de
 
 CheckY        
         lxi     hl, BallY
