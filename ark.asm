@@ -327,8 +327,15 @@ DcrY
         ldax    de
         add     m
         mov     m, a
+        
         cmp     b
-        jnz     CheckDone
+        jz      ReflectY
+        call    CheckBrick
+        jz      CheckDone
+        mvi     m, 0
+        call    DestroyBrick
+        
+ReflectY        
         ldax    de
         cma
         inr     a
