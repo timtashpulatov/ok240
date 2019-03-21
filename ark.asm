@@ -303,7 +303,9 @@ DcrX
 ; проверить на кирпич
         call    CheckBrick      ; TODO не на каждом же шаге?
         jz      CheckY
-; выбить кирпич        
+; выбить кирпич
+        mvi     m, 0            ; TODO и пометить где-то, что кирпич надо стереть с экрана
+        call    DestroyBrick
         
 ; изменить направление движения по горизонтали
 ReflectX
@@ -354,7 +356,6 @@ CheckDone
 ; Вот сошлись кирпич и мяч
 ; *************************************************
 CheckBrick
-        push    hl
         lxi     hl, LEVEL_1
         
         lda     BallY
@@ -371,9 +372,7 @@ CheckBrick
         mvi     a, 0
         adc     h
         mov     h, a
-        
-             ; теперь в HL указатель на строку с кирпичом
-
+; теперь в HL указатель на строку с кирпичом
         lda     BallX
         rar
         rar
@@ -387,7 +386,8 @@ CheckBrick
         mvi     a, 0
         adc     h
         mov     h, a
-        
+; а теперь в HL указатель на конкретный кирпич
+
 
         mov     a, m
         ora     a
@@ -397,13 +397,16 @@ CheckBrick
 ;        call    DestroyBrick
         
 ;CheckBrickDone
-        pop     hl
+        
         ret
         
 ; *************************************************
 ; Стереть кирпич
 ; *************************************************
 DestroyBrick
+        push    hl
+        push    bc
+        
         lda     BallX
         rar
         rar
@@ -419,6 +422,8 @@ DestroyBrick
         xra   a
         call  PaintBrick1
 
+        pop     bc
+        pop     hl
         ret
 
 ; *************************************************
