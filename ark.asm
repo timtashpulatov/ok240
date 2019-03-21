@@ -327,11 +327,13 @@ DcrY
         ldax    de
         add     m
         mov     m, a
-        
+; проверить на границы поля        
         cmp     b
         jz      ReflectY
+; проверить на кирпич        
         call    CheckBrick
         jz      CheckDone
+; выбить кирпич
         mvi     m, 0
         call    DestroyBrick
         
