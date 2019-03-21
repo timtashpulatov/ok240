@@ -306,23 +306,22 @@ DcrX
 
 CheckY        
         lxi     hl, BallY
-        lda     BallDY
-        mov     c, a
+        lxi     de, BallDY
+        ldax    de      ;lda     BallDY
         ora     a
         mvi     b, 16
         jm      DcrY
         mvi     b, 232
 DcrY        
-        ;lda     BallY
-        mov     a, c
+        ldax    de
         add     m
         mov     m, a
         cmp     b
         jnz     CheckDone
-        lda     BallDY
+        ldax    de
         cma
         inr     a
-        sta     BallDY
+        stax    de
 
 CheckDone
 
