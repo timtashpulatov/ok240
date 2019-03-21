@@ -303,8 +303,8 @@ DcrX
         call    CheckBrick      ; TODO не на каждом же шаге?
         jz      CheckY
 ; выбить кирпич
-        ani     0b10000000      ; признак очень твердого кирпича
-        jnz     ReflectX
+        rlc                     ; признак очень твердого кирпича
+        jc      ReflectX
         mvi     m, 0            ; TODO и пометить где-то, что кирпич надо стереть с экрана
         call    DestroyBrick
         
@@ -334,8 +334,8 @@ DcrY
         call    CheckBrick
         jz      CheckDone
 ; выбить кирпич
-        ani     0b10000000      ; признак очень твердого кирпича
-        jnz     ReflectY
+        rlc                     ; признак очень твердого кирпича
+        jc      ReflectY
         mvi     m, 0
         call    DestroyBrick
         
@@ -347,19 +347,19 @@ ReflectY
 
 CheckDone
 
-        lda     BallY
-        ani     7
-        jnz      CheckDone1
+;        lda     BallY
+;        ani     7
+;        jnz      CheckDone1
         
          call    PaintBall
-;        call    KBDSTAT
-;        jz      CheckDone
-;        call    KBDREAD
-;        cpi     1bh
-;        jnz     CheckDone1
-;        call    PaintBall
-;        pop     a
-;        jmp     WARMBOOT
+        call    KBDSTAT
+        jz      CheckDone
+        call    KBDREAD
+        cpi     1bh
+        jnz     CheckDone1
+        call    PaintBall
+        pop     a
+        jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
