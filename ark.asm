@@ -285,10 +285,10 @@ L1ea
         sta     BallDelay
         
         call    EraseBall
-
+; займемся координатой по горизонтали X
         lxi     hl, BallX
         lxi     de, BallDX
-        ldax    de      ;lda     BallDX
+        ldax    de
         ora     a
         mvi     b, 32
         jm      DcrX
@@ -305,9 +305,10 @@ DcrX
         stax    de
 
 CheckY        
+; займемся координатой по вертикали Y
         lxi     hl, BallY
         lxi     de, BallDY
-        ldax    de      ;lda     BallDY
+        ldax    de
         ora     a
         mvi     b, 16
         jm      DcrY
