@@ -374,9 +374,16 @@ CheckDone1
 ; *************************************************
 CheckBrick
         lxi     hl, LEVEL_1
+
+; hack
+        mvi     c, 0
+        lda     BallDY
+        rlc
+        jc      .+5
+        mvi     c, 7
+
         lda     BallY
-        
-;        adi     7       ; hack
+        add     c               ; hack
         
         rlc
         push    a
@@ -424,10 +431,20 @@ DestroyBrick
         
         ani     03ch
         mov     b, a
+
+; hack
+        mvi     c, 0
+        lda     BallDY
+        rlc
+        jc      .+5
+        mvi     c, 7
+
+
         
         lda     BallY
+        add     c       ; hack
         
- ;       adi     7       ; hack
+
         
         ani     0f8h
         mov    c, a
