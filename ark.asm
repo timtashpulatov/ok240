@@ -301,7 +301,9 @@ DcrX
         cmp     b
         jz      ReflectX
 ; проверить на кирпич
-        jnz     CheckY
+        call    CheckBrick      ; TODO не на каждом же шаге?
+        jz      CheckY
+; выбить кирпич        
         
 ; изменить направление движения по горизонтали
 ReflectX
@@ -341,9 +343,9 @@ CheckDone
 ;        jz      CheckDone
 ;        call    KBDREAD
         
-        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
+;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
                                 ; границы кирпичной сетки
-CheckDone1                                
+;CheckDone1                                
         
         call    PaintBall
         ret
@@ -352,6 +354,7 @@ CheckDone1
 ; Вот сошлись кирпич и мяч
 ; *************************************************
 CheckBrick
+        push    hl
         lxi     hl, LEVEL_1
         
         lda     BallY
@@ -388,13 +391,13 @@ CheckBrick
 
         mov     a, m
         ora     a
-        jz      CheckBrickDone
-        mvi     m, 0
+;        jz      CheckBrickDone
+;        mvi     m, 0
         
-        call    DestroyBrick
+;        call    DestroyBrick
         
-CheckBrickDone
-        
+;CheckBrickDone
+        pop     hl
         ret
         
 ; *************************************************
