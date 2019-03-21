@@ -36,7 +36,7 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
-DEFAULTBALLX    equ     32
+DEFAULTBALLX    equ     40h     ;32
 DEFAULTBALLY    equ     20h     ;224
 DEFAULTBALLDX   equ     1
 DEFAULTBALLDY   equ     1       ;-1
@@ -376,6 +376,9 @@ CheckBrick
         lxi     hl, LEVEL_1
         
         lda     BallY
+        
+        adi     7       ; hack
+        
         rlc
         push    a
         
@@ -424,6 +427,9 @@ DestroyBrick
         mov     b, a
         
         lda     BallY
+        
+        adi     7       ; hack
+        
         ani     0f8h
         mov    c, a
         ;mvi    c, 0     
