@@ -305,6 +305,7 @@ DcrX
         sta     BallDX
 
 CheckY        
+        lxi     hl, BallY
         lda     BallDY
         mov     c, a
         ora     a
@@ -312,9 +313,10 @@ CheckY
         jm      DcrY
         mvi     b, 232
 DcrY        
-        lda     BallY
-        add     c
-        sta     BallY
+        ;lda     BallY
+        mov     a, c
+        add     m
+        mov     m, a
         cmp     b
         jnz     CheckDone
         lda     BallDY
@@ -324,14 +326,14 @@ DcrY
 
 CheckDone
 
-        lda     BallY
-        ani     7
-        jnz      CheckDone1
+;        lda     BallY
+ ;       ani     7
+  ;      jnz      CheckDone1
         
-         call    PaintBall
-        call    KBDSTAT
-        jz      CheckDone
-        call    KBDREAD
+;         call    PaintBall
+;        call    KBDSTAT
+;        jz      CheckDone
+;        call    KBDREAD
         
         call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
                                 ; границы кирпичной сетки
