@@ -39,7 +39,7 @@ BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     32
 DEFAULTBALLY    equ     20h     ;224
 DEFAULTBALLDX   equ     1
-DEFAULTBALLDY   equ     -1
+DEFAULTBALLDY   equ     1       ;-1
 
         org     100h
 
@@ -294,8 +294,7 @@ L1ea
         jm      DcrX
         mvi     b, 216
 DcrX        
-        ldax    de              ; взять шаг
-        add     m               ; прибавить к X
+        add     m               ; прибавить к X шаг
         mov     m, a            ; и записать
 ; проверить на границы поля        
         cmp     b
@@ -326,8 +325,7 @@ CheckY
         jm      DcrY
         mvi     b, 232
 DcrY        
-        ldax    de
-        add     m
+        add     m               ; прибавить к X шаг
         mov     m, a
 ; проверить на границы поля        
         cmp     b
@@ -354,14 +352,14 @@ CheckDone
         jnz      CheckDone1
         
          call    PaintBall
-        call    KBDSTAT
-        jz      CheckDone
-        call    KBDREAD
-        cpi     1bh
-        jnz     CheckDone1
-        call    PaintBall
-        pop     a
-        jmp     WARMBOOT
+;        call    KBDSTAT
+;        jz      CheckDone
+;        call    KBDREAD
+;        cpi     1bh
+;        jnz     CheckDone1
+;        call    PaintBall
+;        pop     a
+;        jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
@@ -407,16 +405,8 @@ CheckBrick
         mov     h, a
 ; а теперь в HL указатель на конкретный кирпич
 
-
         mov     a, m
         ora     a
-;        jz      CheckBrickDone
-;        mvi     m, 0
-        
-;        call    DestroyBrick
-        
-;CheckBrickDone
-        
         ret
         
 ; *************************************************
