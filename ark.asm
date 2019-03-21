@@ -37,7 +37,7 @@ BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     32
-DEFAULTBALLY    equ     224
+DEFAULTBALLY    equ     20h     ;224
 DEFAULTBALLDX   equ     1
 DEFAULTBALLDY   equ     -1
 
@@ -304,6 +304,8 @@ DcrX
         call    CheckBrick      ; TODO не на каждом же шаге?
         jz      CheckY
 ; выбить кирпич
+        ani     0b10000000      ; признак очень твердого кирпича
+        jnz     ReflectX
         mvi     m, 0            ; TODO и пометить где-то, что кирпич надо стереть с экрана
         call    DestroyBrick
         
@@ -334,6 +336,8 @@ DcrY
         call    CheckBrick
         jz      CheckDone
 ; выбить кирпич
+        ani     0b10000000      ; признак очень твердого кирпича
+        jnz     ReflectY
         mvi     m, 0
         call    DestroyBrick
         
@@ -345,18 +349,24 @@ ReflectY
 
 CheckDone
 
-;        lda     BallY
- ;       ani     7
-  ;      jnz      CheckDone1
+        lda     BallY
+        ani     7
+        jnz      CheckDone1
         
-;         call    PaintBall
-;        call    KBDSTAT
-;        jz      CheckDone
-;        call    KBDREAD
+         call    PaintBall
+        call    KBDSTAT
+        jz      CheckDone
+        call    KBDREAD
+        cpi     1bh
+        jnz     CheckDone1
+        call    PaintBall
+        pop     a
+        jmp     WARMBOOT
+        
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
                                 ; границы кирпичной сетки
-;CheckDone1                                
+CheckDone1                                
         
         call    PaintBall
         ret
@@ -509,6 +519,9 @@ DrawLevel
         lxi     hl, LEVEL_1
 DLLoop
         mov     a, m
+        
+        ani     0fh
+        
         inx     hl
         push    hl
         lhld    X
@@ -1186,7 +1199,7 @@ LEVEL_1
         db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
         db      0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0
         db      0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
-        db      0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
+        db      0, 2, 0, 0, 0, 0, 81h, 0, 81h, 0, 0, 0, 0, 0, 3, 0
         db      0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
         db      0, 2, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 3, 0
         db      0, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0
