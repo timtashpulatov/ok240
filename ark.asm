@@ -497,7 +497,7 @@ PaintBall
         lxi     hl, BALL
         lda     BallX
         ani     7
-        jz      GoBall
+        jz      GoBall0
         
         lxi     hl, BALLPHASES
         lxi     bc, 32
@@ -548,7 +548,8 @@ RenderBall
         lxi     de, BALLBUF
         mvi     c, 32
 RBLoop        
-        mov     a, m
+        ldax    de
+        ora     m
         stax    de
         inx     hl
         inx     de
@@ -564,7 +565,17 @@ RBLoop
 ; Отрендерить кирпичи
 ; *************************************************
 RenderBricks
-        lxi     hl, LEVEL_1
+        ;lxi     hl, LEVEL_1
+        lxi     hl, LEFTBRICK
+        lxi     de, BALLBUF
+        mvi     c, 32
+RenderBrickLoop        
+        mov     a, m
+        stax    de
+        inx     hl
+        inx     de
+        dcr     c
+        jnz     RenderBrickLoop
         ret
 
 
