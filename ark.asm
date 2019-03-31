@@ -740,12 +740,22 @@ PlaneDone
         ei
         ret
 
+; *************************************************
+; Скопировать 8 байт битмапа с разными логическими функциями
+; *************************************************
+OP_NOP  equ     000h
+OP_OR   equ     0b6h
+OP_XOR  equ     0aeh
 Copy8
         push    h
         push    d
         push    a
         mvi     c, 8
 PBLoop  ldax    d
+
+OPERATION
+        db      OP_NOP
+        
         mov     m, a
         inx     d
         inx     h
