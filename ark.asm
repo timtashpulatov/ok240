@@ -85,6 +85,9 @@ VeryBegin
         mvi     a, DEFAULTBALLDY
         sta     BallDY
 
+        lxi     hl, BALL
+        shld    BALLPHASE
+
 ; Кирпич 1
         lxi     bc, 0400h
         lxi     hl, BRICK1
@@ -419,6 +422,10 @@ CheckBrick
         mov     a, m
         ora     a
         ret
+
+; *************************************************
+; 
+; *************************************************
         
 ; *************************************************
 ; Стереть кирпич
@@ -486,21 +493,24 @@ PaintBall
 ;        sta     OPERATION
         
         
-          call        RenderBall
-          lxi   hl, BALLBUF
-          jmp   GoBall
         
         lxi     hl, BALL
         lda     BallX
         ani     7
         jz      GoBall
+        
         lxi     hl, BALLPHASES
         lxi     bc, 32
 PaintBallLoop
         dcr     a
-        jz      GoBall
+        jz      GoBall0
         dad     bc
         jmp     PaintBallLoop
+GoBall0 shld    BALLPHASE
+
+          call        RenderBall
+          lxi   hl, BALLBUF
+
 
 GoBall
         lda     BallY
@@ -527,17 +537,18 @@ RenderBall
         push    de
         push    bc
         ; TODO отрендерить в буфер кусок фона
+        
         ; TODO отрендерить в буфер кирпич
+        call    RenderBricks
+        
         ; TODO отрендерить в буфер злецов (if any)
       
         ; Наложим поверх мячик (по OR)
-        lxi     de, BALL        ; TODO адрес текущей фазы мячика
-        lxi     hl, BALLBUF
+        lhld    BALLPHASE        ; TODO адрес текущей фазы мячика BALLPHASE
+        lxi     de, BALLBUF
         mvi     c, 32
 RBLoop        
-        ldax    de
-        ;ora     m
-        mov     m, a
+        mov     a, m
         stax    de
         inx     hl
         inx     de
@@ -547,6 +558,13 @@ RBLoop
         pop     bc
         pop     de
         pop     hl
+        ret
+
+; *************************************************
+; Отрендерить кирпичи
+; *************************************************
+RenderBricks
+        lxi     hl, LEVEL_1
         ret
 
 
@@ -1323,6 +1341,7 @@ BallY           db      0
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
+BallPhase       dw      BALL
 
 BattyPos        db      10                      ; Позиция ракетки
 BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
