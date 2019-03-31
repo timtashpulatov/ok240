@@ -476,14 +476,19 @@ EraseBall
 ;        mvi     a, OP_XOR
 ;        sta     OPERATION
 
- ;       lxi     hl, NOBATTY+1
- ;       jmp     GoBall
-        ret
+       lxi     hl, NOBATTY+1
+       jmp     GoBall
+
  
 PaintBall
         ; Установить режим вывода по OR
-        mvi     a, OP_OR
-        sta     OPERATION
+;        mvi     a, OP_OR
+;        sta     OPERATION
+        
+        
+          call        RenderBall
+          lxi   hl, BALLBUF
+          jmp   GoBall
         
         lxi     hl, BALL
         lda     BallX
@@ -509,10 +514,41 @@ GoBall
         call    PaintHorizontalBitmap2
         ;call    PaintHorizontalBitmap1
         ; Восстановить режим вывода
-        mvi     a, OP_NOP
-        sta     OPERATION
+;        mvi     a, OP_NOP
+;        sta     OPERATION
         
         ret
+
+; *************************************************
+; Отрендерить мячик
+; *************************************************
+RenderBall
+        push    hl
+        push    de
+        push    bc
+        ; TODO отрендерить в буфер кусок фона
+        ; TODO отрендерить в буфер кирпич
+        ; TODO отрендерить в буфер злецов (if any)
+      
+        ; Наложим поверх мячик (по OR)
+        lxi     de, BALL        ; TODO адрес текущей фазы мячика
+        lxi     hl, BALLBUF
+        mvi     c, 32
+RBLoop        
+        ldax    de
+        ;ora     m
+        mov     m, a
+        stax    de
+        inx     hl
+        inx     de
+        dcr     c
+        jnz     RBLoop
+        
+        pop     bc
+        pop     de
+        pop     hl
+        ret
+
 
 ; *************************************************
 ; Нарисовать/стереть дубину
@@ -768,8 +804,8 @@ Copy8
         mvi     c, 8
 PBLoop  ldax    d
 
-OPERATION
-        db      OP_NOP
+;OPERATION
+;        db      OP_NOP
         
         mov     m, a
         inx     d
@@ -1236,7 +1272,7 @@ BATTY1  db      4
 NOBATTY db      4
         ds      64
 
-        .org 900h
+        .org 0A00h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
@@ -1253,8 +1289,8 @@ LEVEL_1
         db      0, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3, 0
         db      0, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 0
         db      0, 2, 11,11,11,11,11,11,11,11,11,11,11,11,3, 0
-        db      0, 2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 3, 0
         db      0, 2, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 3, 0
+        db      0, 2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 3, 0        
         db      0, 2, 7, 7, 8, 8, 9, 9, 8, 8, 7, 7, 6, 6, 3, 0
         db      0, 2, 9,10,11,12, 9,10,11,12, 9,10,11,12, 3, 0
         db      0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
@@ -1296,7 +1332,7 @@ BattyDirection  db      0
 RNG             db      0
 ; Обратный отсчет для хаускипера
 CountDown       dw      0
-; Score   (.)(.)
+; Score
 SCORE           db      0
 ; Level
 LEVEL           db      1
@@ -1312,8 +1348,13 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
 
+; *********************************************************************
+; Буфера (.)(.)
+; *********************************************************************
+;        db      24        
+; Буфер мячика
+BALLBUF         ds      32      ; сюда будут отрисовываться фон, кирпичики и сам мячик для последующего вывода
 
-        db      24        
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
 ; Фазы мячика
