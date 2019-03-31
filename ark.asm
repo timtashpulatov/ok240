@@ -345,15 +345,15 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-        ;  call    PaintBall
-        ; call    KBDSTAT
-        ; jz      CheckDone
-        ; call    KBDREAD
-        ; cpi     1bh
-        ; jnz     CheckDone1
-        ; call    PaintBall
-        ; pop     a
-        ; jmp     WARMBOOT
+         call    PaintBall
+        call    KBDSTAT
+        jz      CheckDone
+        call    KBDREAD
+        cpi     1bh
+        jnz     CheckDone1
+        call    PaintBall
+        pop     a
+        jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
@@ -472,9 +472,19 @@ DestroyBrick
 ; А мячик скиньте?
 ; *************************************************
 EraseBall
-        lxi     hl, NOBATTY+1
-        jmp     GoBall
+        ; Установить режим вывода по OR
+;        mvi     a, OP_XOR
+;        sta     OPERATION
+
+ ;       lxi     hl, NOBATTY+1
+ ;       jmp     GoBall
+        ret
+ 
 PaintBall
+        ; Установить режим вывода по OR
+        mvi     a, OP_OR
+        sta     OPERATION
+        
         lxi     hl, BALL
         lda     BallX
         ani     7
@@ -498,6 +508,10 @@ GoBall
         
         call    PaintHorizontalBitmap2
         ;call    PaintHorizontalBitmap1
+        ; Восстановить режим вывода
+        mvi     a, OP_NOP
+        sta     OPERATION
+        
         ret
 
 ; *************************************************
@@ -577,6 +591,7 @@ DDL0
 ; *************************************************
 ; Отложить кирпич
 ; A - номер кирпича (0 - пусто и т.д.)
+; BC - координаты кирпича на экране
 ; *************************************************
 PaintBrick1
         push    de
