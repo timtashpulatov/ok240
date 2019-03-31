@@ -566,7 +566,27 @@ RBLoop
 ; *************************************************
 RenderBricks
         ;lxi     hl, LEVEL_1
-        lxi     hl, LEFTBRICK
+        lxi     hl, BRICK0
+
+        lda     BallX
+        ani     0f0h
+        ral
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+        
+
+        lda     BallY
+        ani     7
+        jz      RenderBricks0   ; рендерим кирпич целиком из текущего ряда
+        ; иначе рендерим часть кирпича из верхнего ряда и часть кирпича из нижнего ряда
+        ;cma
+        ;inr     a
+      ;  mov     c, a
+      ;  mvi     b, 0
+      ;  dad     bc
+
+RenderBricks0
         lxi     de, BALLBUF
         mvi     c, 32
 RenderBrickLoop        
