@@ -575,7 +575,16 @@ RenderBricks
         mvi     b, 0
         dad     bc
         
+        ; определим, рендерить ли целый кирпич или по пол-кирпича слева и справа
+        lda     BallX
+        rar
+        rar
+        rar
+        rar
+        jnc      RenderFullBrick        
+        ; по пол-кирпича
 
+RenderFullBrick
         lda     BallY
         ani     7
         jz      RenderBricks0   ; рендерим кирпич целиком из текущего ряда
