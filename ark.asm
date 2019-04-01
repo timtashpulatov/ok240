@@ -591,7 +591,7 @@ RenderFullBrick
         ; иначе рендерим часть кирпича из верхнего ряда и часть кирпича из нижнего ряда
 
 RenderHalfBrick
-        lxi     bc, 16
+        lxi     bc, 16  ; возьмем вторые пол-кирпича слева --]
         dad     bc
         push    hl
 
@@ -601,7 +601,7 @@ RenderHalfBrick
 
         pop     hl
         
-        lxi     bc, 16
+        lxi     bc, 16  ; и первые пол-кирпича справа [--
         dad     bc
 
 ;        mvi     c, 16
