@@ -579,7 +579,6 @@ RenderBricks
         lda     BallX
         ani     8
         jnz      RenderHalfBrick        
-        ; по пол-кирпича
 
 RenderFullBrick
         lxi     de, BALLBUF
