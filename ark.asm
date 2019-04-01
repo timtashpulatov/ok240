@@ -609,9 +609,9 @@ RenderHalfBrick
         pop     hl
         
         lxi     bc, 16
-;        dad     bc
+        dad     bc
 
-        mvi     c, 16
+;        mvi     c, 16
         call    Copy_C_Bytes_From_HL_To_DE
 
         ret
