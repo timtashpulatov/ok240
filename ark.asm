@@ -601,31 +601,32 @@ RenderHalfBrick
         lxi     bc, 16
         dad     bc
         push    hl
+
         lxi     de, BALLBUF
         mvi     c, 16
-RenderHalfBrickLoop        
-        mov     a, m
-        stax    de
-        inx     hl
-        inx     de
-        dcr     c
-        jnz     RenderHalfBrickLoop
+        call    Copy_C_Bytes_From_HL_To_DE
+
         pop     hl
         
         lxi     bc, 16
-        dad     bc
+;        dad     bc
 
         mvi     c, 16
-Render2ndHalfBrickLoop        
+        call    Copy_C_Bytes_From_HL_To_DE
+
+        ret
+
+; *************************************************
+; Копировать блок из HL в DE длиной C
+; *************************************************
+Copy_C_Bytes_From_HL_To_DE
         mov     a, m
         stax    de
         inx     hl
         inx     de
         dcr     c
-        jnz     Render2ndHalfBrickLoop
-        
-        
-        
+        jnz     Copy_C_Bytes_From_HL_To_DE
+
         ret
 
 
