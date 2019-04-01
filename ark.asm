@@ -539,6 +539,12 @@ RenderBall
         
         ; TODO отрендерить в буфер кусок фона
         call    RenderBackground
+
+
+
+        lda     BallY
+        ani     7
+
         
         lxi     hl, BRICK1      ;COOLBRICK
         lxi     de, BALLBUF
