@@ -641,9 +641,9 @@ PartialCopy
         mov     a, b    ; сохранить B
         mvi     b, 0
         dad     bc      ; добавить смещение к HL
-        xchg
-        dad     bc
-        xchg
+;        xchg
+;        dad     bc
+;        xchg
         mov     b, a    ; восстановить B
 
 ; первый битплан        
@@ -668,6 +668,11 @@ PartialCopyLoop1
         xchg
         dad     bc
         xchg
+
+        pop     bc
+        push    bc
+        mvi     b, 0
+        dad     bc      ; добавить смещение к HL
 
         pop     bc
 PartialCopyLoop2        
