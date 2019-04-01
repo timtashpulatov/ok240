@@ -539,9 +539,17 @@ RenderBall
         
         ; TODO отрендерить в буфер кусок фона
         call    RenderBackground
+        
+        lxi     hl, COOLBRICK
+        lxi     de, BALLBUF
+        mvi     b, 3
+        mvi     c, 3
+        call    PartialCopy
+       
+       jmp      RBDone 
                 
         ; TODO отрендерить в буфер кирпич
-        call    RenderBricks
+;        call    RenderBricks
         
         ; TODO отрендерить в буфер злецов (if any)
       
@@ -557,7 +565,7 @@ RBLoop
         inx     de
         dcr     c
         jnz     RBLoop
-        
+ RBDone       
         pop     bc
         pop     de
         pop     hl
@@ -637,6 +645,7 @@ PartialCopy
         dad     bc
         xchg
         mov     b, a    ; восстановить B
+
 ; первый битплан        
         push    bc
 PartialCopyLoop1        
@@ -646,8 +655,16 @@ PartialCopyLoop1
         inx     de
         dcr     b
         jnz     PartialCopyLoop1
-        pop     bc
+        
 ; второй битплан
+        mvi     b, 0
+        mvi     c, 8
+        dad     bc
+        xchg
+        dad     bc
+        xchg
+
+        pop     bc
 PartialCopyLoop2        
         mov     a, m
         stax    de
