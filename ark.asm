@@ -676,11 +676,11 @@ PartialCopyLoop1
         dad     bc
 
         pop     bc
-        mov     a, b
-        mvi     b, 0
-        dad     bc      ; добавить смещение к HL
+;        mov     a, b
+;        mvi     b, 0
+;        dad     bc      ; добавить смещение к HL
 
-        mov     b, a
+;        mov     b, a
 PartialCopyLoop2        
         mov     a, m
         stax    de
