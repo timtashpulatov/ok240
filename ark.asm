@@ -584,13 +584,7 @@ RenderBricks
 RenderFullBrick
         lxi     de, BALLBUF
         mvi     c, 32
-RenderFullBrickLoop        
-        mov     a, m
-        stax    de
-        inx     hl
-        inx     de
-        dcr     c
-        jnz     RenderFullBrickLoop
+        call    Copy_C_Bytes_From_HL_To_DE
         ret
 ;        lda     BallY
 ;        ani     7
