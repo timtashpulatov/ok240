@@ -14,4 +14,5 @@ Literature:
 <li>https://tetris.fandom.com/wiki/Random_Generator
 <li>https://zx-pk.ru/threads/23100-generator-psevdosluchajnykh-chisel/page5.html
 <li>https://tetris.fandom.com/wiki/Scoring
+<li>https://en.wikipedia.org/wiki/Bit_blit
 </ul>
