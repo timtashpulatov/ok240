@@ -630,13 +630,23 @@ RenderFullBrick
 ; C - смещение
 ; *************************************************
 PartialCopy
-        push    bc
+        mov     a, b    ; сохранить B
         mvi     b, 0
-        dad     bc
+        dad     bc      ; добавить смещение к HL
         xchg
         dad     bc
         xchg
-        pop     bc
+        mov     b, a    ; восстановить B
+PartialCopyLoop        
+        ;push    bc
+        mov     a, m
+        stax    de
+        inx     hl
+        inx     de
+        
+        ;pop     bc
+        dcr     b
+        jnz     PartialCopyLoop
         
         ret
 
