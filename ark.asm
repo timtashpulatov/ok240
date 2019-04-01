@@ -536,8 +536,10 @@ RenderBall
         push    hl
         push    de
         push    bc
-        ; TODO отрендерить в буфер кусок фона
         
+        ; TODO отрендерить в буфер кусок фона
+        call    RenderBackground
+                
         ; TODO отрендерить в буфер кирпич
         call    RenderBricks
         
@@ -580,11 +582,9 @@ RenderBricks
         ani     8
         jnz      RenderHalfBrick        
 
-RenderFullBrick
-        lxi     de, BALLBUF
-        mvi     c, 32
-        call    Copy_C_Bytes_From_HL_To_DE
+        call    RenderFullBrick
         ret
+        
 ;        lda     BallY
 ;        ani     7
 ;        jz      RenderBricks0   ; рендерим кирпич целиком из текущего ряда
@@ -608,6 +608,30 @@ RenderHalfBrick
         call    Copy_C_Bytes_From_HL_To_DE
 
         ret
+
+; *************************************************
+; В HL указатель на битмап кирпича
+; *************************************************
+RenderFullBrick
+
+        ;lda     BallY
+        ;ani     7
+
+        lxi     de, BALLBUF
+        mvi     c, 32
+        call    Copy_C_Bytes_From_HL_To_DE
+        ret
+
+; *************************************************
+; Отрендерить фон (пока просто чистим буфер)
+; *************************************************
+RenderBackground
+        lxi     hl, NOBATTY+1
+        lxi     de, BALLBUF
+        mvi     c, 32
+        call    Copy_C_Bytes_From_HL_To_DE
+        ret
+        
 
 ; *************************************************
 ; Копировать блок из HL в DE длиной C
