@@ -637,16 +637,24 @@ PartialCopy
         dad     bc
         xchg
         mov     b, a    ; восстановить B
-PartialCopyLoop        
-        ;push    bc
+; первый битплан        
+        push    bc
+PartialCopyLoop1        
         mov     a, m
         stax    de
         inx     hl
         inx     de
-        
-        ;pop     bc
         dcr     b
-        jnz     PartialCopyLoop
+        jnz     PartialCopyLoop1
+        pop     bc
+; второй битплан
+PartialCopyLoop2        
+        mov     a, m
+        stax    de
+        inx     hl
+        inx     de
+        dcr     b
+        jnz     PartialCopyLoop2
         
         ret
 
