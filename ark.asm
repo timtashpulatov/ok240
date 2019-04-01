@@ -542,9 +542,17 @@ RenderBall
         
         lxi     hl, BRICK1      ;COOLBRICK
         lxi     de, BALLBUF
-        mvi     b, 7
-        mvi     c, 4
+        mvi     b, 4
+        mvi     c, 0
         call    PartialCopy
+        
+        lxi     hl, BRICK2      ;COOLBRICK
+        lxi     de, BALLBUF+4
+        mvi     b, 4
+        mvi     c, 0
+        call    PartialCopy
+
+        
        
        jmp      RBDone 
                 
@@ -658,23 +666,21 @@ PartialCopyLoop1
         dcr     b
         jnz     PartialCopyLoop1
         
-        pop     de
         pop     hl
         
 ; второй битплан
-        mvi     b, 0
-        mvi     c, 8
+        lxi     bc, 8
         dad     bc
         xchg
+        pop     hl
         dad     bc
-        xchg
 
         pop     bc
-        push    bc
+        mov     a, b
         mvi     b, 0
         dad     bc      ; добавить смещение к HL
 
-        pop     bc
+        mov     b, a
 PartialCopyLoop2        
         mov     a, m
         stax    de
