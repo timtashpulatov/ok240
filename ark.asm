@@ -540,7 +540,7 @@ RenderBall
         ; TODO отрендерить в буфер кусок фона
         call    RenderBackground
         
-        lxi     hl, COOLBRICK
+        lxi     hl, BRICK1      ;COOLBRICK
         lxi     de, BALLBUF
         mvi     b, 3
         mvi     c, 3
@@ -657,12 +657,12 @@ PartialCopyLoop1
         jnz     PartialCopyLoop1
         
 ; второй битплан
-        mvi     b, 0
-        mvi     c, 8
-        dad     bc
-        xchg
-        dad     bc
-        xchg
+;        mvi     b, 0
+;        mvi     c, 8
+;        dad     bc
+;        xchg
+;        dad     bc
+;        xchg
 
         pop     bc
 PartialCopyLoop2        
