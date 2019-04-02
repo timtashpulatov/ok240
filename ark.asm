@@ -544,23 +544,38 @@ RenderBall
 
         lda     BallY
         ani     7
+        sta     BmpHeight1
+        mov     c, a
+        mvi     a, 8
+        sub     c
+        sta     BmpHeight2
 
         
         lxi     hl, BRICK1      ;COOLBRICK
         lxi     de, BALLBUF
-        mvi     b, 4
+        ;mvi     b, 4
+        lda     BmpHeight2
+        mov     b, a
         mvi     c, 0
         call    PartialCopy
         
-        lxi     hl, BRICK2      ;COOLBRICK
-        lxi     de, BALLBUF+4
-        mvi     b, 4
-        mvi     c, 0
-        call    PartialCopy
+        ; lxi     hl, BRICK2      ;COOLBRICK
+        ; lxi     de, BALLBUF+4
+        ; ;mvi     b, 4
+        ; lda     BmpHeight2
+        ; mov     b, a
+        ; ;mvi     c, 0
+        ; lda     BmpHeight1
+        ; mov     c, a
+        ; call    PartialCopy
 
         
        
        jmp      RBDone 
+
+BmpHeight1      ds      1
+BmpHeight2      ds      1
+
                 
         ; TODO отрендерить в буфер кирпич
 ;        call    RenderBricks
