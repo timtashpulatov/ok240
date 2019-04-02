@@ -38,7 +38,7 @@ BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     40h     ;32
 DEFAULTBALLY    equ     20h     ;224
-DEFAULTBALLDX   equ     1       ; debug Y first ; 1
+DEFAULTBALLDX   equ     0; 1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     -1
 
         org     100h
@@ -556,7 +556,9 @@ RenderBall
         ;mvi     b, 4
         lda     BmpHeight2
         mov     b, a
-        mvi     c, 0
+;        mvi     c, 0
+        lda     BmpHeight1
+        mov     c, a
         call    PartialCopy
         
         ; lxi     hl, BRICK2      ;COOLBRICK
