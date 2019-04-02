@@ -618,8 +618,8 @@ RenderHalfBrick
         push    hl
 
         lxi     de, BALLBUF
-        mvi     c, 16
-        call    Copy_C_Bytes_From_HL_To_DE
+        mvi     b, 16
+        call    Copy_B_Bytes_From_HL_To_DE
 
         pop     hl
         
@@ -627,7 +627,7 @@ RenderHalfBrick
         dad     bc
 
 ;        mvi     c, 16
-        call    Copy_C_Bytes_From_HL_To_DE
+        call    Copy_B_Bytes_From_HL_To_DE
 
         ret
 
@@ -640,8 +640,8 @@ RenderFullBrick
         ;ani     7
 
         lxi     de, BALLBUF
-        mvi     c, 32
-        call    Copy_C_Bytes_From_HL_To_DE
+        mvi     b, 32
+        call    Copy_B_Bytes_From_HL_To_DE
         ret
 
 ; *************************************************
@@ -664,14 +664,7 @@ PartialCopy
         push    bc
         push    hl
         push    de
-PartialCopyLoop1        
-        mov     a, m
-        stax    de
-        inx     hl
-        inx     de
-        dcr     b
-        jnz     PartialCopyLoop1
-        
+        call    Copy_B_Bytes_From_HL_To_DE        
         pop     hl
         
 ; второй битплан
@@ -687,14 +680,8 @@ PartialCopyLoop1
 ;        dad     bc      ; добавить смещение к HL
 
 ;        mov     b, a
-PartialCopyLoop2        
-        mov     a, m
-        stax    de
-        inx     hl
-        inx     de
-        dcr     b
-        jnz     PartialCopyLoop2
-        
+        call    Copy_B_Bytes_From_HL_To_DE
+
         ret
 
 ; *************************************************
@@ -703,21 +690,21 @@ PartialCopyLoop2
 RenderBackground
         lxi     hl, NOBATTY+1
         lxi     de, BALLBUF
-        mvi     c, 32
-        call    Copy_C_Bytes_From_HL_To_DE
+        mvi     b, 32
+        call    Copy_B_Bytes_From_HL_To_DE
         ret
         
 
 ; *************************************************
 ; Копировать блок из HL в DE длиной C
 ; *************************************************
-Copy_C_Bytes_From_HL_To_DE
+Copy_B_Bytes_From_HL_To_DE
         mov     a, m
         stax    de
         inx     hl
         inx     de
-        dcr     c
-        jnz     Copy_C_Bytes_From_HL_To_DE
+        dcr     b
+        jnz     Copy_B_Bytes_From_HL_To_DE
 
         ret
 
