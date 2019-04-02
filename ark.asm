@@ -655,9 +655,6 @@ PartialCopy
         mov     a, b    ; сохранить B
         mvi     b, 0
         dad     bc      ; добавить смещение к HL
-;        xchg
-;        dad     bc
-;        xchg
         mov     b, a    ; восстановить B
 
 ; первый битплан        
@@ -675,13 +672,7 @@ PartialCopy
         dad     bc
 
         pop     bc
-;        mov     a, b
-;        mvi     b, 0
-;        dad     bc      ; добавить смещение к HL
-
-;        mov     b, a
         call    Copy_B_Bytes_From_HL_To_DE
-
         ret
 
 ; *************************************************
