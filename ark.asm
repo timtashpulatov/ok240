@@ -555,6 +555,7 @@ RenderBall
         lda     BallY
         ani     0f8h
         ral
+        ral
         
         mov     c, a
         mvi     b, 0
@@ -562,7 +563,7 @@ RenderBall
         
         push    hl
         
-        lxi     de, BALLBUF
+        lxi     de, BALLBUF+16
         ;mvi     b, 4
         lda     BmpHeight2
         mov     b, a
