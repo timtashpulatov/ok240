@@ -613,10 +613,8 @@ RenderBall
 
 NoNeed        
        
-       jmp      RBDone 
 
-BmpHeight1      ds      1
-BmpHeight2      ds      1
+
 
                 
         ; TODO отрендерить в буфер кирпич
@@ -1535,6 +1533,10 @@ BallPhase       dw      BALL
 BattyPos        db      10                      ; Позиция ракетки
 BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
 BattyDirection  db      0
+
+BmpHeight1      ds      1
+BmpHeight2      ds      1
+
 
 ; Псевдослучайность
 RNG             db      0
