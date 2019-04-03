@@ -552,6 +552,16 @@ RenderBall
 
         
         lxi     hl, BRICK1      ;COOLBRICK
+        lda     BallY
+        ani     0f8h
+        ral
+        
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+        
+        push    hl
+        
         lxi     de, BALLBUF
         ;mvi     b, 4
         lda     BmpHeight2
@@ -569,11 +579,13 @@ RenderBall
 ;        dad     bc
 ;        xchg
         
+        pop     hl
         
         lda     BmpHeight1
         ora     a
         jz      NoNeed
         
+        push    hl
         lxi     hl, BALLBUF+16
         lda     BmpHeight1
         cma
@@ -583,6 +595,10 @@ RenderBall
         mvi     b, 0
         dad     bc
         xchg
+
+        pop     hl
+        lxi     bc, 32
+        dad     bc
         
         ;mvi     b, 2
         lda     BmpHeight1
@@ -591,7 +607,7 @@ RenderBall
         mvi     c, 0
         ; lda     BmpHeight1
         ; mov     c, a
-        lxi     hl, BRICK2      ;COOLBRICK
+;        lxi     hl, BRICK2      ;COOLBRICK
         call    PartialCopy
 
 NoNeed        
