@@ -561,17 +561,40 @@ RenderBall
         mov     c, a
         call    PartialCopy
         
-        ; lxi     hl, BRICK2      ;COOLBRICK
-        ; lxi     de, BALLBUF+4
-        ; ;mvi     b, 4
-        ; lda     BmpHeight2
-        ; mov     b, a
-        ; ;mvi     c, 0
+ ; нижний кирпич       
+;        lxi     hl, BALLBUF
+;        mvi     b, 0
+;        lda     BmpHeight1
+;        mov     c, a
+;        dad     bc
+;        xchg
+        
+        
+        lda     BmpHeight1
+        ora     a
+        jz      NoNeed
+        
+        lxi     hl, BALLBUF+16
+        lda     BmpHeight1
+        cma
+        inr     a
+        ani     7
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+        xchg
+        
+        ;mvi     b, 2
+        lda     BmpHeight1
+        mov     b, a
+        ;mov     b, a
+        mvi     c, 0
         ; lda     BmpHeight1
         ; mov     c, a
-        ; call    PartialCopy
+        lxi     hl, BRICK2      ;COOLBRICK
+        call    PartialCopy
 
-        
+NoNeed        
        
        jmp      RBDone 
 
