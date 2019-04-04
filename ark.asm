@@ -551,7 +551,8 @@ RenderBall
         sta     BmpHeight2
 
         
-        lxi     hl, BRICK1      ;COOLBRICK
+        ;lxi     hl, BRICK1      ;COOLBRICK
+        call    GetRightBrickPtr
         lda     BallY
         ani     0f8h
         ral
@@ -638,6 +639,43 @@ RBLoop
         pop     bc
         pop     de
         pop     hl
+        ret
+
+; *************************************************
+; Вернуть в HL указатель на битмап кирпича справа от мячика
+; *************************************************
+GetRightBrickPtr
+        lxi     hl, LEVEL_1
+
+        lda     BallY
+        ani     7
+        ral     ; теперь в аккумуляторе строка игрового поля
+        
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+
+        lda     BallX
+        rar
+        rar
+        rar
+        rar     ; теперь в аккумуляторе столбец игрового поля
+        
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+        
+        mov     a, m
+        
+        call    BrickNo2Ptr
+        
+        
+        ret
+
+; *************************************************
+; Вернуть в HL указатель на битмап кирпича по его номеру
+; *************************************************
+BrickNo2Ptr
         ret
 
 ; *************************************************
