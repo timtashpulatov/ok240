@@ -38,7 +38,7 @@ BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     40h     ;32
 DEFAULTBALLY    equ     20h     ;224
-DEFAULTBALLDX   equ     0; 1       ; debug Y first ; 1
+DEFAULTBALLDX   equ     1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     -1
 
         org     100h
@@ -553,14 +553,15 @@ RenderBall
         
         ;lxi     hl, BRICK1      ;COOLBRICK
         call    GetRightBrickPtr
-        lda     BallY
-        ani     0f8h
-        ral
-        ral
         
-        mov     c, a
-        mvi     b, 0
-        dad     bc
+        ; lda     BallY
+        ; ani     0f8h
+        ; ral
+        ; ral
+        
+        ; mov     c, a
+        ; mvi     b, 0
+        ; dad     bc
         
         push    hl
         
@@ -585,7 +586,8 @@ RenderBall
         
         lda     BmpHeight1
         ora     a
-        jz      NoNeed
+        ;jz      NoNeed
+        jmp     noneed
         
         push    hl
         lxi     hl, BALLBUF+16
@@ -647,13 +649,13 @@ RBLoop
 GetRightBrickPtr
         lxi     hl, LEVEL_1
 
-;        lda     BallY
-;        ani     7
-;        ral     ; теперь в аккумуляторе строка игрового поля
+        ; lda     BallY
+        ; ani     7
+        ; ral     ; теперь в аккумуляторе строка игрового поля
         
-;        mov     c, a
-;        mvi     b, 0
-;        dad     bc
+        ; mov     c, a
+        ; mvi     b, 0
+        ; dad     bc
 
         lda     BallX
         rar
@@ -666,6 +668,8 @@ GetRightBrickPtr
         dad     bc
         
         mov     a, m
+
+        mvi     a, 1
         
         call    BrickNo2Ptr
         
