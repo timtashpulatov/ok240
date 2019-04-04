@@ -647,13 +647,13 @@ RBLoop
 GetRightBrickPtr
         lxi     hl, LEVEL_1
 
-        lda     BallY
-        ani     7
-        ral     ; теперь в аккумуляторе строка игрового поля
+;        lda     BallY
+;        ani     7
+;        ral     ; теперь в аккумуляторе строка игрового поля
         
-        mov     c, a
-        mvi     b, 0
-        dad     bc
+;        mov     c, a
+;        mvi     b, 0
+;        dad     bc
 
         lda     BallX
         rar
@@ -673,9 +673,23 @@ GetRightBrickPtr
         ret
 
 ; *************************************************
-; Вернуть в HL указатель на битмап кирпича по его номеру
+; Вернуть в HL указатель на битмап кирпича по его номеру из A
 ; *************************************************
 BrickNo2Ptr
+        rrc             ; кирпич весит 32 байта
+        rrc    
+        rrc
+        mov     d, a
+        ani     0e0h
+        mov     e, a
+        
+        mov     a, d
+        ani     1fh
+        mov     d, a
+;        mvi     d, 0
+        lxi     hl, BRICK0
+        dad     d
+
         ret
 
 ; *************************************************
@@ -874,19 +888,8 @@ DDL0
 ; *************************************************
 PaintBrick1
         push    de
-        rrc             ; кирпич весит 32 байта
-        rrc    
-        rrc
-        mov     d, a
-        ani     0e0h
-        mov     e, a
-        
-        mov     a, d
-        ani     1fh
-        mov     d, a
-;        mvi     d, 0
-        lxi     hl, BRICK0
-        dad     d
+
+        call    BrickNo2Ptr
         
         call    PaintBrick
         pop     de
