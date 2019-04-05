@@ -586,7 +586,8 @@ RenderBall
         
         lda     BmpHeight1
         ora     a
-        jz      NoNeed
+        ;jz      NoNeed
+        jmp NoNeed
         
         
 
@@ -664,18 +665,22 @@ GetRightBrickPtr
         ; dad     bc
 
         lda     BallX
-        rar
-        rar
-        rar
-        rar     ; теперь в аккумуляторе столбец игрового поля
         
+        adi     8       ; схерали?
+        
+        rar
+        rar
+        rar
+        rar     
+        ani     0fh     ; теперь в аккумуляторе столбец игрового поля
+
         mov     c, a
         mvi     b, 0
         dad     bc
         
         mov     a, m
 
-        mvi     a, 1
+  ;      mvi     a, 1
         
         call    BrickNo2Ptr
         
