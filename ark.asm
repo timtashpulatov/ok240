@@ -552,6 +552,7 @@ RenderBall
 
         
         ;lxi     hl, BRICK1      ;COOLBRICK
+        lxi     hl, LEVEL_1
         call    GetRightBrickPtr
         
         ; lda     BallY
@@ -586,8 +587,8 @@ RenderBall
         
         lda     BmpHeight1
         ora     a
-        ;jz      NoNeed
-        jmp NoNeed
+        jz      NoNeed
+        ;jmp NoNeed
         
         
 
@@ -608,6 +609,7 @@ RenderBall
         ;dad     bc
         
         push    de
+        lxi     hl, LEVEL_1+16
         call    GetRightBrickPtr                
         pop     de
         
@@ -654,7 +656,7 @@ RBLoop
 ; Вернуть в HL указатель на битмап кирпича справа от мячика
 ; *************************************************
 GetRightBrickPtr
-        lxi     hl, LEVEL_1
+;        lxi     hl, LEVEL_1
 
         lda     BallY
         ani     0f8h
