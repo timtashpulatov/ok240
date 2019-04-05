@@ -479,21 +479,13 @@ DestroyBrick
 ; А мячик скиньте?
 ; *************************************************
 EraseBall
-        ; Установить режим вывода по OR
-;        mvi     a, OP_XOR
-;        sta     OPERATION
 
        lxi     hl, NOBATTY+1
        jmp     GoBall
 
  
 PaintBall
-        ; Установить режим вывода по OR
-;        mvi     a, OP_OR
-;        sta     OPERATION
-        
-        
-        
+
         lxi     hl, BALL
         lda     BallX
         ani     7
@@ -522,11 +514,7 @@ GoBall
         mov     b, a
         
         call    PaintHorizontalBitmap2
-        ;call    PaintHorizontalBitmap1
-        ; Восстановить режим вывода
-;        mvi     a, OP_NOP
-;        sta     OPERATION
-        
+
         ret
 
 ; *************************************************
@@ -651,6 +639,66 @@ RBLoop
         pop     de
         pop     hl
         ret
+
+RenderNoBall
+        push    hl
+        push    de
+        push    bc
+        
+        ; TODO отрендерить в буфер кусок фона
+        call    RenderBackground
+
+        lda     BallY
+        ani     7
+        sta     BmpHeight1
+        mov     c, a
+        mvi     a, 8
+        sub     c
+        sta     BmpHeight2
+
+        lxi     hl, LEVEL_1
+        call    GetRightBrickPtr
+        
+        push    hl
+        
+        lxi     de, BALLBUF+16
+        lda     BmpHeight2
+        mov     b, a
+        lda     BmpHeight1
+        mov     c, a
+        call    PartialCopy
+        
+ ; нижний кирпич       
+
+        pop     hl
+        
+        lda     BmpHeight1
+        ora     a
+        jz      NoNeedNoBall
+
+
+        lxi     hl, BALLBUF+16
+        lda     BmpHeight1
+        cma
+        inr     a
+        ani     7
+        mov     c, a
+        mvi     b, 0
+        dad     bc
+        xchg
+
+        push    de
+        lxi     hl, LEVEL_1+16
+        call    GetRightBrickPtr                
+        pop     de
+        
+        lda     BmpHeight1
+        mov     b, a
+        mvi     c, 0
+        call    PartialCopy
+NoNeedNoBall
+        ret
+
 
 ; *************************************************
 ; Вернуть в HL указатель на битмап кирпича справа от мячика
