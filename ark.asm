@@ -480,8 +480,11 @@ DestroyBrick
 ; *************************************************
 EraseBall
 
-       lxi     hl, NOBATTY+1
-       jmp     GoBall
+       ;lxi     hl, NOBATTY+1
+       ;jmp     GoBall
+       call     RenderNoBall
+       lxi      hl, BALLBUF
+       jmp      GoBall
 
  
 PaintBall
@@ -498,7 +501,8 @@ PaintBallLoop
         jz      GoBall0
         dad     bc
         jmp     PaintBallLoop
-GoBall0 shld    BALLPHASE
+GoBall0 
+        shld    BALLPHASE
 
           call        RenderBall
           lxi   hl, BALLBUF
@@ -697,6 +701,10 @@ RenderNoBall
         mvi     c, 0
         call    PartialCopy
 NoNeedNoBall
+        pop     bc
+        pop     de
+        pop     hl
+
         ret
 
 
@@ -1591,7 +1599,7 @@ BATTY1  db      4
 NOBATTY db      4
         ds      64
 
-        .org 0A00h
+        .org 0B00h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
