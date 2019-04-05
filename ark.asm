@@ -656,13 +656,19 @@ RBLoop
 GetRightBrickPtr
         lxi     hl, LEVEL_1
 
-        ; lda     BallY
-        ; ani     7
-        ; ral     ; теперь в аккумуляторе строка игрового поля
+        lda     BallY
         
-        ; mov     c, a
-        ; mvi     b, 0
-        ; dad     bc
+        adi     11*8
+        
+        ral     
+        ani     0f8h
+        ; теперь в аккумуляторе начало строки игрового поля
+        
+        
+        
+        mov     c, a
+        mvi     b, 0
+        dad     bc
 
         lda     BallX
         
