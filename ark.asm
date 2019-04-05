@@ -586,10 +586,12 @@ RenderBall
         
         lda     BmpHeight1
         ora     a
-        ;jz      NoNeed
-        jmp     noneed
+        jz      NoNeed
         
-        push    hl
+        
+
+        
+        ;push    hl
         lxi     hl, BALLBUF+16
         lda     BmpHeight1
         cma
@@ -600,9 +602,13 @@ RenderBall
         dad     bc
         xchg
 
-        pop     hl
-        lxi     bc, 32
-        dad     bc
+        ;pop     hl
+        ;lxi     bc, 32
+        ;dad     bc
+        
+        push    de
+        call    GetRightBrickPtr                
+        pop     de
         
         ;mvi     b, 2
         lda     BmpHeight1
