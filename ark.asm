@@ -532,8 +532,6 @@ RenderBall
         ; TODO отрендерить в буфер кусок фона
         call    RenderBackground
 
-
-
         lda     BallY
         ani     7
         sta     BmpHeight1
@@ -542,50 +540,25 @@ RenderBall
         sub     c
         sta     BmpHeight2
 
-        
-        ;lxi     hl, BRICK1      ;COOLBRICK
         lxi     hl, LEVEL_1
         call    GetRightBrickPtr
-        
-        ; lda     BallY
-        ; ani     0f8h
-        ; ral
-        ; ral
-        
-        ; mov     c, a
-        ; mvi     b, 0
-        ; dad     bc
         
         push    hl
         
         lxi     de, BALLBUF+16
-        ;mvi     b, 4
         lda     BmpHeight2
         mov     b, a
-;        mvi     c, 0
         lda     BmpHeight1
         mov     c, a
         call    PartialCopy
         
  ; нижний кирпич       
-;        lxi     hl, BALLBUF
-;        mvi     b, 0
-;        lda     BmpHeight1
-;        mov     c, a
-;        dad     bc
-;        xchg
-        
         pop     hl
         
         lda     BmpHeight1
         ora     a
         jz      NoNeed
-        ;jmp NoNeed
-        
-        
 
-        
-        ;push    hl
         lxi     hl, BALLBUF+16
         lda     BmpHeight1
         cma
@@ -596,31 +569,18 @@ RenderBall
         dad     bc
         xchg
 
-        ;pop     hl
-        ;lxi     bc, 32
-        ;dad     bc
-        
         push    de
         lxi     hl, LEVEL_1+16
         call    GetRightBrickPtr                
         pop     de
         
-        ;mvi     b, 2
         lda     BmpHeight1
         mov     b, a
-        ;mov     b, a
         mvi     c, 0
-        ; lda     BmpHeight1
-        ; mov     c, a
-;        lxi     hl, BRICK2      ;COOLBRICK
         call    PartialCopy
 
 NoNeed        
        
-
-
-
-                
         ; TODO отрендерить в буфер кирпич
 ;        call    RenderBricks
         
@@ -712,8 +672,6 @@ NoNeedNoBall
 ; Вернуть в HL указатель на битмап кирпича справа от мячика
 ; *************************************************
 GetRightBrickPtr
-;        lxi     hl, LEVEL_1
-
         lda     BallY
         ani     0f8h
         
@@ -721,8 +679,6 @@ GetRightBrickPtr
         ;ani     0f8h
         ; теперь в аккумуляторе начало строки игрового поля
 
-        
-        
         mov     c, a
         mvi     b, 0
         dad     bc
@@ -738,17 +694,13 @@ GetRightBrickPtr
         rar     
         ani     0fh     ; теперь в аккумуляторе столбец игрового поля
 
-
         mov     c, a
         mvi     b, 0
         dad     bc
 
         mov     a, m
-
-  ;      mvi     a, 1
         
         call    BrickNo2Ptr
-        
         
         ret
 
@@ -767,7 +719,6 @@ BrickNo2Ptr
         mov     a, d
         ani     1fh
         mov     d, a
-;        mvi     d, 0
         lxi     hl, BRICK0
         dad     d
 
