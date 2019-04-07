@@ -290,7 +290,7 @@ ProcessBallPlease
         sta     ReflectFlag
 
         lda     BallY
-        ani     8
+        ani     7
         cpi     2
         jm      CheckXRight
 ; кирпич справа внизу
