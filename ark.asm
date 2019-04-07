@@ -318,8 +318,9 @@ CheckY
         sta     ReflectFlag
         
         lda     BallX
-        ori     8
-        jnz     CheckYUnder
+        ani     0fh
+        cpi     0bh
+        jm      CheckYUnder
 ; кирпич внизу справа
         call    CheckBrickYPlusOne
         lxi     de, BallDY
