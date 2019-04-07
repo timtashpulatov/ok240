@@ -538,7 +538,16 @@ DestroyBrickY
         ani     03ch
         mov     b, a
 
+; hack
+        mvi     c, -8
+        lda     BallDY
+        rlc
+        jc      .+5
+        mvi     c, 16
+
         lda     BallY
+        add     c       ; why?
+        
         ani     0f8h
         mov     c, a
 
@@ -582,16 +591,11 @@ DestroyBrick
         jc      .+5
         mvi     c, 8
 
-
-        
         lda     BallY
         add     c       ; hack
-        
 
-        
         ani     0f8h
         mov    c, a
-        ;mvi    c, 0     
         
         xra   a
         call  PaintBrick1
