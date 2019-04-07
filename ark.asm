@@ -327,9 +327,10 @@ CheckY
         jz      CheckYUnder
 ; выбить кирпич внизу справа
         rlc
-        jc      CheckYUnder
+        jc      SetReflectFlag
         mvi     m, 0
         call    DestroyBrickYPlusOne
+SetReflectFlag        
         mvi     a, 1
         sta     ReflectFlag
 
@@ -340,10 +341,11 @@ CheckYUnder
         jz      CYNext
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
-        jc      CYNext
+        jc      SetReflectFlag1
         mvi     m, 0
         ;call    DestroyBrick
         call    DestroyBrickY
+SetReflectFlag1        
         mvi     a, 1
         sta     ReflectFlag
 
@@ -1846,9 +1848,9 @@ NOBATTY db      4
 
 LEVEL_1 
         db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-        db      0, 82h, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h, 3, 0
-        db      0, 82h, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
-        db      0, 82h, 5, 5, 0, 0, 81h, 0, 81h, 0, 0, 0, 0, 0, 3, 0
+        db      0, 82h, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,83h, 0
+        db      0, 82h, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,83h, 0
+        db      0, 82h, 5, 5, 0, 0, 81h, 0, 81h, 0, 0, 0, 0, 0,83h, 0
         db      0, 82h, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
         db      0, 82h, 7, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 3, 0
         db      0, 2, 8, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0
