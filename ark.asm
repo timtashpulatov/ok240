@@ -466,7 +466,7 @@ DestroyBrick
         lda     BallDY
         rlc
         jc      .+5
-        mvi     c, 7
+        mvi     c, 8
 
 
         
