@@ -386,8 +386,9 @@ CheckBrickX
         mvi     a, 0
         adc     h
         mov     h, a
+        
 ; теперь в HL указатель на строку с кирпичом
-        mvi     c, 0
+        mvi     c, -1
         lda     BallDX
         rlc
         jc      .+5
@@ -568,7 +569,7 @@ DestroyBrickX
         push    bc
 
 ; hack
-        mvi     c, 0
+        mvi     c, -1
         lda     BallDX
         rlc
         jc      .+5
