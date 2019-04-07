@@ -320,7 +320,8 @@ CheckY
         rlc                     ; признак очень твердого кирпича
         jc      ReflectY
         mvi     m, 0
-        call    DestroyBrick
+        ;call    DestroyBrick
+        call    DestroyBrickY
 ReflectY
 ; change direction
         ldax    de
@@ -524,6 +525,31 @@ CheckBrick
 ; *************************************************
 ; 
 ; *************************************************
+        
+DestroyBrickY
+        push    hl
+        push    de
+        push    bc
+
+        lda     BallX
+        rar
+        rar
+        
+        ani     03ch
+        mov     b, a
+
+        lda     BallY
+        ani     0f8h
+        mov     c, a
+
+        xra     a
+        call    PaintBrick1
+
+        pop     bc
+        pop     de
+        pop     hl
+        
+        ret
         
 ; *************************************************
 ; Стереть кирпич
