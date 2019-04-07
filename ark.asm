@@ -391,7 +391,7 @@ CheckBrickX
         lda     BallDX
         rlc
         jc      .+5
-        mvi     c, 8
+        mvi     c, 7
         
         lda     BallX
         add     c
