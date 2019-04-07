@@ -340,7 +340,7 @@ CXNext1
 ;        mvi     b, 32
 ;        mvi     b, 216
 
-    jmp CheckDone        
+    ;jmp CheckDone        
 
 CheckY        
 ; -------------займемся координатой по вертикали Y
