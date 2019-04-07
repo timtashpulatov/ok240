@@ -283,8 +283,10 @@ ProcessBallPlease
         
         call    EraseBall
 
+    jmp CheckY
+
 ; займемся координатой по горизонтали X
-        call    CheckBrick
+        call    CheckBrickX
         lxi     de, BallDX
         jz      CXNext
 ; выбить кирпич
@@ -307,9 +309,11 @@ CXNext
 ;        mvi     b, 32
 ;        mvi     b, 216
 
+        
+
 CheckY        
 ; займемся координатой по вертикали Y
-        call    CheckBrick
+        call    CheckBrickY
         lxi     de, BallDY
         jz      CYNext
 ; выбить кирпич
@@ -361,6 +365,102 @@ CheckDone1
         call    PaintBall
         ret
 
+; *************************************************
+; *************************************************
+CheckBrickX
+        lxi     hl, LEVEL_1
+        lda     BallY
+        rlc
+        push    a
+        
+        mvi     a, 0
+        adc     h
+        mov     h, a
+        
+        pop     a
+        ani     0b11110000
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; теперь в HL указатель на строку с кирпичом
+        mvi     c, 0
+        lda     BallDX
+        rlc
+        jc      .+5
+        mvi     c, 8
+        
+        lda     BallX
+        add     c
+        
+        rar
+        rar
+        rar
+        rar
+
+        ani     0fh
+
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; а теперь в HL указатель на конкретный кирпич
+        mov     a, m
+        ora     a
+        ret
+
+; *************************************************
+; *************************************************
+CheckBrickY
+        lxi     hl, LEVEL_1
+; hack        
+        mvi     c, 0
+        lda     BallDY
+        rlc
+        jc      .+5
+        mvi     c, 8
+
+        lda     BallY
+        add     c               ; hack
+
+        mov     c, a
+        lda     BallDY
+        add     c
+
+        rlc
+        push    a
+        
+        mvi     a, 0
+        adc     h
+        mov     h, a
+        
+        pop     a
+        ani     0b11110000
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; теперь в HL указатель на строку с кирпичом
+        lda     BallX
+        rar
+        rar
+        rar
+        rar
+
+        ani     0fh
+
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; а теперь в HL указатель на конкретный кирпич
+        mov     a, m
+        ora     a
+        ret
 
 ; *************************************************
 ; Вот сошлись кирпич и мяч
@@ -1558,11 +1658,11 @@ NOBATTY db      4
 
 LEVEL_1 
         db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-        db      0, 2, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h, 3, 0
-        db      0, 2, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
-        db      0, 2, 5, 5, 0, 0, 81h, 0, 81h, 0, 0, 0, 0, 0, 3, 0
-        db      0, 2, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
-        db      0, 2, 7, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 3, 0
+        db      0, 82h, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h, 3, 0
+        db      0, 82h, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
+        db      0, 82h, 5, 5, 0, 0, 81h, 0, 81h, 0, 0, 0, 0, 0, 3, 0
+        db      0, 82h, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0
+        db      0, 82h, 7, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 3, 0
         db      0, 2, 8, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 0
         db      0, 2, 9, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3, 0
         db      0, 2, 10,10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3, 0
