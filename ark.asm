@@ -283,7 +283,7 @@ ProcessBallPlease
         
         call    EraseBall
 
-    jmp CheckY
+;    jmp CheckY
 
 ; займемся координатой по горизонтали X
         call    CheckBrickX
@@ -293,7 +293,8 @@ ProcessBallPlease
         rlc                     ; признак очень твердого кирпича
         jc      ReflectX
         mvi     m, 0
-        call    DestroyBrick
+        ;call    DestroyBrick
+        call    DestroyBrickX
 ReflectX
 ; изменить направление движения по горизонтали
         ldax    de
@@ -309,7 +310,7 @@ CXNext
 ;        mvi     b, 32
 ;        mvi     b, 216
 
-        
+    jmp CheckDone        
 
 CheckY        
 ; займемся координатой по вертикали Y
@@ -558,6 +559,41 @@ DestroyBrickY
         pop     de
         pop     hl
         
+        ret
+        
+        
+DestroyBrickX
+        push    hl
+        push    de
+        push    bc
+
+; hack
+        mvi     c, 0
+        lda     BallDX
+        rlc
+        jc      .+5
+        mvi     c, 7
+
+        
+        lda     BallX
+        add     c       ; hack
+        rar
+        rar
+        
+        ani     03ch
+        mov     b, a
+
+        lda     BallY
+        ani     0f8h
+        mov    c, a
+        
+        xra   a
+        call  PaintBrick1
+
+        pop     bc
+        pop     de
+        pop     hl
+
         ret
         
 ; *************************************************
