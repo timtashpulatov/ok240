@@ -283,41 +283,29 @@ ProcessBallPlease
         
         call    EraseBall
 
-; ---------------------
-; 
-        
-jmp     CheckY        
-        
 ; займемся координатой по горизонтали X
-        lxi     hl, BallX
+        call    CheckBrick
         lxi     de, BallDX
-        ldax    de
-        ora     a
-        mvi     b, 32
-        jm      DcrX
-        mvi     b, 216
-DcrX        
-        add     m               ; прибавить к X шаг
-        mov     m, a            ; и записать
-; проверить на границы поля        
-        cmp     b
-        jz      ReflectX
-; проверить на кирпич
-        call    CheckBrick      ; TODO не на каждом же шаге?
-        jz      CheckY
+        jz      CXNext
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
         jc      ReflectX
-        mvi     m, 0            ; TODO и пометить где-то, что кирпич надо стереть с экрана
+        mvi     m, 0
         call    DestroyBrick
-        
-; изменить направление движения по горизонтали
 ReflectX
+; изменить направление движения по горизонтали
         ldax    de
         cma
         inr     a
         stax    de
-        
+CXNext        
+        lxi     hl, BallX
+        ldax    de
+        add     m               ; прибавить к X шаг
+        mov     m, a
+
+;        mvi     b, 32
+;        mvi     b, 216
 
 CheckY        
 ; займемся координатой по вертикали Y
