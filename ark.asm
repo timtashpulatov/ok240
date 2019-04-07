@@ -285,23 +285,53 @@ ProcessBallPlease
 
 ;    jmp CheckY
 
-; займемся координатой по горизонтали X
+; ------------- займемся координатой по горизонтали X
+        xra     a
+        sta     ReflectFlag
+
+        lda     BallY
+        ani     8
+        cpi     2
+        jm      CheckXRight
+; кирпич справа внизу
+        call    CheckBrickXPlusOne
+        lxi     de, BallDX
+        jz      CheckXRight
+; выбить кирпич справа внизу        
+        rlc
+        jc      SetReflectFlagX
+        mvi     m, 0
+        call    DestroyBrickXPlusOne
+SetReflectFlagX        
+        mvi     a, 1
+        sta     ReflectFlag
+
+CheckXRight
+; кирпич справа
         call    CheckBrickX
         lxi     de, BallDX
         jz      CXNext
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
-        jc      ReflectX
+        jc      SetReflectFlagX1
         mvi     m, 0
         ;call    DestroyBrick
         call    DestroyBrickX
-ReflectX
+SetReflectFlagX1
+        mvi     a, 1
+        sta     ReflectFlag
+
 ; изменить направление движения по горизонтали
+CXNext
+        lda     ReflectFlag
+        ora     a
+        jz      CXNext1
+
         ldax    de
         cma
         inr     a
         stax    de
-CXNext        
+CXNext1        
         lxi     hl, BallX
         ldax    de
         add     m               ; прибавить к X шаг
@@ -310,10 +340,10 @@ CXNext
 ;        mvi     b, 32
 ;        mvi     b, 216
 
-;    jmp CheckDone        
+    jmp CheckDone        
 
 CheckY        
-; займемся координатой по вертикали Y
+; -------------займемся координатой по вертикали Y
         xra     a
         sta     ReflectFlag
         
@@ -444,6 +474,55 @@ CheckBrickX
         ora     a
         ret
 
+CheckBrickXPlusOne
+        lxi     hl, LEVEL_1
+        lda     BallY
+        
+        adi     8
+        
+        rlc
+        push    a
+        
+        mvi     a, 0
+        adc     h
+        mov     h, a
+        
+        pop     a
+        ani     0b11110000
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+        
+; теперь в HL указатель на строку с кирпичом
+        mvi     c, -1
+        lda     BallDX
+        rlc
+        jc      .+5
+        mvi     c, 7
+        
+        lda     BallX
+        add     c
+        
+        rar
+        rar
+        rar
+        rar
+
+        ani     0fh
+
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; а теперь в HL указатель на конкретный кирпич
+        mov     a, m
+        ora     a
+        ret
+
+
 ; *************************************************
 ; Проверить кирпич снизу или сверху
 ; NB: Только если мячик не на сетке кирпичей (16), т.е. сдвинут на пол-кирпича:
@@ -551,64 +630,6 @@ CheckBrickYPlusOne
         ret
 
 
-; *************************************************
-; Вот сошлись кирпич и мяч
-; *************************************************
-CheckBrick
-;        push    hl
-        lxi     hl, LEVEL_1
-
-; hack
-        mvi     c, 0
-        lda     BallDY
-        rlc
-        jc      .+5
-        mvi     c, 8
-
-        lda     BallY
-        add     c               ; hack
-        
-        rlc
-        push    a
-        
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-        pop     a
-        ani     0b11110000
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; теперь в HL указатель на строку с кирпичом
-        mvi     c, 0
-        lda     BallDX
-        rlc
-        jc      .+5
-        mvi     c, 7
-        
-        lda     BallX
-        add     c
-        
-        rar
-        rar
-        rar
-        rar
-
-        ani     0fh
-
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; а теперь в HL указатель на конкретный кирпич
-        mov     a, m
-        ora     a
-;        pop     hl
-        ret
 
 ; *************************************************
 ; 
@@ -719,6 +740,44 @@ DestroyBrickX
         pop     hl
 
         ret
+ 
+DestroyBrickXPlusOne
+        push    hl
+        push    de
+        push    bc
+
+; hack
+        mvi     c, -1
+        lda     BallDX
+        rlc
+        jc      .+5
+        mvi     c, 7
+
+        
+        lda     BallX
+        add     c       ; hack
+        rar
+        rar
+        
+        ani     03ch
+        mov     b, a
+
+        lda     BallY
+        
+        adi     8
+        
+        ani     0f8h
+        mov    c, a
+        
+        xra   a
+        call  PaintBrick1
+
+        pop     bc
+        pop     de
+        pop     hl
+
+        ret
+  
         
 ; *************************************************
 ; Стереть кирпич
