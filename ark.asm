@@ -314,22 +314,49 @@ CXNext
 
 CheckY        
 ; займемся координатой по вертикали Y
+        xra     a
+        sta     ReflectFlag
+        
+        lda     BallX
+        ori     8
+        jnz     CheckYUnder
+; кирпич внизу справа
+        call    CheckBrickYPlusOne
+        lxi     de, BallDY
+        jz      CheckYUnder
+; выбить кирпич внизу справа
+        rlc
+        jc      CheckYUnder
+        mvi     m, 0
+        call    DestroyBrickYPlusOne
+        mvi     a, 1
+        sta     ReflectFlag
+
+CheckYUnder
+; кирпич подо мною
         call    CheckBrickY
         lxi     de, BallDY
         jz      CYNext
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
-        jc      ReflectY
+        jc      CYNext
         mvi     m, 0
         ;call    DestroyBrick
         call    DestroyBrickY
-ReflectY
-; change direction
+        mvi     a, 1
+        sta     ReflectFlag
+
+CYNext
+        lda     ReflectFlag
+        ora     a
+        jz      CYNext1
+        ; change direction
         ldax    de
         cma
         inr     a
         stax    de
-CYNext
+        
+CYNext1
         lxi     hl, BallY
         ldax    de
         add     m               ; прибавить к Y шаг
@@ -469,6 +496,58 @@ CheckBrickY
         ora     a
         ret
 
+
+CheckBrickYPlusOne
+        lxi     hl, LEVEL_1
+; hack        
+        mvi     c, 0
+        lda     BallDY
+        rlc
+        jc      .+5
+        mvi     c, 8
+
+        lda     BallY
+        add     c               ; hack
+
+        mov     c, a
+        lda     BallDY
+        add     c
+
+        rlc
+        push    a
+        
+        mvi     a, 0
+        adc     h
+        mov     h, a
+        
+        pop     a
+        ani     0b11110000
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; теперь в HL указатель на строку с кирпичом
+        lda     BallX
+        rar
+        rar
+        rar
+        rar
+
+        ani     0fh
+        inr     a
+
+        add     l
+        mov     l, a
+        mvi     a, 0
+        adc     h
+        mov     h, a
+; а теперь в HL указатель на конкретный кирпич
+        mov     a, m
+        ora     a
+        ret
+
+
 ; *************************************************
 ; Вот сошлись кирпич и мяч
 ; *************************************************
@@ -531,7 +610,6 @@ CheckBrick
 ; *************************************************
 ; 
 ; *************************************************
-        
 DestroyBrickY
         push    hl
         push    de
@@ -566,6 +644,44 @@ DestroyBrickY
         
         ret
         
+; *************************************************
+; 
+; *************************************************
+DestroyBrickYPlusOne
+        push    hl
+        push    de
+        push    bc
+
+        lda     BallX
+        adi     8
+        rar
+        rar
+        
+        ani     03ch
+        mov     b, a
+
+; hack
+        mvi     c, -8
+        lda     BallDY
+        rlc
+        jc      .+5
+        mvi     c, 16
+
+        lda     BallY
+        add     c       ; why?
+        
+        ani     0f8h
+        mov     c, a
+
+        xra     a
+        call    PaintBrick1
+
+        pop     bc
+        pop     de
+        pop     hl
+        
+        ret
+
         
 DestroyBrickX
         push    hl
@@ -1721,7 +1837,7 @@ BATTY1  db      4
 NOBATTY db      4
         ds      64
 
-        .org 0B00h
+        .org 0c00h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
@@ -1773,6 +1889,8 @@ BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
 BallPhase       dw      BALL
+
+ReflectFlag     db      0
 
 BattyPos        db      10                      ; Позиция ракетки
 BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
