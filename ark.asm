@@ -840,8 +840,31 @@ RenderBall
         push    hl
         push    de
         push    bc
-        
-        ; TODO отрендерить в буфер кусок фона
+
+        call    FillBallBuf
+
+        ; Наложим поверх мячик (по OR)
+        lhld    BALLPHASE        ; TODO адрес текущей фазы мячика BALLPHASE
+        lxi     de, BALLBUF
+        mvi     c, 32
+RBLoop        
+        ldax    de
+        ora     m
+        stax    de
+        inx     hl
+        inx     de
+        dcr     c
+        jnz     RBLoop
+ RBDone       
+        pop     bc
+        pop     de
+        pop     hl
+        ret
+
+; *************************************************
+; Насыпать в мячечный буфер фон и кирпичики
+; *************************************************
+FillBallBuf
         call    RenderBackground
 
         lda     BallY
@@ -890,89 +913,23 @@ RenderBall
         mov     b, a
         mvi     c, 0
         call    PartialCopy
-
 NoNeed        
-       
+
         ; TODO отрендерить в буфер кирпич
 ;        call    RenderBricks
         
         ; TODO отрендерить в буфер злецов (if any)
-      
-        ; Наложим поверх мячик (по OR)
-        lhld    BALLPHASE        ; TODO адрес текущей фазы мячика BALLPHASE
-        lxi     de, BALLBUF
-        mvi     c, 32
-RBLoop        
-        ldax    de
-        ora     m
-        stax    de
-        inx     hl
-        inx     de
-        dcr     c
-        jnz     RBLoop
- RBDone       
-        pop     bc
-        pop     de
-        pop     hl
+
         ret
 
+; *************************************************
+; Отрендерить в буфер все, кроме собственно мячика
+; *************************************************
 RenderNoBall
         push    hl
         push    de
         push    bc
-        
-        ; TODO отрендерить в буфер кусок фона
-        call    RenderBackground
-
-        lda     BallY
-        ani     7
-        sta     BmpHeight1
-        mov     c, a
-        mvi     a, 8
-        sub     c
-        sta     BmpHeight2
-
-        lxi     hl, LEVEL_1
-        call    GetRightBrickPtr
-        
-        push    hl
-        
-        lxi     de, BALLBUF+16
-        lda     BmpHeight2
-        mov     b, a
-        lda     BmpHeight1
-        mov     c, a
-        call    PartialCopy
-        
- ; нижний кирпич       
-
-        pop     hl
-        
-        lda     BmpHeight1
-        ora     a
-        jz      NoNeedNoBall
-
-
-        lxi     hl, BALLBUF+16
-        lda     BmpHeight1
-        cma
-        inr     a
-        ani     7
-        mov     c, a
-        mvi     b, 0
-        dad     bc
-        xchg
-
-        push    de
-        lxi     hl, LEVEL_1+16
-        call    GetRightBrickPtr                
-        pop     de
-        
-        lda     BmpHeight1
-        mov     b, a
-        mvi     c, 0
-        call    PartialCopy
-NoNeedNoBall
+        call    FillBallBuf        
         pop     bc
         pop     de
         pop     hl
