@@ -292,14 +292,44 @@ UX1
         ; обновим счетчик
         lda     DelayDX
         sta     CounterDX
+        
+        ; проверим на отскок
+        call    CheckNewX
+        
         ; собственно прирастим координату
+        call    XPlusDX
+        sta     BallX
+        
+        ret
+
+; *************************************************
+; Проверим новую координату и отразимся, если нужно
+; *************************************************
+CheckNewX
+        call    XPlusDX
+        call    ShallWeReflectByX
+        jnz
+        call    LetsReflectX
+        ret
+
+ShallWeReflectByX
+        ret
+
+LetsReflectX
+        lda     BallDX
+        cma
+        inr     a
+        sta     BallDX
+        ret
+
+XPlusDX
         lda     BallDX
         mov     c, a
         lda     BallX
         add     c
-        sta     BallX
-        
         ret
+
+
 
 ; *************************************************
 ; Приращение по Y
