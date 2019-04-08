@@ -432,54 +432,17 @@ CheckDone1
 CheckBrickX
         lxi     hl, LEVEL_1
         lda     BallY
-        rlc
-        push    a
-        
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-        pop     a
-        ani     0b11110000
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-; теперь в HL указатель на строку с кирпичом
-        mvi     c, -1
-        lda     BallDX
-        rlc
-        jc      .+5
-        mvi     c, 7
-        
-        lda     BallX
-        add     c
-        
-        rar
-        rar
-        rar
-        rar
-
-        ani     0fh
-
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; а теперь в HL указатель на конкретный кирпич
-        mov     a, m
-        ora     a
+        call    CheckBrickXCommon
         ret
 
 CheckBrickXPlusOne
         lxi     hl, LEVEL_1
         lda     BallY
-        
         adi     8
-        
+        call    CheckBrickXCommon
+        ret
+
+CheckBrickXCommon
         rlc
         push    a
         
