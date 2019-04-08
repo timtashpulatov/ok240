@@ -266,6 +266,39 @@ MoveLeftJa
         sta     BattyPos
         jmp     MoveDone
 
+; *************************************************
+; Новый Мячевой Процессинг
+; *************************************************
+DelayDX         db      0       ; задержка приращения по X
+CounterDX       db      0       ; счетчик задержки
+
+NewProcessBall
+        call    UpdateX
+        ret
+
+; *************************************************
+; Приращение по X
+; *************************************************
+UpdateX
+        lda     CounterDX
+        ora     a
+        jz      UX1             ; пора
+        dcr     a
+        sta     CounterDX
+        ret
+UX1
+        ; обновим счетчик
+        lda     DelayDX
+        sta     CounterDX
+        ; собственно прирастим координату
+        lda     BallDX
+        mov     c, a
+        lda     BallX
+        add     c
+        sta     BallX
+        
+        ret
+
 
 ; *************************************************
 ; Мячевой процессинг
@@ -340,7 +373,7 @@ CXNext1
 ;        mvi     b, 32
 ;        mvi     b, 216
 
-    ;jmp CheckDone        
+    jmp CheckDone        
 
 CheckY        
 ; -------------займемся координатой по вертикали Y
