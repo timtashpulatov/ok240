@@ -266,11 +266,14 @@ MoveLeftJa
         sta     BattyPos
         jmp     MoveDone
 
+
 ; *************************************************
 ; Новый Мячевой Процессинг
 ; *************************************************
 DelayDX         db      0       ; задержка приращения по X
 CounterDX       db      0       ; счетчик задержки
+DelayDY         db      0
+CounterDY       db      0
 
 NewProcessBall
         call    UpdateX
@@ -281,9 +284,8 @@ NewProcessBall
 ; *************************************************
 UpdateX
         lda     CounterDX
-        ora     a
-        jz      UX1             ; пора
         dcr     a
+        jz      UX1
         sta     CounterDX
         ret
 UX1
@@ -296,6 +298,28 @@ UX1
         lda     BallX
         add     c
         sta     BallX
+        
+        ret
+
+; *************************************************
+; Приращение по Y
+; *************************************************
+UpdateY
+        lda     CounterDY
+        dcr     a
+        jz      UY1             ; пора
+        sta     CounterDY
+        ret
+UY1
+        ; обновим счетчик
+        lda     DelayDY
+        sta     CounterDY
+        ; собственно прирастим координату
+        lda     BallDY
+        mov     c, a
+        lda     BallY
+        add     c
+        sta     BallY
         
         ret
 
