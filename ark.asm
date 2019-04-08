@@ -308,7 +308,7 @@ UX1
 CheckNewX
         call    XPlusDX
         call    ShallWeReflectByX
-        jnz
+        jnz     .+6
         call    LetsReflectX
         ret
 
