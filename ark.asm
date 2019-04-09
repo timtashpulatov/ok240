@@ -322,14 +322,15 @@ LetsReflectX
         sta     BallDX
         ret
 
+; *************************************************
+; Инкрементнём X
+; *************************************************
 XPlusDX
         lda     BallDX
         mov     c, a
         lda     BallX
         add     c
         ret
-
-
 
 ; *************************************************
 ; Приращение по Y
@@ -344,14 +345,47 @@ UY1
         ; обновим счетчик
         lda     DelayDY
         sta     CounterDY
+
+        ; проверим на отскок
+        call    CheckNewY
+
         ; собственно прирастим координату
+        call    YPlusDY
+        sta     BallY
+        
+        ret
+
+; *************************************************
+; Проверим новую координату Y и отразимся, если нужно
+; *************************************************
+CheckNewY
+        call    YPlusDY
+        call    ShallWeReflectByY
+        jnz     .+6
+        call    LetsReflectY
+        ret
+
+ShallWeReflectByY
+        ret
+
+LetsReflectY
+        lda     BallDY
+        cma
+        inr     a
+        sta     BallDY
+        ret
+
+
+; *************************************************
+; Инкрементнём Y
+; *************************************************
+YPlusDY
         lda     BallDY
         mov     c, a
         lda     BallY
         add     c
-        sta     BallY
-        
         ret
+
 
 
 ; *************************************************
