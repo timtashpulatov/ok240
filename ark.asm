@@ -444,7 +444,7 @@ CheckXRight
 ; кирпич справа
         call    CheckBrickX
         lxi     de, BallDX
-        jz      CXNext
+        jz      CheckLeftMargin
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
         jc      SetReflectFlagX1
@@ -456,22 +456,21 @@ SetReflectFlagX1
         sta     ReflectFlag
 
 
-CXNext
+CheckLeftMargin
 ; проверить границы поля
         lda     BallX
         cpi     LEFTMARGIN
-        jnz     CXContinue
+        jz      ReflectX
         cpi     RIGHTMARGIN
-        jnz     CXContinue
-        mvi     a, 1
-        sta     ReflectFlag
+        jz      ReflectX
+
 
 CXContinue
 ; изменить направление движения по горизонтали
         lda     ReflectFlag
         ora     a
         jz      CXNext1
-
+ReflectX
         ldax    de
         cma
         inr     a
