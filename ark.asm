@@ -401,6 +401,8 @@ YPlusDY
 
 LEFTMARGIN      equ     32
 RIGHTMARGIN     equ     216
+TOPMARGIN       equ     16
+BOTTOMMARGIN    equ     248
 ; ****************************************************************************
 ; Мячевой процессинг
 ; ****************************************************************************
@@ -444,7 +446,7 @@ CheckXRight
 ; кирпич справа
         call    CheckBrickX
         lxi     de, BallDX
-        jz      CheckLeftMargin
+        jz      CheckXMargins
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
         jc      SetReflectFlagX1
@@ -455,8 +457,7 @@ SetReflectFlagX1
         mvi     a, 1
         sta     ReflectFlag
 
-
-CheckLeftMargin
+CheckXMargins
 ; проверить границы поля
         lda     BallX
         cpi     LEFTMARGIN
@@ -464,8 +465,6 @@ CheckLeftMargin
         cpi     RIGHTMARGIN
         jz      ReflectX
 
-
-CXContinue
 ; изменить направление движения по горизонтали
         lda     ReflectFlag
         ora     a
@@ -509,7 +508,7 @@ CheckYUnder
 ; кирпич подо мною
         call    CheckBrickY
         lxi     de, BallDY
-        jz      CYNext
+        jz      CheckYMargins
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
         jc      SetReflectFlag1
@@ -520,11 +519,19 @@ SetReflectFlag1
         mvi     a, 1
         sta     ReflectFlag
 
-CYNext
+CheckYMargins
+; проверить границы поля
+        lda     BallY
+        cpi     TOPMARGIN
+        jz      ReflectY
+        cpi     BOTTOMMARGIN
+        jz      ReflectY
+
         lda     ReflectFlag
         ora     a
         jz      CYNext1
-        ; change direction
+; change direction
+ReflectY
         ldax    de
         cma
         inr     a
@@ -550,15 +557,15 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-        call    PaintBall
-        call    KBDSTAT
-        jz      CheckDone
-        call    KBDREAD
-        cpi     1bh
-        jnz     CheckDone1
-        call    PaintBall
-        pop     a
-        jmp     WARMBOOT
+        ; call    PaintBall
+        ; call    KBDSTAT
+        ; jz      CheckDone
+        ; call    KBDREAD
+        ; cpi     1bh
+        ; jnz     CheckDone1
+        ; call    PaintBall
+        ; pop     a
+        ; jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
