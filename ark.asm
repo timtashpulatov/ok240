@@ -557,15 +557,15 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-        ; call    PaintBall
-        ; call    KBDSTAT
-        ; jz      CheckDone
-        ; call    KBDREAD
-        ; cpi     1bh
-        ; jnz     CheckDone1
-        ; call    PaintBall
-        ; pop     a
-        ; jmp     WARMBOOT
+        call    PaintBall
+        call    KBDSTAT
+        jz      CheckDone
+        call    KBDREAD
+        cpi     1bh
+        jnz     CheckDone1
+        call    PaintBall
+        pop     a
+        jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
@@ -958,14 +958,23 @@ PaintBall
         lda     BallX
         ani     7
         jz      GoBall0
-        
+
         lxi     hl, BALLPHASES
-        lxi     bc, 32
-PaintBallLoop
-        dcr     a
-        jz      GoBall0
+        rrc
+        rrc
+        rrc
+   ;     ani     0e0h
+        mov     c, a
+        mvi     b, 0
         dad     bc
-        jmp     PaintBallLoop
+
+;         lxi     hl, BALLPHASES
+;         lxi     bc, 32
+; PaintBallLoop
+;         dcr     a
+;         jz      GoBall0
+;         dad     bc
+;         jmp     PaintBallLoop
 GoBall0 
         shld    BALLPHASE
 
@@ -1979,7 +1988,7 @@ BATTY1  db      4
 NOBATTY db      4
         ds      64
 
-        .org 0c00h
+        .org 0d00h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
