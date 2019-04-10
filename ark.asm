@@ -38,7 +38,7 @@ BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     4fh     ;32
 DEFAULTBALLY    equ     18h     ;224
-DEFAULTBALLDX   equ     0       ; debug Y first ; 1
+DEFAULTBALLDX   equ     1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     1
 
         org     100h
@@ -360,12 +360,12 @@ UY1
 ; *************************************************
 CheckNewY
         call    YPlusDY
-        call    ShallWeReflectByY
+        call    ShallWeReflectY
         jnz     .+6
         call    LetsReflectY
         ret
 
-ShallWeReflectByY
+ShallWeReflectY
         ret
 
 LetsReflectY
@@ -387,7 +387,8 @@ YPlusDY
         ret
 
 
-
+LEFTBALLMARGIN  equ     32
+RIGHTBALLMARGIN equ     216
 ; *************************************************
 ; Мячевой процессинг
 ; *************************************************
@@ -458,10 +459,7 @@ CXNext1
         add     m               ; прибавить к X шаг
         mov     m, a
 
-;        mvi     b, 32
-;        mvi     b, 216
-
-    jmp CheckDone        
+;    jmp CheckDone        
 
 CheckY        
 ; -------------займемся координатой по вертикали Y
@@ -530,7 +528,7 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-         call    PaintBall
+        call    PaintBall
         call    KBDSTAT
         jz      CheckDone
         call    KBDREAD
@@ -555,14 +553,16 @@ CheckBrickX
         lda     BallY
         call    CheckBrickXCommon
         ret
-
+; *************************************************
+; *************************************************
 CheckBrickXPlusOne
         lxi     hl, LEVEL_1
         lda     BallY
         adi     8
         call    CheckBrickXCommon
         ret
-
+; *************************************************
+; *************************************************
 CheckBrickXCommon
         rlc
         push    a
@@ -790,7 +790,8 @@ DestroyBrickYPlusOne
         
         ret
 
-        
+; *************************************************
+; *************************************************
 DestroyBrickX
         push    hl
         push    de
@@ -824,7 +825,9 @@ DestroyBrickX
         pop     hl
 
         ret
- 
+
+; *************************************************
+; *************************************************
 DestroyBrickXPlusOne
         push    hl
         push    de
