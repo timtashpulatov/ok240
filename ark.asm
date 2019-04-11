@@ -222,11 +222,22 @@ CurUp
         sta     BattyDirection
         jmp     Begin
 
+; *************************************************
+; Хаускипинг
+; *************************************************
 HouseKeeping
-        call    Dly
+        ;call    Dly
+        call    SyncToRetrace
         call    ProcessBall
         call    ProcessBatty
         jmp     Begin
+
+SyncToRetrace
+        ; подождем наступления ретрейса
+        in      41h
+        ani     2
+        jnz     SyncToRetrace
+        ret
 
 ; *************************************************
 ; Дубопроцессор
@@ -557,15 +568,15 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-        call    PaintBall
-        call    KBDSTAT
-        jz      CheckDone
-        call    KBDREAD
-        cpi     1bh
-        jnz     CheckDone1
-        call    PaintBall
-        pop     a
-        jmp     WARMBOOT
+        ; call    PaintBall
+        ; call    KBDSTAT
+        ; jz      CheckDone
+        ; call    KBDREAD
+        ; cpi     1bh
+        ; jnz     CheckDone1
+        ; call    PaintBall
+        ; pop     a
+        ; jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
@@ -964,24 +975,17 @@ PaintBall
         rrc
         rrc
         rrc
-   ;     ani     0e0h
+
         mov     c, a
         mvi     b, 0
         dad     bc
 
-;         lxi     hl, BALLPHASES
-;         lxi     bc, 32
-; PaintBallLoop
-;         dcr     a
-;         jz      GoBall0
-;         dad     bc
-;         jmp     PaintBallLoop
+
 GoBall0 
         shld    BALLPHASE
 
           call        RenderBall
           lxi   hl, BALLBUF
-
 
 GoBall
         lda     BallY
