@@ -956,8 +956,6 @@ DestroyBrick
 ; *************************************************
 EraseBall
 
-       ;lxi     hl, NOBATTY+1
-       ;jmp     GoBall
        call     RenderNoBall
        lxi      hl, BALLBUF
        jmp      GoBall
@@ -965,11 +963,11 @@ EraseBall
  
 PaintBall
 
-        lxi     hl, BALL
+;        lxi     hl, BALL
         lda     BallX
         ani     7
-        jz      GoBall0
-        dcr     a               ; TODO добавить нулевую фазу BALL в начало BALLPHASES
+;        jz      GoBall0
+;        dcr     a               ; TODO добавить нулевую фазу BALL в начало BALLPHASES
 
         lxi     hl, BALLPHASES
         rrc
@@ -1269,7 +1267,7 @@ RenderBackground
         
 
 ; *************************************************
-; Копировать блок из HL в DE длиной C
+; Копировать блок из HL в DE длиной B
 ; *************************************************
 Copy_B_Bytes_From_HL_To_DE
         mov     a, m
@@ -1695,39 +1693,27 @@ PHLoop
 ; Породить фазы мячика
 ; *************************************************
 FillBallPhases
+; нулевую фазу тоже скопируем
+        lxi     hl, BALL
+        lxi     de, BALLPHASES
+        mvi     b, 32
+        call    Copy_B_Bytes_From_HL_To_DE
 
+; а теперь семь сдвинутых фаз
         mvi     a, 2
         sta     BitmapWidth
 
         mvi     a, 32
-        sta    PhaseSize
+        sta     PhaseSize
 
-        lxi     hl, BALL
-        lxi     de, BALLPHASES
-        call    ShiftBitmap
- 
         lxi     hl, BALLPHASES
         lxi     de, BALLPHASES+32
+        call    ShiftBitmap
+ 
+        lxi     hl, BALLPHASES+32
+        lxi     de, BALLPHASES+64
         mvi     a, 7       
         jmp     FBPLoop
-;  L3b6
-;          push    a
-;          push    hl
-;          push    de
-;          call    ShiftBitmap
-;          lxi     bc, 32
-;          pop     hl
-;          dad     bc
-;          xchg
-;          pop     hl
-;          dad     bc
-        
-;          pop     a
-;          dcr     a
-;          jnz     L3b6
-        
-;         ret
-
 
 ; *************************************************
 ; Заполнить Буфер Сдвинутых Ракеток
@@ -1818,7 +1804,6 @@ SBPLoop1
         sta     Count1
         jnz     SBPLoop1
 
-;
         pop     a
 
         pop     de
