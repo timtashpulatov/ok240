@@ -955,45 +955,33 @@ DestroyBrick
 ; А мячик скиньте?
 ; *************************************************
 EraseBall
-
        call     RenderNoBall
-       lxi      hl, BALLBUF
        jmp      GoBall
 
- 
 PaintBall
-
-;        lxi     hl, BALL
         lda     BallX
         ani     7
-;        jz      GoBall0
-;        dcr     a               ; TODO добавить нулевую фазу BALL в начало BALLPHASES
-
         lxi     hl, BALLPHASES
         rrc
         rrc
         rrc
-
         mov     c, a
         mvi     b, 0
         dad     bc
 
-
-GoBall0 
         shld    BALLPHASE
-
-          call        RenderBall
-          lxi   hl, BALLBUF
-
+        call    RenderBall
 GoBall
         lda     BallY
         mov     c, a
+        
         lda     BallX
         rar
         rar
         ani     3eh
         mov     b, a
         
+        lxi     hl, BALLBUF
         call    PaintHorizontalBitmap2
 
         ret
