@@ -1962,6 +1962,9 @@ BATTY1  db      4
         db      0, 0, 3, 3, 3, 0, 0, 0
         ds      16
 
+BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
+        db      0, 1ch, 0a6h, 42h, 0a2h, 40h, 20h, 0
+
 ; Нет дубины
 NOBATTY db      4
         ds      64
