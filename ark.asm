@@ -958,6 +958,7 @@ PaintBall
         lda     BallX
         ani     7
         jz      GoBall0
+        dcr     a               ; TODO добавить нулевую фазу BALL в начало BALLPHASES
 
         lxi     hl, BALLPHASES
         rrc
