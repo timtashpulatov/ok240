@@ -1388,7 +1388,16 @@ PaintBrick
 ; - Координата X (1 байт)
 ; - Координата Y (1 байт)
 ; - Скорость падения (1 байт)
+MAXBONUSNUM     equ     10      ; а что, тоже неплохое число
+BonusListIndex  db      0
+
 ProcessBonusList
+        lda     BonusListIndex
+        cpi     MAXBONUSNUM
+        jnz     ProcessBonusItem
+        xra     a
+        sta     BonusListIndex
+ProcessBonusItem
         ret
 
 
