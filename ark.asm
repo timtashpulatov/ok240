@@ -188,6 +188,8 @@ KeyFunctions
         dw      CycleBackColor
         db      'T'
         dw      Test
+        db      'D'
+        dw      Debug
         
         db      1bh
         dw      WARMBOOT
@@ -198,6 +200,11 @@ KeyFunctions
 Test
         jmp     Begin
 
+Debug   
+        lda     DebugStepMode
+        cma
+        sta     DebugStepMode
+        jmp     Begin
 
 ; *******************************************
 
@@ -567,11 +574,23 @@ CheckDone
 ;        lda     BallY
 ;        ani     7
 ;        jnz      CheckDone1
+
+        lda     DebugStepMode
+        ora     a
+        jz      CheckDone1
         
         call    PaintBall
         call    KBDSTAT
         jz      CheckDone
+        
         call    KBDREAD
+        cpi     'D'
+        jnz     CheckEsc
+        xra     a
+        sta     DebugStepMode
+        jmp     CheckDone1
+        
+CheckEsc        
         cpi     1bh
         jnz     CheckDone1
         call    PaintBall
@@ -1396,11 +1415,11 @@ BonusListIndex  db      0
 ;                       Type    Speed    Y       X
 ;-----------------      ---     ---     ---     ---
 BonusList       
-                db      1,      10,     40h,    50h
-                db      2,      5,      80h,    80h
-                db      0,      0,      0,      0       ; пустой слот
-                db      4,      15,     0,      0
-                db      5,      20,     20h,    20h
+                db      1,      10,     40h,    0h
+                db      2,      5,      80h,    10h
+                db      0,      0,      0,      20h       ; пустой слот
+                db      4,      15,     0,      30h
+                db      5,      20,     20h,    40h
                 
                 
 
@@ -1419,6 +1438,7 @@ ProcessBonusItem
 ; A = индекс в листе
 ; ************************************************
 ProcessBonus
+        ora     a
         ral
         ral
         mov     c, a
@@ -2043,7 +2063,7 @@ BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
 NOBATTY db      4
         ds      64
 
-        .org 0d00h
+        .org 0e00h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
@@ -2126,6 +2146,7 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
 
+DebugStepMode   db      1
 ; *********************************************************************
 ; Буфера (.)(.)
 ; *********************************************************************
@@ -2137,8 +2158,7 @@ BALLBUF         ds      32      ; сюда будут отрисовыватьс
 BATTYBUF        ds      64*8
 ; Фазы мячика
 BALLPHASES      ds      16*8
-; Бонуслист
-BONUSLIST       ds      1
+
 
 ; Игровое поле
 ;           1111111111222222222233
