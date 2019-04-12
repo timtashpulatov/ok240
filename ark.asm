@@ -229,6 +229,7 @@ HouseKeeping
         call    SyncToRetrace
         call    ProcessBall
         call    ProcessBatty
+        call    ProcessBonusList
         jmp     Begin
 
 SyncToRetrace
@@ -567,15 +568,15 @@ CheckDone
 ;        ani     7
 ;        jnz      CheckDone1
         
-        ; call    PaintBall
-        ; call    KBDSTAT
-        ; jz      CheckDone
-        ; call    KBDREAD
-        ; cpi     1bh
-        ; jnz     CheckDone1
-        ; call    PaintBall
-        ; pop     a
-        ; jmp     WARMBOOT
+        call    PaintBall
+        call    KBDSTAT
+        jz      CheckDone
+        call    KBDREAD
+        cpi     1bh
+        jnz     CheckDone1
+        call    PaintBall
+        pop     a
+        jmp     WARMBOOT
         
         
 ;        call    CheckBrick      ; оптимизировать вывод, чтобы не на каждом шаге проверять, а только при пересечении
