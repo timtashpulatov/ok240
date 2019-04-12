@@ -99,7 +99,6 @@ VeryBegin
         sta     DelayDY
         sta     CounterDY
 
-
 ; Кирпич 1
         lxi     bc, 0400h
         lxi     hl, BRICK1
@@ -1386,13 +1385,23 @@ PaintBrick
 ; элемент списка: 
 ; - Тип бонуса (1 байт), 0 = пустой слот
 ; - Скорость падения (1 байт) - возобновляемая задержка
-; - Координата X (1 байт)
 ; - Координата Y (1 байт)
+; - Координата X (1 байт)
 
-MAXBONUSNUM     equ     10      ; а что, тоже неплохое число
+MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
 BONUSDEFAULTSPEED       equ     10
 BonusListIndex  db      0
-BonusList       ds      10*4
+
+;                       Type    Speed    Y       X
+;-----------------      ---     ---     ---     ---
+BonusList       
+                db      1,      10,     40h,    50h
+                db      2,      5,      80h,    80h
+                db      0,      0,      0,      0       ; пустой слот
+                db      4,      15,     0,      0
+                db      5,      20,     20h,    20h
+                
+                
 
 ProcessBonusList
         lda     BonusListIndex
