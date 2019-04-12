@@ -1390,7 +1390,9 @@ PaintBrick
 ; - Координата Y (1 байт)
 
 MAXBONUSNUM     equ     10      ; а что, тоже неплохое число
+BONUSDEFAULTSPEED       equ     10
 BonusListIndex  db      0
+BonusList       ds      10*4
 
 ProcessBonusList
         lda     BonusListIndex
@@ -1403,20 +1405,53 @@ ProcessBonusItem
         ret
 
 ; ************************************************
-; HL - указатель на текущий бонус в листе
+; ProcessBonus
+; A = индекс в листе
 ; ************************************************
 ProcessBonus
-; проверить тип
+        ral
+        ral
+        mov     c, a
+        mvi     b, 0
+        lxi     hl, BonusList
+        dad     bc      ; указатель на 1й байт (тип бонуса, он же слот)
+; проверить слот
         mov     a, m
         ora     a
         jz      PBDone  ; пустой слот оказался
 ; проверить скорость падения, если пора, обновить координату
-
+        inx     hl      ; указатель на 2й байт (задержка)
+        mov     a, m
+        ora     a
+        jz      TimeToMove
+        dcr     m
+        jmp     PBDone
+TimeToMove
+        mvi     m, BONUSDEFAULTSPEED    ; снова взведем задержку
+; сотрем на старом месте
+        inx     hl      ; указатель на 3й байт (координата Y)
+        call    EraseBonus
+        inr     m       ; прирастим координату
+        mov     a, m
+        cpi     BOTTOMMARGIN
+        jnz     ContinueMoving
 ; прекратить жизненный цикл бонуса в силу разных причин
-
+        dcx     hl
+        dcx     hl
+        mvi     m, 0    ; обнулим слот
+        jmp     PBDone
+ContinueMoving
+        call    PaintBonus
+; перейти к следующему бонусу в листе
 PBDone
         lxi     hl, BonusListIndex
         inr     m
+        ret
+
+PaintBonus
+        ret
+
+EraseBonus
         ret
 
 ; *******************************************
