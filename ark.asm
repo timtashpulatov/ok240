@@ -1414,7 +1414,7 @@ PaintBrick
 ; - Координата X (1 байт)
 
 MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
-BONUSDEFAULTSPEED       equ     5
+BONUSDEFAULTSPEED       equ     1
 BonusListIndex  db      0
 
 ;                       Type    Speed    Y       X      Default speed
