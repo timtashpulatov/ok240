@@ -1412,14 +1412,14 @@ MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое
 BONUSDEFAULTSPEED       equ     10
 BonusListIndex  db      0
 
-;                       Type    Speed    Y       X
-;-----------------      ---     ---     ---     ---
+;                       Type    Speed    Y       X      Default speed
+;-----------------      ---     ---     ---     ---     -------------
 BonusList       
-                db      1,      10,     40h,    0h
-                db      2,      5,      80h,    10h
-                db      0,      0,      0,      20h       ; пустой слот
-                db      4,      15,     0,      30h
-                db      5,      20,     20h,    40h
+                db      1,      10,     00h,    0h
+                db      2,      5,      50h,    2h
+                db      0,      0,      0,      0       ; пустой слот
+                db      4,      15,     30h,    6h
+                db      5,      20,     40h,    8h
                 
                 
 
@@ -1477,7 +1477,9 @@ PBDone
         lxi     hl, BonusListIndex
         inr     m
         ret
-
+; *******************************************
+; PaintBonus
+; *******************************************
 PaintBonus
         mov     c, m
         inx     hl
@@ -1486,7 +1488,9 @@ PaintBonus
         mvi     a, 3
         call    PaintBitmap
         ret
-
+; *******************************************
+; EraseBonus
+; *******************************************
 EraseBonus
         push    hl
         mov     c, m
