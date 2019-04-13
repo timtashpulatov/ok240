@@ -243,7 +243,7 @@ SyncToRetrace
         ; подождем наступления ретрейса
         in      41h
         ani     2
-        jnz     SyncToRetrace
+        jz     SyncToRetrace
         ret
 
 ; *************************************************
@@ -1414,7 +1414,7 @@ PaintBrick
 ; - Координата X (1 байт)
 
 MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
-BONUSDEFAULTSPEED       equ     10
+BONUSDEFAULTSPEED       equ     5
 BonusListIndex  db      0
 
 ;                       Type    Speed    Y       X      Default speed
