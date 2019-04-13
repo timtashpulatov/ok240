@@ -875,9 +875,14 @@ DestroyBrickX
         lda     BallY
         ani     0f8h
         mov    c, a
+
+     push bc
         
         xra   a
         call  PaintBrick1
+
+     pop bc
+     call AddBonusToList 
 
         pop     bc
         pop     de
@@ -1414,13 +1419,13 @@ BonusListIndex  db      0
 
 ;                       Type    Speed    Y       X      Default speed
 ;-----------------      ---     ---     ---     ---     -------------
-BonusList       
-                db      1,      10,     00h,    0h
-                db      2,      5,      50h,    2h
-                db      0,      0,      0,      0       ; пустой слот
-                db      4,      15,     30h,    6h
-                db      5,      20,     40h,    8h
-                
+BonusList       ds      20
+                ; db      1,      10,     00h,    0h
+                ; db      2,      5,      50h,    2h
+                ; db      0,      0,      0,      0       ; пустой слот
+                ; db      4,      15,     30h,    6h
+                ; db      5,      20,     40h,    8h
+
                 
 
 ProcessBonusList
@@ -1431,6 +1436,44 @@ ProcessBonusList
         sta     BonusListIndex
 ProcessBonusItem
         call    ProcessBonus
+        ret
+
+; ************************************************
+; BC - координаты только что стертого кирпича
+; ************************************************
+AddBonusToList
+        push    bc
+        mvi     c, MAXBONUSNUM
+        lxi     hl, BonusList
+FindEmptySlot
+        mov     a, m
+        ora     a
+        jnz     NextSlotPlease
+        
+        pop     bc
+        mvi     m, 1    ; тип бонуса (TODO rnd)
+        inx     hl
+        mvi     m, 10   ; скорость бонуса
+
+        inx     hl
+        mov     m, c    ; Y
+
+        inx     hl
+        mov     m, b    ; X
+        ; ora     a
+        ; ral
+        ; ral
+        ; ral
+        ; mov     m, a    
+
+        ret
+        
+NextSlotPlease
+        lxi     de, 4
+        dad     de
+        dcr     c
+        jnz     FindEmptySlot
+        pop     bc
         ret
 
 ; ************************************************
