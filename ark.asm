@@ -1315,6 +1315,7 @@ PaintBatty
         lda     BattyPos
         ani     7
         jz      GoBatty
+        
         lxi     hl, BATTYBUF
         lxi     bc, 64
 PaintBattyLoop        
@@ -1324,7 +1325,7 @@ PaintBattyLoop
         jmp     PaintBattyLoop
         
 GoBatty        
-        mvi     c, 0f0h
+        mvi     c, 0f0h         ; вертикальная позиция дубины
         lda     BattyPos
         rar
         rar
