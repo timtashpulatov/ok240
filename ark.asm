@@ -2240,12 +2240,15 @@ DebugStepMode   db      1
 ; Буфер мячика
 BALLBUF         ds      32      ; сюда будут отрисовываться фон, кирпичики и сам мячик для последующего вывода
 
-; Буфер Сдвинутых Ракеток
-BATTYBUF        ds      64*8
 ; Массив указателей на фазы дубины
 BATTYPTRARRAY   dw      BATTYBUF,       BATTYBUF+40h,   BATTYBUF+80h,   BATTYBUF+0c0h
                 dw      BATTYBUF+100h,  BATTYBUF+140h,  BATTYBUF+180h,  BATTYBUF+1c0h
-BattyPtr        ds      2
+; Буфер Сдвинутых Ракеток
+BATTYBUF        ds      64*8
+BattyPtr        dw      0
+; Массив указателей на фазы мячика
+BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHASES+96
+                dw      BALLPHASES+128,  BALLPHASES+160,  BALLPHASES+192,  BALLPHASES+224
 ; Фазы мячика
 BALLPHASES      ds      16*8
 
