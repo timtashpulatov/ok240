@@ -1868,7 +1868,13 @@ FillBallPhases
 ; Заполнить Буфер Сдвинутых Ракеток
 ; *************************************************
 FillBattyBuf
-
+; нулевая фаза
+        lxi     hl, BATTY1+1
+        lxi     de, BATTYBUF
+        mvi     b, 64
+        call    Copy_B_Bytes_From_HL_To_DE
+        
+; а теперь семь фаз ракетки
         mvi     a, 4
         sta     BitmapWidth
 
@@ -1883,7 +1889,7 @@ FillBattyBuf
         lxi     hl, BATTYBUF
         lxi     de, BATTYBUF+64
         mvi     a, 7
- FBPLoop
+FBPLoop
         push    a
         push    hl
         push    de
