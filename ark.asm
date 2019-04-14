@@ -318,6 +318,12 @@ CalculateBattyPhase
         mov     c, a
         mvi     b, 0
         dad     bc
+        
+        mov     d, m
+        inx     hl
+        mov     d, m
+        xchg
+        
         shld    BattyPtr
         
         ret
