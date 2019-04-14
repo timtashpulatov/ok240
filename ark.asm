@@ -240,7 +240,7 @@ HouseKeeping
         mvi     a, 42h
         out     VIDEO
         call    ProcessBatty
-        mvi     a, 43h
+        mvi     a, 46h
         out     VIDEO
         call    ProcessBonusList
         
@@ -1658,17 +1658,48 @@ Copy8
         push    h
         push    d
         push    a
-        mvi     c, 8
-PBLoop  ldax    d
-
-;OPERATION
-;        db      OP_NOP
-        
+;        mvi     c, 8
+;PBLoop  
+        ldax    d
         mov     m, a
         inx     d
         inx     h
-        dcr     c
-        jnz     PBLoop
+
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+
+        ldax    d
+        mov     m, a
+
+;        dcr     c
+;        jnz     PBLoop
         pop     a
         pop     d
         pop     h
