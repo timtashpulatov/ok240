@@ -1399,7 +1399,6 @@ PaintBrick1
 PaintBrick
         push    hl
         push    bc
-        mvi     a, 3
         call    PaintBitmap
 
         pop     bc
@@ -1409,7 +1408,6 @@ PaintBrick
         pop     de
         dad     d
 
-        mvi     a, 3
         call    PaintBitmap
 
         ret
@@ -1540,7 +1538,6 @@ PaintBonus
         inx     hl
         mov     b, m
         lxi     hl, BONUS
-        mvi     a, 3
         call    PaintBitmap
         ret
 ; *******************************************
@@ -1552,7 +1549,6 @@ EraseBonus
         inx     hl
         mov     b, m
         lxi     hl, NOBATTY+1   ; просто удобно, там куча нулей
-        mvi     a, 3
         call    PaintBitmap
         pop     hl
         ret
@@ -1605,7 +1601,7 @@ PaintBitmap
         push    bc
         push    de
         
-        push    a
+;        push    a
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
         mvi     a, ENROM
         out     BANKING
@@ -1620,15 +1616,15 @@ PaintBitmap
         dad     d       ; hl = hl + Y
         pop     de       ; de = адрес битмапа
 
-        pop     a       ; плоскости
+;        pop     a       ; плоскости
         
-Plane1
-        rrc
-        jnc     Plane2
+;Plane1
+;        rrc
+;        jnc     Plane2
         call    Copy8
-Plane2        
-        rrc
-        jnc     PlaneDone
+;Plane2        
+;        rrc
+;        jnc     PlaneDone
 
         ; Второй план битмапа
         push    h
@@ -1798,7 +1794,6 @@ PS00
         sta     SuppressLeadingZeroes
         
 PS0        
-        mvi     a, 3
         call    PaintBitmap
         
         inr     b
@@ -1848,7 +1843,6 @@ PaintHorizontalBitmap
 PHLoop
         push    bc
         push    hl
-        mvi     a, 3
         call    PaintBitmap
         pop     hl
         lxi     b, 16
