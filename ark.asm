@@ -190,7 +190,9 @@ KeyFunctions
         dw      Test
         db      'D'
         dw      Debug
-        
+        db      'P'
+        dw      PPPalette
+
         db      1bh
         dw      WARMBOOT
         db      0
@@ -205,6 +207,14 @@ Debug
         cma
         sta     DebugStepMode
         jmp     Begin
+
+PPPalette
+
+        lda     DebugPalette
+        cma
+        sta     DebugPalette
+        jmp     Begin
+
 
 ; *******************************************
 
@@ -235,6 +245,11 @@ HouseKeeping
         ;call    Dly
         call    SyncToRetrace
         
+        lda     DebugPalette
+        ora     a
+        jz      NoPaletteDebug
+        
+
         mvi     a, 41h          ; белый фон
         out     VIDEO
         call    ProcessBall
@@ -250,12 +265,18 @@ HouseKeeping
         mvi     a, 40h          ; дефолтный черный фон
         out     VIDEO
         jmp     Begin
+        
+NoPaletteDebug
+        call    ProcessBall
+        call    ProcessBatty
+        call    ProcessBonusList
+        jmp     Begin
 
 SyncToRetrace
         ; подождем наступления ретрейса
         in      41h
         ani     2
-        jz      SyncToRetrace
+        jnz      SyncToRetrace
         ret
 
 ; *************************************************
@@ -319,7 +340,7 @@ CalculateBattyPhase
         mvi     b, 0
         dad     bc
         
-        mov     d, m
+        mov     e, m
         inx     hl
         mov     d, m
         xchg
@@ -1330,19 +1351,8 @@ EraseBatty
         lxi     hl, NOBATTY+1
         jmp     GoBatty
 PaintBatty
-        lxi     hl, BATTY1+1
-        lda     BattyPos
-        ani     7
-        jz      GoBatty
-        
-        lxi     hl, BATTYBUF
-        lxi     bc, 64
-PaintBattyLoop        
-        dcr     a
-        jz      GoBatty
-        dad     bc
-        jmp     PaintBattyLoop
-        
+
+        lhld    BattyPtr
 GoBatty        
         mvi     c, 0f0h         ; вертикальная позиция дубины
         lda     BattyPos
@@ -2239,6 +2249,7 @@ BGCOLOR         db      0
 TuneCount       db      0
 
 DebugStepMode   db      1
+DebugPalette    db      0
 ; *********************************************************************
 ; Буфера (.)(.)
 ; *********************************************************************
