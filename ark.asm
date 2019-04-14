@@ -234,16 +234,25 @@ CurUp
 HouseKeeping
         ;call    Dly
         call    SyncToRetrace
+        mvi     a, 41h
+        out     VIDEO
         call    ProcessBall
+        mvi     a, 42h
+        out     VIDEO
         call    ProcessBatty
+        mvi     a, 43h
+        out     VIDEO
         call    ProcessBonusList
+        
+        mvi     a, 40h
+        out     VIDEO
         jmp     Begin
 
 SyncToRetrace
         ; подождем наступления ретрейса
         in      41h
         ani     2
-        jz     SyncToRetrace
+        jnz     SyncToRetrace
         ret
 
 ; *************************************************
