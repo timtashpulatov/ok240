@@ -2262,7 +2262,7 @@ BATTYPTRARRAY   dw      BATTYBUF,       BATTYBUF+40h,   BATTYBUF+80h,   BATTYBUF
                 dw      BATTYBUF+100h,  BATTYBUF+140h,  BATTYBUF+180h,  BATTYBUF+1c0h
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
-BattyPtr        dw      0
+BattyPtr        dw      BATTYBUF
 ; Массив указателей на фазы мячика
 BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHASES+96
                 dw      BALLPHASES+128,  BALLPHASES+160,  BALLPHASES+192,  BALLPHASES+224
