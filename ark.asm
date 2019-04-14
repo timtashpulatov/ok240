@@ -311,18 +311,14 @@ MoveLeftJa
 
 
 CalculateBattyPhase
-        lxi     hl, BattyPos
-        mov     a, m
-        rar
-        rar
-        ani     1
-        mov     b, a
-        mov     a, m
-        rrc
-        rrc
-        ani     0c0h
+        lxi     hl, BATTYPTRARRAY
+        lda     BattyPos
+        ani     7
+        ral
         mov     c, a
-        lxi     hl, BATTYBUF
+        mvi     b, 0
+        dad     bc
+        shld    BattyPtr
         
         ret
 
@@ -1892,10 +1888,6 @@ FillBattyBuf
         mvi     b, 64
         call    Copy_B_Bytes_From_HL_To_DE
 
-; запишем адрес нулевой фазы в начало массива указателей фаз
-        lxi     hl, BATTYBUF
-        shld    BATTYPTRARRAY
-
 ; а теперь семь фаз ракетки
         mvi     a, 4
         sta     BitmapWidth
@@ -2251,8 +2243,9 @@ BALLBUF         ds      32      ; сюда будут отрисовыватьс
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
 ; Массив указателей на фазы дубины
-BATTYPTRARRAY   ds      16
-
+BATTYPTRARRAY   dw      BATTYBUF,       BATTYBUF+40h,   BATTYBUF+80h,   BATTYBUF+0c0h
+                dw      BATTYBUF+100h,  BATTYBUF+140h,  BATTYBUF+180h,  BATTYBUF+1c0h
+BattyPtr        ds      2
 ; Фазы мячика
 BALLPHASES      ds      16*8
 
