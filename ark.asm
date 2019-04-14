@@ -1601,7 +1601,6 @@ PaintBitmap
         push    bc
         push    de
         
-;        push    a
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
         mvi     a, ENROM
         out     BANKING
@@ -1616,15 +1615,7 @@ PaintBitmap
         dad     d       ; hl = hl + Y
         pop     de       ; de = адрес битмапа
 
-;        pop     a       ; плоскости
-        
-;Plane1
-;        rrc
-;        jnc     Plane2
         call    Copy8
-;Plane2        
-;        rrc
-;        jnc     PlaneDone
 
         ; Второй план битмапа
         push    h
