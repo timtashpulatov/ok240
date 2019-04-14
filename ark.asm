@@ -255,7 +255,7 @@ SyncToRetrace
         ; подождем наступления ретрейса
         in      41h
         ani     2
-        jnz     SyncToRetrace
+        jz      SyncToRetrace
         ret
 
 ; *************************************************
