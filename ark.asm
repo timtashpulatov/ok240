@@ -288,6 +288,7 @@ MoveRight
         mvi     a, BATTY_STOP
         sta     BattyDirection
 MoveDone        
+        call    CalculateBattyPhase
         call    PaintBatty
         ret
 L20f
@@ -308,6 +309,22 @@ MoveLeftJa
         sta     BattyPos
         jmp     MoveDone
 
+
+CalculateBattyPhase
+        lxi     hl, BattyPos
+        mov     a, m
+        rar
+        rar
+        ani     1
+        mov     b, a
+        mov     a, m
+        rrc
+        rrc
+        ani     0c0h
+        mov     c, a
+        lxi     hl, BATTYBUF
+        
+        ret
 
 ; *************************************************
 ; Новый Мячевой Процессинг
@@ -1874,7 +1891,11 @@ FillBattyBuf
         lxi     de, BATTYBUF
         mvi     b, 64
         call    Copy_B_Bytes_From_HL_To_DE
-        
+
+; запишем адрес нулевой фазы в начало массива указателей фаз
+        lxi     hl, BATTYBUF
+        shld    BATTYPTRARRAY
+
 ; а теперь семь фаз ракетки
         mvi     a, 4
         sta     BitmapWidth
@@ -1882,13 +1903,12 @@ FillBattyBuf
         lxi     hl, 64
         shld    PhaseSize
 
-
-        lxi     hl, BATTY1+1
-        lxi     de, BATTYBUF
-        call    ShiftBitmap
-
         lxi     hl, BATTYBUF
         lxi     de, BATTYBUF+64
+        call    ShiftBitmap
+
+        lxi     hl, BATTYBUF+64
+        lxi     de, BATTYBUF+128
         mvi     a, 7
 FBPLoop
         push    a
@@ -2230,6 +2250,9 @@ BALLBUF         ds      32      ; сюда будут отрисовыватьс
 
 ; Буфер Сдвинутых Ракеток
 BATTYBUF        ds      64*8
+; Массив указателей на фазы дубины
+BATTYPTRARRAY   ds      16
+
 ; Фазы мячика
 BALLPHASES      ds      16*8
 
