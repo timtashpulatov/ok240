@@ -1641,19 +1641,9 @@ PlaneDone
 ; *************************************************
 ; Скопировать 8 байт битмапа с разными логическими функциями
 ; *************************************************
-OP_NOP  equ     000h
-OP_OR   equ     0b6h
-OP_XOR  equ     0aeh
 Copy8
         push    h
         push    d
-        push    a
-;        mvi     c, 8
-;PBLoop  
-        ldax    d
-        mov     m, a
-        inx     d
-        inx     h
 
         ldax    d
         mov     m, a
@@ -1687,10 +1677,12 @@ Copy8
 
         ldax    d
         mov     m, a
+        inx     d
+        inx     h
 
-;        dcr     c
-;        jnz     PBLoop
-        pop     a
+        ldax    d
+        mov     m, a
+
         pop     d
         pop     h
         ret
