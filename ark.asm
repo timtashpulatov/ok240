@@ -234,17 +234,20 @@ CurUp
 HouseKeeping
         ;call    Dly
         call    SyncToRetrace
-        mvi     a, 41h
+        
+        mvi     a, 41h          ; белый фон
         out     VIDEO
         call    ProcessBall
-        mvi     a, 42h
+        
+        mvi     a, 42h          ; красный фон
         out     VIDEO
         call    ProcessBatty
-        mvi     a, 46h
+        
+        mvi     a, 46h          ; зеленый фон
         out     VIDEO
         call    ProcessBonusList
         
-        mvi     a, 40h
+        mvi     a, 40h          ; дефолтный черный фон
         out     VIDEO
         jmp     Begin
 
