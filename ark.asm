@@ -2189,8 +2189,8 @@ LEVEL_1
         db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
         db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
 
-LEVEL_1_END
-        ds      WIDTH*HEIGHT
+;LEVEL_1_END
+;        ds      WIDTH*HEIGHT
         
 
 ; *********************************************************************
@@ -2250,24 +2250,29 @@ TuneCount       db      0
 
 DebugStepMode   db      1
 DebugPalette    db      0
-; *********************************************************************
-; Буфера (.)(.)
-; *********************************************************************
-;        db      24        
-; Буфер мячика
-BALLBUF         ds      32      ; сюда будут отрисовываться фон, кирпичики и сам мячик для последующего вывода
 
 ; Массив указателей на фазы дубины
 BATTYPTRARRAY   dw      BATTYBUF,       BATTYBUF+40h,   BATTYBUF+80h,   BATTYBUF+0c0h
                 dw      BATTYBUF+100h,  BATTYBUF+140h,  BATTYBUF+180h,  BATTYBUF+1c0h
-; Буфер Сдвинутых Ракеток
-BATTYBUF        ds      64*8
-BattyPtr        dw      BATTYBUF
 ; Массив указателей на фазы мячика
 BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHASES+96
-                dw      BALLPHASES+128,  BALLPHASES+160,  BALLPHASES+192,  BALLPHASES+224
+                dw      BALLPHASES+128,  BALLPHASES+160,  BALLPHASES+192,  BALLPHASES+224                
+
+BattyPtr        dw      BATTYBUF                
+
+; *********************************************************************
+; Буфера (.)(.)
+; *********************************************************************
+BOOPHERS        equ     .
+; Буфер мячика
+; сюда будут отрисовываться фон, кирпичики и сам мячик для последующего вывода
+BALLBUF         equ     BOOPHERS        ;ds      32      
+
+; Буфер Сдвинутых Ракеток
+BATTYBUF        equ     BALLBUF+32      ;ds      64*8
+
 ; Фазы мячика
-BALLPHASES      ds      16*8
+BALLPHASES      equ     BATTYBUF+64*8   ;ds      16*8
 
 
 ; Игровое поле
@@ -2277,6 +2282,6 @@ BALLPHASES      ds      16*8
 ; ....112233445566778899aabbcc....
 ; ................................
 ;
-GAMEFIELD  equ     .
+
         
   
