@@ -267,6 +267,7 @@ HouseKeeping
         jmp     Begin
         
 NoPaletteDebug
+        call    BumpBitmap8x8
         call    ProcessBall
         call    ProcessBatty
         call    ProcessBonusList
@@ -2008,7 +2009,8 @@ SBPLoop1
 ; *************************************************
 ; Простор для экспериментов
 ; *************************************************
-BumpBitmap
+
+BumpBitmap8x8
 ; преамбула
         di
         mvi     a, ENROM
@@ -2027,7 +2029,7 @@ BumpBitmap
         lxi     de, 0708h
         push    de
 ; выводим второй столбик
-        lxi     sp, SCREEN+16
+        lxi     sp, SCREEN+8+256
         lxi     de, 090ah
         push    de
         lxi     de, 0b0ch
