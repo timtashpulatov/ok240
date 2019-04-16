@@ -2010,6 +2010,9 @@ SBPLoop1
 ; Простор для экспериментов
 ; *************************************************
 
+        
+        
+
 BumpBitmap8x8
 ; преамбула
         di
@@ -2018,27 +2021,33 @@ BumpBitmap8x8
 ; сохранить SP в HL
         lxi     hl, 0
         dad     sp
+        xchg    ; теперь старый указатель стека в DE
+        lxi     hl, SCREEN+8
 ; выводим первый столбик, снизу вверх
-        lxi     sp, SCREEN+8
-        lxi     de, 0102h
-        push    de
-        lxi     de, 0304h
-        push    de
-        lxi     de, 0506h
-        push    de
-        lxi     de, 0708h
-        push    de
+        ;lxi     sp, SCREEN+8
+        sphl
+        lxi     bc, 0102h
+        push    bc
+        lxi     bc, 0304h
+        push    bc
+        lxi     bc, 0506h
+        push    bc
+        lxi     bc, 0708h
+        push    bc
 ; выводим второй столбик
-        lxi     sp, SCREEN+8+256
-        lxi     de, 090ah
-        push    de
-        lxi     de, 0b0ch
-        push    de
-        lxi     de, 0d0eh
-        push    de
-        lxi     de, 0f00h        
-        push    de
+        ;lxi     sp, SCREEN+8+256
+        inr     h
+        sphl
+        lxi     bc, 090ah
+        push    bc
+        lxi     bc, 0b0ch
+        push    bc
+        lxi     bc, 0d0eh
+        push    bc
+        lxi     bc, 0f00h        
+        push    bc
 ; восстановить SP
+        xchg
         sphl
 ; постамбула
         xra     a
