@@ -137,6 +137,9 @@ VeryBegin
         call    PaintBatty        
 
 
+        call    TestPops
+
+
 ; *********************************************************************
 ; Main, как говорится, Loop
 ; *********************************************************************
@@ -2010,7 +2013,29 @@ SBPLoop1
 ; Простор для экспериментов
 ; *************************************************
 
-        
+
+TestPops
+        lxi     hl, BumpBitmap8x8
+        lxi     de, 4000h
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        call    Copy_B_Bytes_From_HL_To_DE
+
+        lxi     hl, BumpBitmap8x8
+        lxi     de, 4100h
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        call    Copy_B_Bytes_From_HL_To_DE
+
+        lxi     hl, BumpBitmap8x8
+        lxi     de, 4200h
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        call    Copy_B_Bytes_From_HL_To_DE
+
+        lxi     hl, BumpBitmap8x8
+        lxi     de, 4300h
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        call    Copy_B_Bytes_From_HL_To_DE
+
+        ret
         
 
 BumpBitmap8x8
@@ -2053,7 +2078,7 @@ BumpBitmap8x8
         xra     a
         out     BANKING
         ret
-
+BumpBitmap8x8_end
 
 ; *************************************************
 ; Битмапчики
