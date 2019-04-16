@@ -2006,6 +2006,45 @@ SBPLoop1
         ret
 
 ; *************************************************
+; Простор для экспериментов
+; *************************************************
+BumpBitmap
+; преамбула
+        di
+        mvi     a, ENROM
+        out     BANKING
+; сохранить SP в HL
+        lxi     hl, 0
+        dad     sp
+; выводим первый столбик, снизу вверх
+        lxi     sp, SCREEN+8
+        lxi     de, 0102h
+        push    de
+        lxi     de, 0304h
+        push    de
+        lxi     de, 0506h
+        push    de
+        lxi     de, 0708h
+        push    de
+; выводим второй столбик
+        lxi     sp, SCREEN+16
+        lxi     de, 090ah
+        push    de
+        lxi     de, 0b0ch
+        push    de
+        lxi     de, 0d0eh
+        push    de
+        lxi     de, 0f00h        
+        push    de
+; восстановить SP
+        sphl
+; постамбула
+        xra     a
+        out     BANKING
+        ret
+
+
+; *************************************************
 ; Битмапчики
 ; *************************************************
 BITMAP0 
