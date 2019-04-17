@@ -37,7 +37,7 @@ BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     4fh     ;32
-DEFAULTBALLY    equ     18h     ;224
+DEFAULTBALLY    equ     121 ;18h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     1
 
@@ -1538,8 +1538,9 @@ FindEmptySlot
         ret
         
 NextSlotPlease
-        lxi     de, 256 ; размер буфера с бонусом
-        dad     de
+        ;lxi     de, 256 ; размер буфера с бонусом
+        ;dad     de
+        inr     h
         dcr     c
         jnz     FindEmptySlot
         pop     bc
@@ -2270,6 +2271,15 @@ BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
 NOBATTY db      4
         ds      64
 
+; Массив указателей на фазы дубины
+BATTYPTRARRAY   dw      BATTYBUF,       BATTYBUF+40h,   BATTYBUF+80h,   BATTYBUF+0c0h
+                dw      BATTYBUF+100h,  BATTYBUF+140h,  BATTYBUF+180h,  BATTYBUF+1c0h
+; Массив указателей на фазы мячика
+BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHASES+96
+                dw      BALLPHASES+128,  BALLPHASES+160,  BALLPHASES+192,  BALLPHASES+224                
+
+
+
         .org 0f00h
 ; *********************************************************************
 ; Кирпичики
@@ -2297,6 +2307,8 @@ LEVEL_1
 ;LEVEL_1_END
 ;        ds      WIDTH*HEIGHT
         
+
+        .org    1100h
 
 ; *********************************************************************
 ; Переменные
@@ -2356,12 +2368,6 @@ TuneCount       db      0
 DebugStepMode   db      1
 DebugPalette    db      0
 
-; Массив указателей на фазы дубины
-BATTYPTRARRAY   dw      BATTYBUF,       BATTYBUF+40h,   BATTYBUF+80h,   BATTYBUF+0c0h
-                dw      BATTYBUF+100h,  BATTYBUF+140h,  BATTYBUF+180h,  BATTYBUF+1c0h
-; Массив указателей на фазы мячика
-BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHASES+96
-                dw      BALLPHASES+128,  BALLPHASES+160,  BALLPHASES+192,  BALLPHASES+224                
 
 BattyPtr        dw      BATTYBUF                
 
