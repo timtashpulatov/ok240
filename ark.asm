@@ -1573,6 +1573,16 @@ TimeToMove
         ;inx     hl      ; указатель на 3й байт (координата Y)
         mvi     l, 13h  ; смещение от заголовка бонус-буфера до экранного адреса
         ; call    EraseBonus
+        push    hl
+        
+        mov     e, m
+        inr     l
+        mov     d, m
+        
+        xchg
+        call    EraseColorByteFromScreen
+        pop     hl
+        
         inr     m       ; прирастим координату
         mov     a, m
         cpi     BOTTOMMARGIN-8
@@ -2108,8 +2118,24 @@ BumpBitmap8x8
 ; постамбула
         xra     a
         out     BANKING
+        ei
         ret
 BumpBitmap8x8_end
+
+; Стереть цветной байт с экрана
+; HL = экранный адрес
+EraseColorByteFromScreen
+        di
+        mvi     a, ENROM
+        out     BANKING
+        xra     a
+        mov     m, a
+        inr     h
+        mov     m, a
+        out     BANKING
+        ei
+        ret
+
 
 ; *************************************************
 ; Битмапчики
