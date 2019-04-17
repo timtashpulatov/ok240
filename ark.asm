@@ -263,7 +263,7 @@ HouseKeeping
         
         mvi     a, 46h          ; зеленый фон
         out     VIDEO
-        call    ProcessBonusList
+        ;call    ProcessBonusList
         
         mvi     a, 40h          ; дефолтный черный фон
         out     VIDEO
@@ -273,7 +273,7 @@ NoPaletteDebug
         call    BumpBitmap8x8
         call    ProcessBall
         call    ProcessBatty
-        call    ProcessBonusList
+        ;call    ProcessBonusList
         jmp     Begin
 
 SyncToRetrace
@@ -1452,12 +1452,13 @@ PaintBrick
 ; ****************************************************************************
 ; Список фиксированный
 ; элемент списка: 
-; - Указатель на бонус (2 байта), 0000h = пустой слот
+; - Тип бонуса (1 байт), 00h = пустой слот
 ; - Текущая скорость падения (1 байт) - возобновляемая задержка
 ; - Начальная скорость падения (1 байт) - для (пере)инициализации текущей
 ; - Координата Y (1 байт)
 ; - Координата X (1 байт)
 ; - Зарезервировано (2 байта)
+; - лдпушный бонус-буфер (128 байт) - адская смесь кода и данных
 
 
 MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
@@ -1468,8 +1469,17 @@ BonusListIndex  db      0
 ;-----------------      ---     --------- ----------    ---     ---     --------
 ;                       4000h   0          1            0       0       0000h
 
-BonusList       ds      40 ; MAXBONUSNUM*8
+;BonusList       ds      40 ; MAXBONUSNUM*8
 
+
+InitBonusList
+
+        call    TestPops        ; создадим 4 буфера с адреса 4000h
+
+        lxi     bc, 0711h
+        call    AddBonusToList
+
+        ret
 
 
 ProcessBonusList
@@ -1488,7 +1498,7 @@ ProcessBonusItem
 AddBonusToList
         push    bc      ; сохраним координаты
         mvi     c, MAXBONUSNUM
-        lxi     hl, BonusList
+        lxi     hl, BONUSLIST
 FindEmptySlot
         mov     b, m
         inx     hl
@@ -1515,7 +1525,8 @@ FindEmptySlot
         ret
         
 NextSlotPlease
-        lxi     de, 7
+        dcx     hl
+        lxi     de, 128 ; размер буфера с бонусом
         dad     de
         dcr     c
         jnz     FindEmptySlot
@@ -2040,8 +2051,10 @@ TestPops
 
         ret
         
+; Заголовок бонуса        
 BumpBitmap8x8Hdr        
-        ds      8       ; заголовок бонуса
+        db      0, 1, 2, 3, 4, 5, 6, 7
+; Тело бонуса
 BumpBitmap8x8
 ; преамбула
         di
@@ -2354,13 +2367,6 @@ BATTYBUF        equ     BALLBUF+32      ;ds      64*8
 BALLPHASES      equ     BATTYBUF+64*8   ;ds      16*8
 
 
-; Игровое поле
-;           1111111111222222222233
-; 01234567890123456789012345678901
-; ................................
-; ....112233445566778899aabbcc....
-; ................................
-;
-
+BONUSLIST       equ     4000h
         
   
