@@ -1483,18 +1483,20 @@ ProcessBonusItem
         ret
 
 ; ************************************************
-; BC - координаты только что стертого кирпича
+; BC - координаты только что выбитого кирпича
 ; ************************************************
 AddBonusToList
-        push    bc
+        push    bc      ; сохраним координаты
         mvi     c, MAXBONUSNUM
         lxi     hl, BonusList
 FindEmptySlot
-        mov     a, m
-        ora     a
+        mov     b, m
+        inx     hl
+        mov     a,m
+        ora     b
         jnz     NextSlotPlease
         
-        pop     bc
+        pop     bc      ; восстановим координаты
         mvi     m, 1    ; тип бонуса (TODO rnd)
         inx     hl
         mvi     m, 10   ; скорость бонуса
@@ -1513,7 +1515,7 @@ FindEmptySlot
         ret
         
 NextSlotPlease
-        lxi     de, 4
+        lxi     de, 7
         dad     de
         dcr     c
         jnz     FindEmptySlot
@@ -2014,31 +2016,32 @@ SBPLoop1
 ; Простор для экспериментов
 ; *************************************************
 
-
+; создадим 4 буфера по образу и подобию BumpBitmap8x8
 TestPops
-        lxi     hl, BumpBitmap8x8
+        lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4000h
-        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
-        lxi     hl, BumpBitmap8x8
+        lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4100h
-        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
-        lxi     hl, BumpBitmap8x8
+        lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4200h
-        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
-        lxi     hl, BumpBitmap8x8
+        lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4300h
-        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
         ret
         
-
+BumpBitmap8x8Hdr        
+        ds      8       ; заголовок бонуса
 BumpBitmap8x8
 ; преамбула
         di
