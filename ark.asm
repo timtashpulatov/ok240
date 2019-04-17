@@ -1507,12 +1507,16 @@ FindEmptySlot
         pop     bc      ; восстановим координаты
         mvi     m, 1    ; тип бонуса (TODO rnd)
         inx     hl
-        mvi     m, 10   ; скорость бонуса
-
+        
+        mvi     m, 10   ; текущая скорость бонуса
         inx     hl
+        
+        mvi     m, 10   ; начальная скорость
+        inx     hl
+        
         mov     m, c    ; Y
-
         inx     hl
+        
         mov     m, b    ; X
 
         ret
