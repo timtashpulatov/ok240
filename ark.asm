@@ -1500,10 +1500,8 @@ AddBonusToList
         mvi     c, MAXBONUSNUM
         lxi     hl, BONUSLIST
 FindEmptySlot
-        mov     b, m
-        inx     hl
-        mov     a,m
-        ora     b
+        mov     a, m
+        ora     a
         jnz     NextSlotPlease
         
         pop     bc      ; восстановим координаты
@@ -1516,16 +1514,10 @@ FindEmptySlot
 
         inx     hl
         mov     m, b    ; X
-        ; ora     a
-        ; ral
-        ; ral
-        ; ral
-        ; mov     m, a    
 
         ret
         
 NextSlotPlease
-        dcx     hl
         lxi     de, 128 ; размер буфера с бонусом
         dad     de
         dcr     c
