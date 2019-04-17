@@ -37,7 +37,7 @@ BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     4fh     ;32
-DEFAULTBALLY    equ     121 ;18h     ;224
+DEFAULTBALLY    equ     18h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     1
 
