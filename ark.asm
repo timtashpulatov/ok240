@@ -1477,8 +1477,8 @@ InitBonusList
 
         call    TestPops        ; создадим 4 буфера с адреса 4000h
 
-        lxi     bc, 0711h
-        call    AddBonusToList
+;        lxi     bc, 0711h
+;        call    AddBonusToList
 
         ret
 
