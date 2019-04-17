@@ -1520,18 +1520,29 @@ FindEmptySlot
         
 ;        mov     m, b    ; X
 
-
 ; преобразуем координаты выбитого кирпича в начальный экранный адрес бонуса
 
-        ; lxi     h, SCREEN
-        ; mov     d, b
-        ; mvi     e, 0
-        ; dad     d       ; hl = SCREEN + X*256
-        ; mvi     d, 0
-        ; mov     e, c
-        ; dad     d       ; hl = hl + Y
+        push    hl
 
-
+        lxi     h, SCREEN+8
+;        mov     d, b
+ ;       mvi     e, 0
+  ;      dad     d       ; hl = SCREEN + X*256
+   ;     mvi     d, 0
+    ;    mov     e, c
+     ;   dad     d       ; hl = hl + Y
+        dad     bc
+        
+        xchg    ; в DE теперь экранный адрес бонуса
+        
+        pop     hl
+        
+        lxi     bc, 10h ; магическое смещение от начала бонус-буфера
+        dad     bc
+        
+        mov     m, e
+        inx     hl
+        mov     m, d
 
 
 
