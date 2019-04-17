@@ -263,7 +263,7 @@ HouseKeeping
         
         mvi     a, 46h          ; зеленый фон
         out     VIDEO
-        ;call    ProcessBonusList
+        call    ProcessBonusList
         
         mvi     a, 40h          ; дефолтный черный фон
         out     VIDEO
@@ -272,7 +272,7 @@ HouseKeeping
 NoPaletteDebug
         call    ProcessBall
         call    ProcessBatty
-        ;call    ProcessBonusList
+        call    ProcessBonusList
         jmp     Begin
 
 SyncToRetrace
@@ -1491,6 +1491,9 @@ ProcessBonusList
         sta     BonusListIndex
 ProcessBonusItem
         call    ProcessBonus
+; перейти к следующему бонусу в листе
+        lxi     hl, BonusListIndex
+        inr     m
         ret
 
 ; ************************************************
@@ -1567,36 +1570,35 @@ ProcessBonus
 ; проверить слот
         mov     a, m
         ora     a
-        jz      PBDone  ; пустой слот оказался
+        jnz     ProcessBonus1  
+        ret     ; пустой слот оказался
+ProcessBonus1        
 ; проверить скорость падения, если пора, обновить координату
         inx     hl      ; указатель на 2й байт (задержка)
         mov     a, m
         ora     a
         jz      TimeToMove
         dcr     m
-        jmp     PBDone
+        ret
 TimeToMove
         mvi     m, BONUSDEFAULTSPEED    ; снова взведем задержку
 ; сотрем на старом месте
-        inx     hl      ; указатель на 3й байт (координата Y)
+        ;inx     hl      ; указатель на 3й байт (координата Y)
+        mvi     l, 13h  ; смещение от заголовка бонус-буфера до экранного адреса
         ; call    EraseBonus
         inr     m       ; прирастим координату
         mov     a, m
         cpi     BOTTOMMARGIN
         jnz     ContinueMoving
 ; прекратить жизненный цикл бонуса в силу разных причин
-        dcx     hl
-        dcx     hl
+        mvi     l, 0    ; в начало заголовка (бонус-буфер лежит на границе 256)
         mvi     m, 0    ; обнулим слот
-        jmp     PBDone
+        ret
 ContinueMoving
         ; call    PaintBonus
-; перейти к следующему бонусу в листе
-PBDone
-        lxi     hl, BonusListIndex
-        inr     m
-        ret
-        
+        mvi     l, 8    ; начало кода самовывода в бонус-буфере
+        pchl
+
 ; *******************************************
 ; PaintBonus
 ; *******************************************
