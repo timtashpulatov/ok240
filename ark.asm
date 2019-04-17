@@ -1482,7 +1482,6 @@ InitBonusList
 
         ret
 
-
 ProcessBonusList
         lda     BonusListIndex
         cpi     MAXBONUSNUM
@@ -1518,22 +1517,11 @@ FindEmptySlot
         mvi     m, 10   ; начальная скорость
         inx     hl
 
-;        mov     m, c    ; Y
-;        inx     hl
-        
-;        mov     m, b    ; X
-
 ; преобразуем координаты выбитого кирпича в начальный экранный адрес бонуса
 
         push    hl
 
         lxi     h, SCREEN+8
-;        mov     d, b
- ;       mvi     e, 0
-  ;      dad     d       ; hl = SCREEN + X*256
-   ;     mvi     d, 0
-    ;    mov     e, c
-     ;   dad     d       ; hl = hl + Y
         dad     bc
         
         xchg    ; в DE теперь экранный адрес бонуса
@@ -1546,8 +1534,6 @@ FindEmptySlot
         mov     m, e
         inx     hl
         mov     m, d
-
-
 
         ret
         
@@ -1582,17 +1568,18 @@ ProcessBonus1
         ret
 TimeToMove
         mvi     m, BONUSDEFAULTSPEED    ; снова взведем задержку
-; сотрем на старом месте
+; сотрем на старом месте (достаточно стереть только байт хвоста)
         ;inx     hl      ; указатель на 3й байт (координата Y)
         mvi     l, 13h  ; смещение от заголовка бонус-буфера до экранного адреса
         ; call    EraseBonus
         inr     m       ; прирастим координату
         mov     a, m
-        cpi     BOTTOMMARGIN
+        cpi     BOTTOMMARGIN-8
         jnz     ContinueMoving
 ; прекратить жизненный цикл бонуса в силу разных причин
         mvi     l, 0    ; в начало заголовка (бонус-буфер лежит на границе 256)
         mvi     m, 0    ; обнулим слот
+; стереть с экрана TODO        
         ret
 ContinueMoving
         ; call    PaintBonus
@@ -2283,7 +2270,7 @@ BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
 NOBATTY db      4
         ds      64
 
-        .org 0e00h
+        .org 0f00h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
