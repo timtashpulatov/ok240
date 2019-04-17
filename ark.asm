@@ -1463,7 +1463,7 @@ PaintBrick
 
 
 MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
-BONUSDEFAULTSPEED       equ     1
+BONUSDEFAULTSPEED       equ     5
 BonusListIndex  db      0
 
 ;                       Ptr     Cur.Speed Init.Speed    Y       X       Reserved
