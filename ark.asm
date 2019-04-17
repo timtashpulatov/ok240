@@ -137,7 +137,7 @@ VeryBegin
         call    PaintBatty        
 
 
-        call    TestPops
+        call    InitBonusList
 
 
 ; *********************************************************************
@@ -270,7 +270,6 @@ HouseKeeping
         jmp     Begin
         
 NoPaletteDebug
-        call    BumpBitmap8x8
         call    ProcessBall
         call    ProcessBatty
         ;call    ProcessBonusList
@@ -1421,7 +1420,6 @@ PaintBrick1
         push    de
 
         call    BrickNo2Ptr
-        
         call    PaintBrick
         pop     de
         ret
@@ -1441,6 +1439,9 @@ PaintBrick
         lxi     hl, 16
         pop     de
         dad     d
+
+; Так как этот вызов используется для рисования кирпичей только в начале уровня,
+; а в процессе игры вызывается только для стирания кирпича, сохраним адрес        
 
         call    PaintBitmap
 
@@ -1513,16 +1514,31 @@ FindEmptySlot
         
         mvi     m, 10   ; начальная скорость
         inx     hl
+
+;        mov     m, c    ; Y
+;        inx     hl
         
-        mov     m, c    ; Y
-        inx     hl
-        
-        mov     m, b    ; X
+;        mov     m, b    ; X
+
+
+; преобразуем координаты выбитого кирпича в начальный экранный адрес бонуса
+
+        ; lxi     h, SCREEN
+        ; mov     d, b
+        ; mvi     e, 0
+        ; dad     d       ; hl = SCREEN + X*256
+        ; mvi     d, 0
+        ; mov     e, c
+        ; dad     d       ; hl = hl + Y
+
+
+
+
 
         ret
         
 NextSlotPlease
-        lxi     de, 128 ; размер буфера с бонусом
+        lxi     de, 256 ; размер буфера с бонусом
         dad     de
         dcr     c
         jnz     FindEmptySlot
@@ -1534,13 +1550,9 @@ NextSlotPlease
 ; A = индекс в листе
 ; ************************************************
 ProcessBonus
-        ora     a
-        ral
-        ral
-        mov     c, a
-        mvi     b, 0
         lxi     hl, BonusList
-        dad     bc      ; указатель на 1й байт (тип бонуса, он же слот)
+        add     h
+        mov     h, a ; теперь в HL указатель на заголовок бонуса (слот)
 ; проверить слот
         mov     a, m
         ora     a
@@ -1556,7 +1568,7 @@ TimeToMove
         mvi     m, BONUSDEFAULTSPEED    ; снова взведем задержку
 ; сотрем на старом месте
         inx     hl      ; указатель на 3й байт (координата Y)
-        call    EraseBonus
+        ; call    EraseBonus
         inr     m       ; прирастим координату
         mov     a, m
         cpi     BOTTOMMARGIN
@@ -1567,7 +1579,7 @@ TimeToMove
         mvi     m, 0    ; обнулим слот
         jmp     PBDone
 ContinueMoving
-        call    PaintBonus
+        ; call    PaintBonus
 ; перейти к следующему бонусу в листе
 PBDone
         lxi     hl, BonusListIndex
@@ -2042,6 +2054,11 @@ TestPops
 
         lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4300h
+        mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
+        call    Copy_B_Bytes_From_HL_To_DE
+
+        lxi     hl, BumpBitmap8x8Hdr
+        lxi     de, 4400h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
