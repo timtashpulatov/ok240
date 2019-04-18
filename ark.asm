@@ -142,9 +142,11 @@ VeryBegin
 
         call    PaintBatty        
 
-
         call    InitBonusList
 
+
+        call    BumpBitmap8x16
+        
 
 ; *********************************************************************
 ; Main, как говорится, Loop
@@ -2107,7 +2109,6 @@ BumpBitmap8x8
         xchg    ; теперь старый указатель стека в DE
         lxi     hl, SCREEN+8
 ; выводим первый столбик, снизу вверх
-        ;lxi     sp, SCREEN+8
         sphl
         lxi     bc, 0fc1eh
         push    bc
@@ -2122,7 +2123,6 @@ BumpBitmap8x8
         lxi     bc, 0
         push    bc
 ; выводим второй столбик
-        ;lxi     sp, SCREEN+8+256
         inr     h
         sphl
         lxi     bc, 001ch
@@ -2146,6 +2146,74 @@ BumpBitmap8x8
         ei
         ret
 BumpBitmap8x8_end
+
+
+
+
+BumpBitmap8x16
+; преамбула
+        di
+        mvi     a, ENROM
+        out     BANKING
+; сохранить SP в HL
+        lxi     hl, 0
+        dad     sp
+        xchg    ; теперь старый указатель стека в DE
+        lxi     hl, SCREEN+8
+
+; выводим первый столбик, снизу вверх
+        sphl
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+; выводим второй столбик
+        inr     h
+        sphl
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h        
+        push    bc
+; третий
+        inr     h
+        sphl
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h        
+        push    bc
+; четвертый
+        inr     h
+        sphl
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h
+        push    bc
+        lxi     bc, 5555h        
+        push    bc
+; восстановить SP
+        xchg
+        sphl
+; постамбула
+        xra     a
+        out     BANKING
+        ei
+        ret
+BumpBitmap8x16_end
+
 
 ; Стереть цветной байт с экрана
 ; HL = экранный адрес
