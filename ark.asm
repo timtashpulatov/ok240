@@ -2165,41 +2165,23 @@ RenderBonus
 
         lxi     hl, BONUS+7
 ; первый столбик
-        mov     c, m
-        dcx     hl
-        mov     b, m
-        dcx     hl
-        push    bc
-        dcx     sp
-        dcx     sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc \ dcx sp \ dcx sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc \ dcx sp \ dcx sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc \ dcx sp \ dcx sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc
+;        dcx sp \ dcx sp
 
-        mov     c, m
-        dcx     hl
-        mov     b, m
-        dcx     hl
-        push    bc
-        dcx     sp
-        dcx     sp
-
-        mov     c, m
-        dcx     hl
-        mov     b, m
-        dcx     hl
-        push    bc
-        dcx     sp
-        dcx     sp
-
-        mov     c, m
-        dcx     hl
-        mov     b, m
-        dcx     hl
-        push    bc
-        dcx     sp
-        dcx     sp
-
-        dcx     sp
-        dcx     sp
 ; второй столбик
+        lxi     hl, 40bbh
+        sphl
+
+        lxi     hl, BONUS+15
+
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc \ dcx sp \ dcx sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc \ dcx sp \ dcx sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc \ dcx sp \ dcx sp
+        mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc
+;        dcx sp \ dcx sp
 
 
 ; восстановить SP
