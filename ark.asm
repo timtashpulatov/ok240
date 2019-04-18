@@ -2241,7 +2241,8 @@ RenderBonusII
 
 RB2Offsets
         dw      BumpBitmap8x8Hdr+24h, BumpBitmap8x8Hdr+20h, BumpBitmap8x8Hdr+1ch, BumpBitmap8x8Hdr+18h
-        dw      BumpBitmap8x8Hdr+36h, BumpBitmap8x8Hdr+32h, BumpBitmap8x8Hdr+2eh, BumpBitmap8x8Hdr+2ah
+        dw      BumpBitmap8x8Hdr+3ah, BumpBitmap8x8Hdr+36h, BumpBitmap8x8Hdr+32h, BumpBitmap8x8Hdr+2eh
+        
 
 
 OldSP   ds      2
