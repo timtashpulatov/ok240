@@ -2160,13 +2160,47 @@ RenderBonus
         dad     sp
         xchg    ; теперь старый указатель стека в DE
         
-        lxi     hl, 40b8h       ; приемник (лдпушбуфер)
+        lxi     hl, 40a5h       ; приемник (лдпушбуфер)
         sphl
 
+        lxi     hl, BONUS+7
 ; первый столбик
-        
+        mov     c, m
+        dcx     hl
+        mov     b, m
+        dcx     hl
+        push    bc
+        dcx     sp
+        dcx     sp
 
+        mov     c, m
+        dcx     hl
+        mov     b, m
+        dcx     hl
+        push    bc
+        dcx     sp
+        dcx     sp
+
+        mov     c, m
+        dcx     hl
+        mov     b, m
+        dcx     hl
+        push    bc
+        dcx     sp
+        dcx     sp
+
+        mov     c, m
+        dcx     hl
+        mov     b, m
+        dcx     hl
+        push    bc
+        dcx     sp
+        dcx     sp
+
+        dcx     sp
+        dcx     sp
 ; второй столбик
+
 
 ; восстановить SP
         xchg
