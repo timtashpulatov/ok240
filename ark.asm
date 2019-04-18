@@ -1681,12 +1681,14 @@ PaintBitmap
         
         push    hl
         lxi     h, SCREEN
-        mov     d, b
-        mvi     e, 0
-        dad     d       ; hl = SCREEN + X*256
-        mvi     d, 0
-        mov     e, c
-        dad     d       ; hl = hl + Y
+;        mov     d, b
+;        mvi     e, 0
+;        dad     d       ; hl = SCREEN + X*256
+;        mvi     d, 0
+;        mov     e, c
+;        dad     d       ; hl = hl + Y
+        dad     bc
+        
         pop     de       ; de = адрес битмапа
 
         call    Copy8
