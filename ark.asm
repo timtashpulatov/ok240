@@ -1,5 +1,11 @@
         .project ark.bin
 
+;
+; TODO:
+;       - быстрая прорисовка ракетки
+;       - внутренний буфер с отрендеренными кирпичами
+;       - 
+
 SCROLL_V        equ     0C0h
 BANKING         equ     0C1h
 SCROLL_VH       equ     0C2h
