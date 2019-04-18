@@ -2050,7 +2050,8 @@ SBPLoop1
 ; создадим 4 буфера по образу и подобию BumpBitmap8x8
 TestPops
 
-        call    RenderBonus     ; тоже тест
+        ;call    RenderBonus     ; тоже тест
+        call    RenderBonusII
 
         lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4000h
@@ -2152,7 +2153,7 @@ EraseColorByteFromScreen
         ei
         ret
 
-; Рендер бонуса в лдпушбуфер
+; Рендер бонуса в лдпушбуфер, вариант 1
 RenderBonus
 
 ; сохранить SP в HL
@@ -2183,13 +2184,46 @@ RenderBonus
         mov c, m \ dcx hl \ mov b, m \ dcx hl \ push bc
 ;        dcx sp \ dcx sp
 
-
 ; восстановить SP
         xchg
         sphl
         
         ret
 
+; Рендер, вариант 2. Нацелить SP на стек с адресами (или смещениями) в лдпуш, куда надо писать
+RenderBonusII
+; сохранить SP в HL
+        lxi     hl, 0
+        dad     sp
+        shld    OldSP
+
+        lxi     hl, RB2Offsets
+        sphl
+        
+        lxi     de, BONUS+7
+        
+        pop     bc
+        
+        ldax    de
+        stax    bc
+        dcx     de
+        dcx     bc
+        
+        ldax    de
+        stax    bc
+        dcx     de
+
+; восстановить SP
+        lhld    OldSP
+        sphl
+        ret
+
+RB2Offsets
+        dw      BumpBitmap8x8Hdr+24h, BumpBitmap8x8Hdr+20h, BumpBitmap8x8Hdr+1ch, BumpBitmap8x8Hdr+18h
+        dw      BumpBitmap8x8Hdr+36h, BumpBitmap8x8Hdr+32h, BumpBitmap8x8Hdr+2eh, BumpBitmap8x8Hdr+2ah
+
+
+OldSP   ds      2
 
 ; *************************************************
 ; Битмапчики
