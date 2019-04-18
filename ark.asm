@@ -2075,6 +2075,10 @@ TestPops
         call    Copy_B_Bytes_From_HL_To_DE
 
         ret
+
+;BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
+;        db      0, 1ch, 0a6h, 42h, 0a2h, 40h, 20h, 0
+
         
 ; Заголовок бонуса        
 BumpBitmap8x8Hdr        
@@ -2093,13 +2097,13 @@ BumpBitmap8x8
 ; выводим первый столбик, снизу вверх
         ;lxi     sp, SCREEN+8
         sphl
-        lxi     bc, 0102h
+        lxi     bc, 0fc1eh
         push    bc
-        lxi     bc, 0304h
+        lxi     bc, 4723h
         push    bc
-        lxi     bc, 0506h
+        lxi     bc, 4321h
         push    bc
-        lxi     bc, 0708h
+        lxi     bc, 42fch
         push    bc
 ; это бонусный битмап, он ползет сверху вниз, а выводится снизу вверх
 ; что весьма удобно для затирания следа сверху
@@ -2109,13 +2113,13 @@ BumpBitmap8x8
         ;lxi     sp, SCREEN+8+256
         inr     h
         sphl
-        lxi     bc, 090ah
+        lxi     bc, 001ch
         push    bc
-        lxi     bc, 0b0ch
+        lxi     bc, 0a642h
         push    bc
-        lxi     bc, 0d0eh
+        lxi     bc, 0a240h
         push    bc
-        lxi     bc, 0f00h        
+        lxi     bc, 2000h        
         push    bc
 ; затираем след во втором плане
         lxi     bc, 0
