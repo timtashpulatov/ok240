@@ -2049,6 +2049,9 @@ SBPLoop1
 
 ; создадим 4 буфера по образу и подобию BumpBitmap8x8
 TestPops
+
+        call    RenderBonus     ; тоже тест
+
         lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4000h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
@@ -2073,9 +2076,6 @@ TestPops
         lxi     de, 4400h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
-
-
-        call    RenderBonus     ; тоже тест
 
         ret
 
@@ -2160,7 +2160,7 @@ RenderBonus
         dad     sp
         xchg    ; теперь старый указатель стека в DE
         
-        lxi     hl, 40a5h       ; приемник (лдпушбуфер)
+        lxi     hl, BumpBitmap8x8+1dh   ;40a5h       ; приемник (лдпушбуфер)
         sphl
 
         lxi     hl, BONUS+7
@@ -2172,7 +2172,7 @@ RenderBonus
 ;        dcx sp \ dcx sp
 
 ; второй столбик
-        lxi     hl, 40bbh
+        lxi     hl, BumpBitmap8x8+33h   ;40bbh
         sphl
 
         lxi     hl, BONUS+15
