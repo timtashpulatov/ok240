@@ -1573,15 +1573,16 @@ TimeToMove
         ;inx     hl      ; указатель на 3й байт (координата Y)
         mvi     l, 13h  ; смещение от заголовка бонус-буфера до экранного адреса
         ; call    EraseBonus
-        push    hl
+
+        ; push    hl
         
-        mov     e, m
-        inr     l
-        mov     d, m
+        ; mov     e, m
+        ; inr     l
+        ; mov     d, m
         
-        xchg
-        call    EraseColorByteFromScreen
-        pop     hl
+        ; xchg
+        ; call    EraseColorByteFromScreen
+        ; pop     hl
         
         inr     m       ; прирастим координату
         mov     a, m
@@ -2100,6 +2101,10 @@ BumpBitmap8x8
         push    bc
         lxi     bc, 0708h
         push    bc
+; это бонусный битмап, он ползет сверху вниз, а выводится снизу вверх
+; что весьма удобно для затирания следа сверху
+        lxi     bc, 0
+        push    bc
 ; выводим второй столбик
         ;lxi     sp, SCREEN+8+256
         inr     h
@@ -2112,6 +2117,10 @@ BumpBitmap8x8
         push    bc
         lxi     bc, 0f00h        
         push    bc
+; затираем след во втором плане
+        lxi     bc, 0
+        push    bc
+        
 ; восстановить SP
         xchg
         sphl
@@ -2330,11 +2339,11 @@ LEVEL_1
         db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
         db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
 
-;LEVEL_1_END
+LEVEL_1_END
 ;        ds      WIDTH*HEIGHT
         
 
-        .org    1100h
+        .org    LEVEL_1_END+100h ;1100h
 
 ; *********************************************************************
 ; Переменные
