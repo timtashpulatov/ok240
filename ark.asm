@@ -2163,47 +2163,31 @@ BumpBitmap8x16
 
 ; выводим первый столбик, снизу вверх
         sphl
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
 ; выводим второй столбик
         inr     h
         sphl
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h        
-        push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
 ; третий
         inr     h
         sphl
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h        
-        push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
 ; четвертый
         inr     h
         sphl
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h
-        push    bc
-        lxi     bc, 5555h        
-        push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
+        lxi     bc, 5555h \ push    bc
 ; восстановить SP
         xchg
         sphl
