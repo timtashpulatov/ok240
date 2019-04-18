@@ -2200,18 +2200,33 @@ RenderBonusII
         lxi     hl, RB2Offsets
         sphl
         
-        lxi     de, BONUS+7
-        
+        lxi     de, BONUS+15
+
         pop     bc
-        
-        ldax    de
-        stax    bc
-        dcx     de
-        dcx     bc
-        
-        ldax    de
-        stax    bc
-        dcx     de
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
+        pop     bc
+        ldax de \ stax bc \ dcx de \ dcx bc
+        ldax de \ stax bc \ dcx de
 
 ; восстановить SP
         lhld    OldSP
