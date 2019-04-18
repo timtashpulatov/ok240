@@ -2074,6 +2074,9 @@ TestPops
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
+
+        call    RenderBonus     ; тоже тест
+
         ret
 
 ;BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
@@ -2147,6 +2150,28 @@ EraseColorByteFromScreen
         mov     m, a
         out     BANKING
         ei
+        ret
+
+; Рендер бонуса в лдпушбуфер
+RenderBonus
+
+; сохранить SP в HL
+        lxi     hl, 0
+        dad     sp
+        xchg    ; теперь старый указатель стека в DE
+        
+        lxi     hl, 40b8h       ; приемник (лдпушбуфер)
+        sphl
+
+; первый столбик
+        
+
+; второй столбик
+
+; восстановить SP
+        xchg
+        sphl
+        
         ret
 
 
