@@ -2057,11 +2057,11 @@ SBPLoop1
 ; Простор для экспериментов
 ; *************************************************
 
-; создадим 4 буфера по образу и подобию BumpBitmap8x8
+; создадим 5 буферов по образу и подобию BumpBitmap8x8
 TestPops
 
         ;call    RenderBonus     ; тоже тест
-        call    RenderBonusII
+        ;call    RenderBonusII
 
         lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4000h
@@ -2086,6 +2086,13 @@ TestPops
         lxi     hl, BumpBitmap8x8Hdr
         lxi     de, 4400h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
+        call    Copy_B_Bytes_From_HL_To_DE
+
+; и еще шестой, для мячика как бы
+
+        lxi     hl, BumpBitmap8x16
+        lxi     de, 4500h
+        mvi     b, BumpBitmap8x16_end-BumpBitmap8x16
         call    Copy_B_Bytes_From_HL_To_DE
 
         ret
