@@ -1057,6 +1057,8 @@ PaintBall
         dad     bc
 
         shld    BALLPHASE
+        inr     h
+        shld    BALLMASKPHASE
         call    RenderBall
 GoBall
         lda     BallY
@@ -1083,8 +1085,23 @@ RenderBall
 
         call    FillBallBuf
 
-        ; Наложим поверх мячик (по OR)
-        lhld    BALLPHASE        ; TODO адрес текущей фазы мячика BALLPHASE
+        ; Маска по AND
+        lhld    BALLMASKPHASE
+        lxi     de, BALLBUF
+        mvi     c, 32
+
+RenderAndLoop        
+        ldax    de
+        ana     m
+        stax    de
+        inx     hl
+        inx     de
+        dcr     c
+        jnz     RenderAndLoop
+
+
+        ; Наложим поверх мячик по OR
+        lhld    BALLPHASE
         lxi     de, BALLBUF
         mvi     c, 32
 RBLoop        
@@ -1095,7 +1112,7 @@ RBLoop
         inx     de
         dcr     c
         jnz     RBLoop
- RBDone       
+
         pop     bc
         pop     de
         pop     hl
@@ -1334,7 +1351,7 @@ PartialCopy
 ; Отрендерить фон (пока просто чистим буфер)
 ; *************************************************
 RenderBackground
-        lxi     hl, NOBATTY+1
+        lxi     hl, BRICK6      ;NOBATTY+1
         lxi     de, BALLBUF
         mvi     b, 32
         call    Copy_B_Bytes_From_HL_To_DE
@@ -2524,7 +2541,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 
 
 
-        .org 0f00h
+        .org 1000h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
@@ -2578,6 +2595,7 @@ BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
 BallPhase       dw      BALL
+BallMaskPhase   dw      BALLMASK
 
 ReflectFlag     db      0
 
