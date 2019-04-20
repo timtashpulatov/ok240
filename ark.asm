@@ -1500,22 +1500,18 @@ PaintBrick
 RenderBrickToMongolia
         push    hl
         
+
+
+        push    hl
         lxi     hl, MONGOLIA
         dad     bc
-
-        pop     de
-        push    de
         
-        push    bc
+        pop     de       ; de = адрес битмапа
 
+        push    bc
 
         call    Copy8
 
-        
-;        mvi     b, 32
-;        call    Copy_B_Bytes_From_HL_To_DE
-
-        
         pop     bc
         pop     hl
         ret
@@ -1735,7 +1731,6 @@ Dly0
 ; PaintBitmap - нарисовать битмап 8х8
 ; HL - адрес битмапа
 ; BC - X и Y
-; A - биты плоскостей
 ; *************************************************
 PaintBitmap
         di
@@ -1748,12 +1743,6 @@ PaintBitmap
         
         push    hl
         lxi     h, SCREEN
-;        mov     d, b
-;        mvi     e, 0
-;        dad     d       ; hl = SCREEN + X*256
-;        mvi     d, 0
-;        mov     e, c
-;        dad     d       ; hl = hl + Y
         dad     bc
         
         pop     de       ; de = адрес битмапа
