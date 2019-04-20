@@ -1104,14 +1104,14 @@ RenderAndLoop
         lhld    BALLPHASE
         lxi     de, BALLBUF
         mvi     c, 32
-RBLoop        
+RenderOrLoop        
         ldax    de
         ora     m
         stax    de
         inx     hl
         inx     de
         dcr     c
-        jnz     RBLoop
+        jnz     RenderOrLoop
 
         pop     bc
         pop     de
@@ -1962,11 +1962,6 @@ FillBallPhases
         call    FBPLoop
 
 ; И восемь фаз маски
-        ;lxi     hl, 0x01f6
-        ;shld    SBPop
-        mvi     a, 37h  ; STC opcode
-        sta     SBPop
-
         lxi     hl, BALLMASK
         lxi     de, BALLMASKPHASES
         mvi     b, 32
@@ -1981,6 +1976,10 @@ FillBallPhases
 
         lxi     hl, BALLMASKPHASES
         lxi     de, BALLMASKPHASES+32
+
+        mvi     a, 37h  ; STC opcode
+        sta     SBPop
+        
         call    ShiftBitmap
  
         lxi     hl, BALLMASKPHASES+32
@@ -2387,10 +2386,17 @@ POPS    db      3ch, 42h, 81h, 81h, 81h, 81h, 42h, 3ch
 
 
 REDBRICK
-        db      255, 255, 255, 255, 255, 255, 255, 0
+        ; db      255, 255, 255, 255, 255, 255, 255, 0
+        ; db      0,0,0,0,0,0,0,0
+        ; db      127, 127, 127, 127, 127, 127, 127, 0
+        ; db      0,0,0,0,0,0,0,0
+
+        db      255, 255, 255, 255, 255, 255, 255, 255
         db      0,0,0,0,0,0,0,0
-        db      127, 127, 127, 127, 127, 127, 127, 0
+        db      255, 255, 255, 255, 255, 255, 255, 255
         db      0,0,0,0,0,0,0,0
+
+        
 GREENBRICK
         db      0,0,0,0,0,0,0,0
         db      255, 255, 255, 255, 255, 255, 255, 0
@@ -2494,25 +2500,26 @@ BALL    db      0, 0, 0, 0, 0, 0, 0, 0
         ds      16
 
 BALLMASK
+        ; db      0b11111111
+        ; db      0b11001111
+        ; db      0b10000111
+        ; db      0b00000011
+        ; db      0b00000011
+        ; db      0b10000111
+        ; db      0b11001111
+        ; db      0b11111111
+        ; db      0ffh, 0cfh, 87h, 3, 3, 87h, 0cfh, 0ffh
+        
         db      0b11111111
-        db      0b11001111
-        db      0b10000111
-        db      0b00000011
-        db      0b00000011
-        db      0b10000111
-        db      0b11001111
+        db      0b11110011
+        db      0b11100001
+        db      0b11000000
+        db      0b11000000
+        db      0b11100001
+        db      0b11110011
         db      0b11111111
 
-        ; db      0b11111111
-        ; db      0b11110011
-        ; db      0b11100001
-        ; db      0b11000000
-        ; db      0b11000000
-        ; db      0b11100001
-        ; db      0b11110011
-        ; db      0b11111111
-        
-        db      0ffh, 0cfh, 87h, 3, 3, 87h, 0cfh, 0ffh
+        db      0ffh, 0f3h, 0e1h, 0c0h, 0c0h, 0e1h, 0f3h, 0ffh
         
         db      255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255
