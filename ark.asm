@@ -1962,8 +1962,10 @@ FillBallPhases
         call    FBPLoop
 
 ; И восемь фаз маски
-        lxi     hl, 0x01f6
-        shld    SBPop
+        ;lxi     hl, 0x01f6
+        ;shld    SBPop
+        mvi     a, 37h  ; STC opcode
+        sta     SBPop
 
         lxi     hl, BALLMASK
         lxi     de, BALLMASKPHASES
@@ -2061,16 +2063,16 @@ SBPLoop
         lda     BitmapWidth
         sta     Count1  ; счетчик байт в растровой строке битмапа (ширина битмапа в байтах)
 
+
         ora     a       
+SBPOp   nop     ; для сдвига масок нужно заполнение единицами
         push    a
         
 SBPLoop1        
         pop     a
         mov     a, m
         ral
-SBPOp
-        nop     ; для сдвига масок нужно заполнение единицами: ori 1
-        nop
+
         stax    de
         push    a 
         
