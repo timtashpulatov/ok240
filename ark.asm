@@ -1502,13 +1502,14 @@ RenderBrickToMongolia
         
         lxi     hl, MONGOLIA
         dad     bc
-        xchg
-        
-        pop     hl
-        push    hl
+
+        pop     de
+        push    de
         
         push    bc
 
+
+        call    Copy8
 
         
 ;        mvi     b, 32
@@ -1781,7 +1782,7 @@ PlaneDone
         ret
 
 ; *************************************************
-; Скопировать 8 байт битмапа
+; Скопировать 8 байт битмапа из DE в HL
 ; *************************************************
 Copy8
         push    h
