@@ -1940,7 +1940,34 @@ FillBallPhases
         lxi     hl, BALLPHASES+32
         lxi     de, BALLPHASES+64
         mvi     a, 7       
-        jmp     FBPLoop
+        call    FBPLoop
+
+; И восемь фаз маски
+        lxi     hl, 0x01f6
+        shld    SBPop
+
+        lxi     hl, BALLMASK
+        lxi     de, BALLMASKPHASES
+        mvi     b, 32
+        call    Copy_B_Bytes_From_HL_To_DE
+
+; а теперь семь сдвинутых фаз
+        mvi     a, 2
+        sta     BitmapWidth
+
+        mvi     a, 32
+        sta     PhaseSize
+
+        lxi     hl, BALLMASKPHASES
+        lxi     de, BALLMASKPHASES+32
+        call    ShiftBitmap
+ 
+        lxi     hl, BALLMASKPHASES+32
+        lxi     de, BALLMASKPHASES+64
+        mvi     a, 7       
+        call    FBPLoop
+        
+        ret
 
 ; *************************************************
 ; Заполнить Буфер Сдвинутых Ракеток
@@ -2015,13 +2042,16 @@ SBPLoop
         lda     BitmapWidth
         sta     Count1  ; счетчик байт в растровой строке битмапа (ширина битмапа в байтах)
 
-        ora     a
+        ora     a       
         push    a
         
 SBPLoop1        
         pop     a
         mov     a, m
         ral
+SBPOp
+        nop     ; для сдвига масок нужно заполнение единицами: ori 1
+        nop
         stax    de
         push    a 
         
@@ -2598,7 +2628,7 @@ BATTYBUF        equ     BALLBUF+32      ;ds      64*8
 
 ; Фазы мячика
 BALLPHASES      equ     BATTYBUF+64*8   ;ds      16*8
-
+BALLMASKPHASES  equ     BALLPHASES+32*8
 
 BONUSLIST       equ     4000h
         
