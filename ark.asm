@@ -1364,6 +1364,8 @@ RenderBackground
         lda     BallY
         mov     c, a
 
+  lxi bc, 0
+
         lxi     hl, MONGOLIA
         dad     bc      ; теперь в HL адрес растровой строки в Монголии
         
@@ -1371,7 +1373,31 @@ RenderBackground
 ;        mvi     b, 32
 ;        call    Copy_B_Bytes_From_HL_To_DE
 
+        lxi     de, BALLBUF
 
+        push    hl
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
+        pop     hl
+        inr     h
+
+        push    hl
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
+        pop     hl
+        inr     h
+
+        push    hl
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
+        pop     hl
+        inr     h
+
+        push    hl
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
+        pop     hl
+        
         ret
         
 
