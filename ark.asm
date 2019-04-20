@@ -1353,7 +1353,27 @@ PartialCopy
 ; Отрендерить фон (пока просто чистим буфер)
 ; *************************************************
 RenderBackground
-        lxi     hl, NOBATTY+1 ; BLUEBRICK      ;NOBATTY+1
+
+        lxi     hl, MONGOLIA
+        lda     BallX
+        
+        rar
+        rar
+        rar
+        rar
+
+        ani     03eh
+        
+        mov     c, a
+        
+        lda     BallY
+
+    ani 1
+        
+        mov     b, a
+
+        dad     bc        
+;        lxi     hl, NOBATTY+1 ; BLUEBRICK      ;NOBATTY+1
         lxi     de, BALLBUF
         mvi     b, 32
         call    Copy_B_Bytes_From_HL_To_DE
