@@ -1499,9 +1499,8 @@ PaintBrick
 ; *******************************************
 RenderBrickToMongolia
         push    hl
+        push    de
         
-
-
         push    hl
         lxi     hl, MONGOLIA
         dad     bc
@@ -1512,7 +1511,22 @@ RenderBrickToMongolia
 
         call    Copy8
 
+        ; Второй план битмапа
+        push    h
+        lxi     h, 8
+        dad     d
+        xchg            ; de = битмап + 8
+
+        ; Перейдем ко второму плану экрана
+        pop     h
+        inr     h
+        call    Copy8
+
+
+
+
         pop     bc
+        pop     de
         pop     hl
         ret
 
@@ -2470,9 +2484,11 @@ BRICK6  db      255, 255, 255, 255, 255, 255, 255, 0
         db      7fh, 7fh, 7fh, 7fh, 7fh, 7fh, 7fh, 0
         db      0, 2ah, 55h, 2ah, 55h, 2ah, 55h, 0
 
-BITMAP1
-        db      255, 255, 255, 255, 255, 255, 255, 255, 255
-        db      255, 255, 255, 255, 255, 255, 255, 255, 255
+DBGBRICK
+        db      1, 1, 1, 1, 1, 1, 1, 1
+        db      2, 2, 2, 2, 2, 2, 2, 2
+        db      3, 3, 3, 3, 3, 3, 3, 3
+        db      4, 4, 4, 4, 4, 4, 4, 4
 
 CTAKAH_BRICK
 ;        db      0x7e, 0xc0, 128, 128, 128, 128, 128, 0
@@ -2599,7 +2615,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 ; *********************************************************************
 
 LEVEL_1 
-        db      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+        db      13, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
         db      0, 82h, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,83h, 0
         db      0, 82h, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,83h, 0
         db      0, 82h, 5, 5, 0, 0, 81h, 0, 81h, 0, 0, 0, 0, 0,83h, 0
