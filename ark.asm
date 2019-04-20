@@ -1354,29 +1354,24 @@ PartialCopy
 ; *************************************************
 RenderBackground
 
-        lxi     hl, MONGOLIA
+; преобразовать пиксельные координаты мячика в экранный адрес
         lda     BallX
-        
         rar
         rar
-        rar
-        rar
-
-        ani     03eh
-        
-        mov     c, a
+        ani     01eh
+        mov     b, a
         
         lda     BallY
+        mov     c, a
 
-    ani 1
+        lxi     hl, MONGOLIA
+        dad     bc      ; теперь в HL адрес растровой строки в Монголии
         
-        mov     b, a
+;        lxi     de, BALLBUF
+;        mvi     b, 32
+;        call    Copy_B_Bytes_From_HL_To_DE
 
-        dad     bc        
-;        lxi     hl, NOBATTY+1 ; BLUEBRICK      ;NOBATTY+1
-        lxi     de, BALLBUF
-        mvi     b, 32
-        call    Copy_B_Bytes_From_HL_To_DE
+
         ret
         
 
@@ -1521,9 +1516,22 @@ RenderBrickToMongolia
         pop     h
         inr     h
         call    Copy8
-
-
-
+        
+        push    h
+        lxi     h, 8
+        dad     d
+        xchg
+        pop     h
+        inr     h
+        call    Copy8
+        
+        push    h
+        lxi     h, 8
+        dad     d
+        xchg
+        pop     h
+        inr     h
+        call    Copy8
 
         pop     bc
         pop     de
