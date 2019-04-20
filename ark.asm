@@ -1508,9 +1508,12 @@ RenderBrickToMongolia
         push    hl
         
         push    bc
+
+
         
-        mvi     b, 32
-        call    Copy_B_Bytes_From_HL_To_DE
+;        mvi     b, 32
+;        call    Copy_B_Bytes_From_HL_To_DE
+
         
         pop     bc
         pop     hl
@@ -1778,7 +1781,7 @@ PlaneDone
         ret
 
 ; *************************************************
-; Скопировать 8 байт битмапа с разными логическими функциями
+; Скопировать 8 байт битмапа
 ; *************************************************
 Copy8
         push    h
