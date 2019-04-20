@@ -1360,11 +1360,13 @@ RenderBackground
         rar
         ani     01eh
         mov     b, a
+
+
         
         lda     BallY
         mov     c, a
 
-  lxi bc, 0
+mvi c,0
 
         lxi     hl, MONGOLIA
         dad     bc      ; теперь в HL адрес растровой строки в Монголии
