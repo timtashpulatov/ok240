@@ -1123,9 +1123,9 @@ RenderOrLoop
 ; *************************************************
 FillBallBuf
         call    RenderBackground
-        
-ret
 
+ret
+        
 ; кирпичей может быть не больше 16 слоев (плюс верхние 2 служебных слоя)
         lda     BallY
         ani     128
@@ -1353,7 +1353,7 @@ PartialCopy
 ; Отрендерить фон (пока просто чистим буфер)
 ; *************************************************
 RenderBackground
-        lxi     hl, BLUEBRICK      ;NOBATTY+1
+        lxi     hl, NOBATTY+1 ; BLUEBRICK      ;NOBATTY+1
         lxi     de, BALLBUF
         mvi     b, 32
         call    Copy_B_Bytes_From_HL_To_DE
@@ -1447,6 +1447,7 @@ PaintBrick1
         push    de
 
         call    BrickNo2Ptr
+        call    RenderBrickToMongolia
         call    PaintBrick
         pop     de
         ret
@@ -1467,11 +1468,32 @@ PaintBrick
         pop     de
         dad     d
 
-; Так как этот вызов используется для рисования кирпичей только в начале уровня,
-; а в процессе игры вызывается только для стирания кирпича, сохраним адрес        
-
         call    PaintBitmap
 
+        ret
+
+; *******************************************
+; Нарисовать кирпич вовнутрь
+; HL - указатель на битмап кирпича
+; BC - экранные координаты кирпича
+; *******************************************
+RenderBrickToMongolia
+        push    hl
+        
+        lxi     hl, MONGOLIA
+        dad     bc
+        xchg
+        
+        pop     hl
+        push    hl
+        
+        push    bc
+        
+        mvi     b, 32
+        call    Copy_B_Bytes_From_HL_To_DE
+        
+        pop     bc
+        pop     hl
         ret
 
 
@@ -2114,34 +2136,34 @@ TestPops
         ;call    RenderBonusII
 
         lxi     hl, BumpBitmap8x8Hdr
-        lxi     de, 4000h
+        lxi     de, BONUSLIST
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
         lxi     hl, BumpBitmap8x8Hdr
-        lxi     de, 4100h
+        lxi     de, BONUSLIST+100h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
         lxi     hl, BumpBitmap8x8Hdr
-        lxi     de, 4200h
+        lxi     de, BONUSLIST+200h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
         lxi     hl, BumpBitmap8x8Hdr
-        lxi     de, 4300h
+        lxi     de, BONUSLIST+300h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
         lxi     hl, BumpBitmap8x8Hdr
-        lxi     de, 4400h
+        lxi     de, BONUSLIST+400h
         mvi     b, BumpBitmap8x8_end-BumpBitmap8x8Hdr
         call    Copy_B_Bytes_From_HL_To_DE
 
 ; и еще шестой, для мячика как бы
 
         lxi     hl, BumpBitmap8x16
-        lxi     de, 4500h
+        lxi     de, BONUSLIST+500h
         mvi     b, BumpBitmap8x16_end-BumpBitmap8x16
         call    Copy_B_Bytes_From_HL_To_DE
 
@@ -2664,6 +2686,8 @@ BATTYBUF        equ     BALLBUF+32      ;ds      64*8
 BALLPHASES      equ     BATTYBUF+64*8   ;ds      16*8
 BALLMASKPHASES  equ     BALLPHASES+32*8
 
-BONUSLIST       equ     4000h
+MONGOLIA        equ     4000h
+
+BONUSLIST       equ     8000h
         
-  
+
