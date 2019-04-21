@@ -2035,11 +2035,16 @@ FillBallPhases
 
         lxi     hl, BALLPHASES
         lxi     de, BALLPHASES+32
+        
+        xra     a       ; NOP opcode
+        sta     SBPop
+        
         call    ShiftBitmap
  
         lxi     hl, BALLPHASES+32
         lxi     de, BALLPHASES+64
         mvi     a, 7       
+
         call    FBPLoop
 
 ; И восемь фаз маски
