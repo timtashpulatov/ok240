@@ -1698,6 +1698,34 @@ TimeToMove
 ; стереть с экрана TODO        
         ret
 ContinueMoving
+        ; добудем из Монголии байт для восстановления
+        push    de
+        push    hl
+        
+        
+        mov     e, m
+        inx     hl
+        mov     d, m
+        xchg
+
+        lxi     bc, 7ff6h       ; -8009h
+        dad     bc
+        ;mvi     h, 40h  ; монгольский адрес
+        
+        mov     d, m    ; байт первого плана
+        inr     h
+        mov     e, m    ; байт второго плана
+        
+        pop     hl
+        
+        mvi     l, 27h   ; смещение от заголовка бонус-буфера до девятого байта
+        mov     m, d
+        mvi     l, 3dh   ; смещение до девятого байта второго плана
+        mov     m, e
+        
+        pop     de
+        
+        
         ; call    PaintBonus
         mvi     l, 8    ; начало кода самовывода в бонус-буфере
         pchl
@@ -2252,7 +2280,7 @@ BumpBitmap8x8
         push    bc
 ; это бонусный битмап, он ползет сверху вниз, а выводится снизу вверх
 ; что весьма удобно для затирания следа сверху
-        lxi     bc, 0
+        lxi     bc, 0055h
         push    bc
 ; выводим второй столбик
         inr     h
@@ -2266,7 +2294,7 @@ BumpBitmap8x8
         lxi     bc, 2000h        
         push    bc
 ; затираем след во втором плане
-        lxi     bc, 0
+        lxi     bc, 5500h
         push    bc
         
 ; восстановить SP
