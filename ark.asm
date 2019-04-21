@@ -45,7 +45,7 @@ BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     4fh     ;32
 DEFAULTBALLY    equ     20h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     0 ;1
+DEFAULTBALLDY   equ     1
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -1360,13 +1360,9 @@ RenderBackground
         rar
         ani     03eh
         mov     b, a
-
-
         
         lda     BallY
         mov     c, a
-
-mvi c,0
 
         lxi     hl, MONGOLIA
         dad     bc      ; теперь в HL адрес растровой строки в Монголии
