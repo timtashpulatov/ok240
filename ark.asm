@@ -1358,7 +1358,7 @@ RenderBackground
         lda     BallX
         rar
         rar
-        ani     01eh
+        ani     03eh
         mov     b, a
 
 
