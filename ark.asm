@@ -87,8 +87,6 @@ VeryBegin
         
         mvi     a, DEFAULTBALLX
         sta     BallX
-        mvi     a, (DEFAULTBALLX/2)&0xfe
-        sta     BallX_scr
         mvi     a, DEFAULTBALLY
         sta     BallY
         
@@ -395,11 +393,6 @@ UX1
         ; собственно прирастим координату
         call    XPlusDX
         sta     BallX
-        ; сразу преобразуем координату в экранный адрес байта X
-        rar
-        rar
-        ani     3eh
-        sta     BallX_scr
         
         ret
 
@@ -1382,22 +1375,26 @@ RenderBackground
         lxi     de, BALLBUF
 
         push    hl
-        call    Copy_Eight_Bytes_From_HL_To_DE
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
         pop     hl
         inr     h
 
         push    hl
-        call    Copy_Eight_Bytes_From_HL_To_DE
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
         pop     hl
         inr     h
 
         push    hl
-        call    Copy_Eight_Bytes_From_HL_To_DE
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
         pop     hl
         inr     h
 
         push    hl
-        call    Copy_Eight_Bytes_From_HL_To_DE
+        mvi     b, 8
+        call    Copy_B_Bytes_From_HL_To_DE
         pop     hl
         
         ret
@@ -1415,17 +1412,6 @@ Copy_B_Bytes_From_HL_To_DE
         jnz     Copy_B_Bytes_From_HL_To_DE
 
         ret
-
-; *************************************************
-; Копировать ВОСЕМЬ байт из HL в DE
-; *************************************************
-Copy_Eight_Bytes_From_HL_To_DE
-        mov a, m \ stax de \ inx hl \ inx de
-        mov a, m \ stax de \ inx hl \ inx de
-        mov a, m \ stax de \ inx hl \ inx de
-        mov a, m \ stax de
-        ret
-
 
 
 ; *************************************************
@@ -2717,7 +2703,6 @@ BmpPtr          dw      0
 
 BallCoords      dw      0                       ; Координаты мячика
 BallX           db      0
-BallX_scr       db      0                       ; пиксельный X, приведенный к номеру экранного байта
 BallY           db      0
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
@@ -2779,5 +2764,3 @@ BALLMASKPHASES  equ     BALLPHASES+32*8
 MONGOLIA        equ     4000h
 
 BONUSLIST       equ     8000h
-        
-
