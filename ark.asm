@@ -1375,30 +1375,22 @@ RenderBackground
         lxi     de, BALLBUF
 
         push    hl
-        mvi     b, 8
-        call    Copy_B_Bytes_From_HL_To_DE
-        ;call    Copy_Eight_Bytes_From_HL_To_DE
+        call    Copy_Eight_Bytes_From_HL_To_DE
         pop     hl
         inr     h
 
         push    hl
-        mvi     b, 8
-        call    Copy_B_Bytes_From_HL_To_DE
-        ;call    Copy_Eight_Bytes_From_HL_To_DE
+        call    Copy_Eight_Bytes_From_HL_To_DE
         pop     hl
         inr     h
 
         push    hl
-        mvi     b, 8
-        call    Copy_B_Bytes_From_HL_To_DE
-        ;call    Copy_Eight_Bytes_From_HL_To_DE
+        call    Copy_Eight_Bytes_From_HL_To_DE
         pop     hl
         inr     h
 
         push    hl
-        mvi     b, 8
-        call    Copy_B_Bytes_From_HL_To_DE
-        ;call    Copy_Eight_Bytes_From_HL_To_DE
+        call    Copy_Eight_Bytes_From_HL_To_DE
         pop     hl
         
         ret
@@ -1421,6 +1413,10 @@ Copy_B_Bytes_From_HL_To_DE
 ; Копировать ВОСЕМЬ байт из HL в DE
 ; *************************************************
 Copy_Eight_Bytes_From_HL_To_DE
+        mov a, m \ stax de \ inx hl \ inx de
+        mov a, m \ stax de \ inx hl \ inx de
+        mov a, m \ stax de \ inx hl \ inx de
+        mov a, m \ stax de \ inx hl \ inx de
         mov a, m \ stax de \ inx hl \ inx de
         mov a, m \ stax de \ inx hl \ inx de
         mov a, m \ stax de \ inx hl \ inx de
