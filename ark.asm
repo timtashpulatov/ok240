@@ -563,6 +563,11 @@ CXNext1
         ldax    de
         add     m               ; прибавить к X шаг
         mov     m, a
+        ; сохранить прекалк X в экранный X
+        rar
+        rar
+        ani     3eh
+        sta     BallX_scr
 
 ;    jmp CheckDone        
 
@@ -1358,10 +1363,11 @@ PartialCopy
 RenderBackground
 
 ; преобразовать пиксельные координаты мячика в экранный адрес
-        lda     BallX
-        rar
-        rar
-        ani     03eh
+        ;lda     BallX
+        ;rar
+        ;rar
+        ;ani     03eh
+        lda     BallX_scr
         mov     b, a
         
         lda     BallY
@@ -2666,7 +2672,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 
 
 
-        .org 1000h
+        .org 1100h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
