@@ -87,6 +87,8 @@ VeryBegin
         
         mvi     a, DEFAULTBALLX
         sta     BallX
+        mvi     a, (DEFAULTBALLX>>2)<<1
+        sta     BallX_scr
         mvi     a, DEFAULTBALLY
         sta     BallY
         
@@ -2714,6 +2716,7 @@ BmpPtr          dw      0
 BallCoords      dw      0                       ; Координаты мячика
 BallX           db      0
 BallY           db      0
+BallX_scr       db      0
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
