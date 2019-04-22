@@ -853,9 +853,10 @@ DestroyBrickY
         push    de
         push    bc
 
-        lda     BallX
-        rar
-        rar
+        ;lda     BallX
+        ;rar
+        ;rar
+        lda     BallX_scr
         
         ani     03ch
         mov     b, a
@@ -1072,10 +1073,11 @@ GoBall
         lda     BallY
         mov     c, a
         
-        lda     BallX
-        rar
-        rar
-        ani     3eh
+        ;lda     BallX
+        ;rar
+        ;rar
+        ;ani     3eh
+        lda     BallX_scr
         mov     b, a
         
         lxi     hl, BALLBUF
