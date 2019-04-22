@@ -87,6 +87,8 @@ VeryBegin
         
         mvi     a, DEFAULTBALLX
         sta     BallX
+        mvi     a, (DEFAULTBALLX/2)&0xfe
+        sta     BallX_scr
         mvi     a, DEFAULTBALLY
         sta     BallY
         
@@ -393,6 +395,11 @@ UX1
         ; собственно прирастим координату
         call    XPlusDX
         sta     BallX
+        ; сразу преобразуем координату в экранный адрес байта X
+        rar
+        rar
+        ani     3eh
+        sta     BallX_scr
         
         ret
 
@@ -2710,6 +2717,7 @@ BmpPtr          dw      0
 
 BallCoords      dw      0                       ; Координаты мячика
 BallX           db      0
+BallX_scr       db      0                       ; пиксельный X, приведенный к номеру экранного байта
 BallY           db      0
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
