@@ -45,8 +45,8 @@ BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     4fh     ;32
 DEFAULTBALLY    equ     20h     ;224
-DEFAULTBALLDX   equ     1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     1
+DEFAULTBALLDX   equ     0;1       ; debug Y first ; 1
+DEFAULTBALLDY   equ     0;1
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -206,23 +206,6 @@ KeyFunctions
         dw      Debug
         db      'P'
         dw      PPPalette
-; Направление движения мячика для отладки (NumPad)
-        db      '4'
-        dw      Ball_W
-        db      '8'
-        dw      Ball_N
-        db      '6'
-        dw      Ball_E
-        db      '2'
-        dw      Ball_S
-        db      '1'
-        dw      Ball_SW
-        db      '7'
-        dw      Ball_NW
-        db      '9'
-        dw      Ball_NE
-        db      '3'
-        dw      Ball_SE
 
         db      1bh
         dw      WARMBOOT
@@ -246,38 +229,6 @@ PPPalette
         sta     DebugPalette
         jmp     Begin
 
-Ball_N
-        lxi     hl, BallY
-        dcr     m
-        jmp     Begin
-Ball_S
-        lxi     hl, BallY
-        inr     m
-        jmp     Begin
-Ball_W
-        lxi     hl, BallX
-        dcr     m
-        jmp     Begin
-Ball_E
-        lxi     hl, BallY
-        inr     m
-        jmp     Begin
-Ball_NE
-        lxi     hl, BallY
-        dcr     m
-        jmp     Ball_E
-Ball_SE
-        lxi     hl, BallY
-        inr     m
-        jmp     Ball_E
-Ball_NW
-        lxi     hl, BallY
-        dcr     m
-        jmp     Ball_W
-Ball_SW
-        lxi     hl, BallY
-        inr     m
-        jmp     Ball_W
 
 
 ; *******************************************
