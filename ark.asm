@@ -43,10 +43,10 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
-DEFAULTBALLX    equ     4fh     ;32
+DEFAULTBALLX    equ     48h     ;32
 DEFAULTBALLY    equ     20h     ;224
 DEFAULTBALLDX   equ     0;1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     0;1
+DEFAULTBALLDY   equ     1
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -611,7 +611,7 @@ CheckYUnderRight
         jz      CheckYMargins             ;да, проверяем только кирпич снизу
         lda     BallX
         ani     7
-        cpi     4
+        cpi     3
         jc      CheckYMargins
 ; проверяем кирпич снизу и справа
         call    CheckBrickYPlusOne
