@@ -604,6 +604,7 @@ CheckYUnder
 SetReflectFlagY        
         mvi     a, 1
         sta     ReflectFlag
+; TODO для фаз 0,1,2 не проверять нижний правый кирпич
 
 CheckYUnderRight
         lda     BallX
