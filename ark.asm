@@ -510,35 +510,37 @@ ProcessBallPlease
         xra     a
         sta     ReflectFlag
 
-;        lda     BallY
-;        ani     7
-;        cpi     2
-;        jm      CheckXRight
-; кирпич справа внизу
-;        call    CheckBrickXPlusOne
-;        lxi     de, BallDX
-;        jz      CheckXRight
-; выбить кирпич справа внизу        
- ;       rlc
- ;       jc      SetReflectFlagX
- ;       mvi     m, 0
- ;       call    DestroyBrickXPlusOne
-;SetReflectFlagX        
- ;       mvi     a, 1
- ;       sta     ReflectFlag
-
 CheckXRight
 ; кирпич справа
         call    CheckBrickX
         lxi     de, BallDX
-        jz      CheckXMargins
+        jz      CheckXRightUnder
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
-        jc      SetReflectFlagX1
+        jc      SetReflectFlagX
         mvi     m, 0
         ;call    DestroyBrick
         call    DestroyBrickX
-SetReflectFlagX1
+SetReflectFlagX
+        mvi     a, 1
+        sta     ReflectFlag
+
+CheckXRightUnder
+
+        lda     BallY
+        ani     7
+        cpi     2
+        jc      CheckXMargins
+; кирпич справа внизу
+        call    CheckBrickXPlusOne
+        lxi     de, BallDX
+        jz      CheckXMargins
+; выбить кирпич справа внизу        
+        rlc
+        jc      SetReflectFlagXUnder
+        mvi     m, 0
+        call    DestroyBrickXPlusOne
+SetReflectFlagXUnder
         mvi     a, 1
         sta     ReflectFlag
 
