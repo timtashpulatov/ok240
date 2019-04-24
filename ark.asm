@@ -490,6 +490,17 @@ TOPMARGIN       equ     16
 BOTTOMMARGIN    equ     240
 ; ****************************************************************************
 ; Мячевой процессинг
+;
+; В фазах 0,1,2 мячик не выходит за пределы 8 пикселей
+; ..OO....
+; .OOOO...
+; OOOOOO..
+; OOOOOO..
+; .OOOO...
+; ..OO....
+;
+;
+;
 ; ****************************************************************************
 ProcessBall
         lda     BallDelay
@@ -576,22 +587,22 @@ CheckY
         xra     a
         sta     ReflectFlag
         
-        lda     BallX
-        ani     0fh
-        cpi     0bh
-        jm      CheckYUnder
+;        lda     BallX
+;        ani     0fh
+;        cpi     0bh
+;        jm      CheckYUnder
 ; кирпич внизу справа
-        call    CheckBrickYPlusOne
-        lxi     de, BallDY
-        jz      CheckYUnder
+;        call    CheckBrickYPlusOne
+;        lxi     de, BallDY
+;        jz      CheckYUnder
 ; выбить кирпич внизу справа
-        rlc
-        jc      SetReflectFlag
-        mvi     m, 0
-        call    DestroyBrickYPlusOne
-SetReflectFlag        
-        mvi     a, 1
-        sta     ReflectFlag
+;        rlc
+;        jc      SetReflectFlag
+;        mvi     m, 0
+;        call    DestroyBrickYPlusOne
+;SetReflectFlag        
+;        mvi     a, 1
+;        sta     ReflectFlag
 
 CheckYUnder
 ; кирпич подо мною
