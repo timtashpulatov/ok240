@@ -593,6 +593,10 @@ CheckY
         lda     BallX
         ani     0b00001000              ; координата мячика кратна 16?
         jz      CheckYUnder             ;да, проверяем только кирпич снизу
+        lda     BallX
+        ani     7
+        cpi     4
+        jm      CheckYUnder
 ; проверяем кирпич снизу и справа
         call    CheckBrickYPlusOne
         jz      CheckYUnder
@@ -604,24 +608,6 @@ CheckY
 SetReflectFlagX
         mvi     a, 1
         sta     ReflectFlag
-
-
-;        lda     BallX
-;        ani     0fh
-;        cpi     0bh
-;        jm      CheckYUnder
-; кирпич внизу справа
-;        call    CheckBrickYPlusOne
-;        lxi     de, BallDY
-;        jz      CheckYUnder
-; выбить кирпич внизу справа
-;        rlc
-;        jc      SetReflectFlag
-;        mvi     m, 0
-;        call    DestroyBrickYPlusOne
-;SetReflectFlag        
-;        mvi     a, 1
-;        sta     ReflectFlag
 
 CheckYUnder
 ; кирпич подо мною
