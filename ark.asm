@@ -590,37 +590,38 @@ CheckY
         xra     a
         sta     ReflectFlag
 
-        lda     BallX
-        ani     0b00001000              ; координата мячика кратна 16?
-        jz      CheckYUnder             ;да, проверяем только кирпич снизу
-        lda     BallX
-        ani     7
-        cpi     4
-        jm      CheckYUnder
-; проверяем кирпич снизу и справа
-        call    CheckBrickYPlusOne
-        jz      CheckYUnder
-; выбить кирпич внизу справа
-        rlc
-        jc      SetReflectFlagX         ; попался небьющийся кирпич
-        mvi     m, 0
-        call    DestroyBrickYPlusOne
-SetReflectFlagX
-        mvi     a, 1
-        sta     ReflectFlag
-
 CheckYUnder
 ; кирпич подо мною
         call    CheckBrickY
         lxi     de, BallDY
-        jz      CheckYMargins
+        jz      CheckYUnderRight
 ; выбить кирпич
         rlc                     ; признак очень твердого кирпича
-        jc      SetReflectFlag1
+        jc      SetReflectFlagY
         mvi     m, 0
         ;call    DestroyBrick
         call    DestroyBrickY
-SetReflectFlag1        
+SetReflectFlagY        
+        mvi     a, 1
+        sta     ReflectFlag
+
+CheckYUnderRight
+        lda     BallX
+        ani     0b00001000              ; координата мячика кратна 16?
+        jz      CheckYMargins             ;да, проверяем только кирпич снизу
+        lda     BallX
+        ani     7
+        cpi     4
+        jc      CheckYMargins
+; проверяем кирпич снизу и справа
+        call    CheckBrickYPlusOne
+        jz      CheckYMargins
+; выбить кирпич внизу справа
+        rlc
+        jc      SetReflectFlagYRight         ; попался небьющийся кирпич
+        mvi     m, 0
+        call    DestroyBrickYPlusOne
+SetReflectFlagYRight
         mvi     a, 1
         sta     ReflectFlag
 
