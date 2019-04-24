@@ -498,34 +498,33 @@ ProcessBall
         dcr     a
         sta     BallDelay
         ret
+        
 ProcessBallPlease
         mvi     a, DEFAULTBALLDELAY
         sta     BallDelay
         
         call    EraseBall
 
-;    jmp CheckY
-
 ; ------------- займемся координатой по горизонтали X
         xra     a
         sta     ReflectFlag
 
-        lda     BallY
-        ani     7
-        cpi     2
-        jm      CheckXRight
+;        lda     BallY
+;        ani     7
+;        cpi     2
+;        jm      CheckXRight
 ; кирпич справа внизу
-        call    CheckBrickXPlusOne
-        lxi     de, BallDX
-        jz      CheckXRight
+;        call    CheckBrickXPlusOne
+;        lxi     de, BallDX
+;        jz      CheckXRight
 ; выбить кирпич справа внизу        
-        rlc
-        jc      SetReflectFlagX
-        mvi     m, 0
-        call    DestroyBrickXPlusOne
-SetReflectFlagX        
-        mvi     a, 1
-        sta     ReflectFlag
+ ;       rlc
+ ;       jc      SetReflectFlagX
+ ;       mvi     m, 0
+ ;       call    DestroyBrickXPlusOne
+;SetReflectFlagX        
+ ;       mvi     a, 1
+ ;       sta     ReflectFlag
 
 CheckXRight
 ; кирпич справа
