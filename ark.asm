@@ -526,7 +526,6 @@ SetReflectFlagX
         sta     ReflectFlag
 
 CheckXRightUnder
-
         lda     BallY
         ani     7
         cpi     2
