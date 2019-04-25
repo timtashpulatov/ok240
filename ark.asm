@@ -87,8 +87,6 @@ VeryBegin
         
         mvi     a, DEFAULTBALLX
         sta     BallX
-        mvi     a, (DEFAULTBALLX>>2)<<1
-        sta     BallX_scr
         mvi     a, DEFAULTBALLY
         sta     BallY
         
@@ -96,6 +94,11 @@ VeryBegin
         sta     BallDX
         mvi     a, DEFAULTBALLDY
         sta     BallDY
+
+        mvi     a, (DEFAULTBALLX>>2)<<1
+        sta     BallX_scr
+        mvi     a, 0 ; TODO
+        sta     BallX_playfield
 
         lxi     hl, BALL
         shld    BALLPHASE
@@ -411,7 +414,7 @@ CheckNewX
         ret
 
 ; ***********************************************************
-; Проверить потенциальный X на границы и кирпичи слева-справа
+; Проверить X в аккумуляторе на границы и кирпичи слева-справа
 ; ***********************************************************
 ShallWeReflectByX
         ret
@@ -2725,7 +2728,8 @@ BmpPtr          dw      0
 BallCoords      dw      0                       ; Координаты мячика
 BallX           db      0
 BallY           db      0
-BallX_scr       db      0
+BallX_scr       db      0                       ; Старший байт экранного адреса
+BallX_playfield db      0                       ; Кирпичная позиция на игровом поле
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
