@@ -97,8 +97,10 @@ VeryBegin
 
         mvi     a, (DEFAULTBALLX>>2)<<1
         sta     BallX_scr
-        mvi     a, 0 ; TODO
-        sta     BallX_playfield
+
+;        mvi     a, 0 ; TODO
+;        sta     BallBrickIndex
+        call    BallPos2BrickIndex
 
         lxi     hl, BALL
         shld    BALLPHASE
@@ -417,6 +419,7 @@ CheckNewX
 ; Проверить X в аккумуляторе на границы и кирпичи слева-справа
 ; ***********************************************************
 ShallWeReflectByX
+        
         ret
 
 ; *************************************************
@@ -774,8 +777,6 @@ CheckBrickXCommon
 ; Преобразовать координаты мячика в индекс кирпича в массиве кирпичей
 ; *******************************************************************
 BallPos2BrickIndex
-;        lxi     hl, LEVEL_1
-;        mvi     b, 0
         lda     BallY
 
         ani     0b11111000      ; или 0b01111000?
@@ -789,6 +790,8 @@ BallPos2BrickIndex
         ral
         ani     0fh
         add     c
+
+        sta     BallBrickIndex
 
         ret
 
@@ -2751,7 +2754,7 @@ BallCoords      dw      0                       ; Координаты мячи�
 BallX           db      0
 BallY           db      0
 BallX_scr       db      0                       ; Старший байт экранного адреса
-BallX_playfield db      0                       ; Кирпичная позиция на игровом поле
+BallBrickIndex db      0                       ; Кирпичная позиция на игровом поле
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
