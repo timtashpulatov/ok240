@@ -115,7 +115,7 @@ VeryBegin
 
 ; Кирпич 1
         lxi     bc, 0400h
-        lxi     hl, BRICK1
+        lxi     hl, BONUS16
         call    PaintBrick
 
         lxi     bc, 0808h
@@ -287,6 +287,9 @@ HouseKeeping
         jmp     Begin
         
 NoPaletteDebug
+
+        call    NewProcessBall
+
         call    ProcessBall
         call    ProcessBatty
         call    ProcessBonusList
@@ -375,8 +378,8 @@ CalculateBattyPhase
 
 CounterDX       db      0       ; счетчик задержки
 CounterDY       db      0
-DelayDX         db      0       ; задержка приращения по X
-DelayDY         db      0
+DelayDX         db      5       ; задержка приращения по X
+DelayDY         db      5
 
 NewProcessBall
         call    UpdateX
@@ -411,7 +414,7 @@ UX1
 CheckNewX
         call    XPlusDX
         call    ShallWeReflectByX
-        jnz     .+6
+        jz      .+6
         call    LetsReflectX
         ret
 
