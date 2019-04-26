@@ -524,6 +524,9 @@ ProcessBallPlease
         
         call    EraseBall
 
+
+        call    BallPos2BrickIndex
+
 ; ------------- займемся координатой по горизонтали X
         xra     a
         sta     ReflectFlag
@@ -785,9 +788,9 @@ BallPos2BrickIndex
 
         lda     BallX
         ora     a
-        ral
-        ral
-        ral
+        rlc
+        rlc
+        rlc
         ani     0fh
         add     c
 
