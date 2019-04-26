@@ -791,6 +791,7 @@ BallPos2BrickIndex
         rlc
         rlc
         rlc
+        rlc
         ani     0fh
         add     c
 
