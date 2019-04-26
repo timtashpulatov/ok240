@@ -386,6 +386,7 @@ NewProcessBall
         call    UpdateX
         call    UpdateY
         call    PaintBall
+        jmp     CheckDone
         ret
 
 ; *************************************************
