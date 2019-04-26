@@ -496,11 +496,33 @@ UY1
 CheckNewY
         call    YPlusDY
         call    ShallWeReflectY
-        jnz     .+6
+        jz      .+6
         call    LetsReflectY
         ret
 
 ShallWeReflectY
+
+        ani     0b11111000      ; или 0b01111000?
+        ral
+        mov     c, a
+        
+        lda     BallX
+        ora     a
+        rlc
+        rlc
+        rlc
+        rlc
+        ani     0fh
+
+        add     c
+        mov     c, a
+
+        mvi     b, 0
+        lxi     hl, LEVEL_1
+        dad     bc
+        
+        mov     a, m
+        ora     a
         ret
 
 LetsReflectY
