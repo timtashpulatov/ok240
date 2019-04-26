@@ -290,7 +290,7 @@ NoPaletteDebug
 
         call    NewProcessBall
 
-        call    ProcessBall
+;        call    ProcessBall
         call    ProcessBatty
         call    ProcessBonusList
         jmp     Begin
@@ -572,8 +572,8 @@ ProcessBallPlease
         call    EraseBall
 
   ;call    BallPos2BrickIndex
-   lda     BallX
-   call    ShallWeReflectByX
+;   lda     BallX
+;   call    ShallWeReflectByX
 
 ; ------------- займемся координатой по горизонтали X
         xra     a
