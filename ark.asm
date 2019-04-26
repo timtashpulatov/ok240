@@ -419,7 +419,29 @@ CheckNewX
 ; Проверить X в аккумуляторе на границы и кирпичи слева-справа
 ; ***********************************************************
 ShallWeReflectByX
+
+        ora     a
+        rlc
+        rlc
+        rlc
+        rlc
+        ani     0fh
+        mov     c, a
+
+        lda     BallY
+
+        ani     0b11111000      ; или 0b01111000?
+        ral
+        add     c
+        mov     c, a
+
+        mvi     b, 0
+        lxi     hl, LEVEL_1
+        dad     bc
         
+        mov     a, m
+        ora     a
+                
         ret
 
 ; *************************************************
@@ -524,8 +546,9 @@ ProcessBallPlease
         
         call    EraseBall
 
-
-        call    BallPos2BrickIndex
+        ;call    BallPos2BrickIndex
+        lda     BallX
+        call    ShallWeReflectByX
 
 ; ------------- займемся координатой по горизонтали X
         xra     a
