@@ -382,7 +382,10 @@ DelayDX         db      2       ; задержка приращения по X
 DelayDY         db      2
 
 NewProcessBall
+        call    EraseBall
         call    UpdateX
+        call    UpdateY
+        call    PaintBall
         ret
 
 ; *************************************************
@@ -415,6 +418,7 @@ CheckNewX
         call    XPlusDX
         call    ShallWeReflectByX
         jz      .+6
+        ; TODO выбить кирпич
         call    LetsReflectX
         ret
 
@@ -497,6 +501,7 @@ CheckNewY
         call    YPlusDY
         call    ShallWeReflectY
         jz      .+6
+        ; TODO выбить кирпич
         call    LetsReflectY
         ret
 
