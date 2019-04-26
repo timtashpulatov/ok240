@@ -100,7 +100,7 @@ VeryBegin
 
 ;        mvi     a, 0 ; TODO
 ;        sta     BallBrickIndex
-        call    BallPos2BrickIndex
+;        call    BallPos2BrickIndex
 
         lxi     hl, BALL
         shld    BALLPHASE
@@ -417,9 +417,11 @@ UX1
 CheckNewX
         call    XPlusDX
         call    ShallWeReflectByX
-        jz      .+6
+        jz      CheckNewXDone
         ; TODO выбить кирпич
+        mvi     m, 0
         call    LetsReflectX
+CheckNewXDone        
         ret
 
 ; ***********************************************************
@@ -500,9 +502,10 @@ UY1
 CheckNewY
         call    YPlusDY
         call    ShallWeReflectY
-        jz      .+6
+        jz      CheckNewYDone
         ; TODO выбить кирпич
         call    LetsReflectY
+CheckNewYDone        
         ret
 
 ShallWeReflectY
