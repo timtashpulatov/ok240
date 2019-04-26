@@ -546,9 +546,9 @@ ProcessBallPlease
         
         call    EraseBall
 
-        ;call    BallPos2BrickIndex
-        lda     BallX
-        call    ShallWeReflectByX
+  ;call    BallPos2BrickIndex
+   lda     BallX
+   call    ShallWeReflectByX
 
 ; ------------- займемся координатой по горизонтали X
         xra     a
@@ -2716,6 +2716,11 @@ BATTY1  db      4
 
 BONUS   db      0fch, 1eh, 47h, 23h, 43h, 21h, 42h, 0fch
         db      0, 1ch, 0a6h, 42h, 0a2h, 40h, 20h, 0
+
+BONUS16 db      0f0h, 8, 24h, 14h, 54h, 0a4h, 58h, 0f0h
+        db      0f0h, 8, 04h, 04h, 44h, 0a4h, 58h, 0f0h
+        db      0fh, 10h, 20h, 20h, 25h, 2ah, 15h, 0fh
+        db      0fh, 10h, 20h, 20h, 25h, 2ah, 15h, 0fh
 
 ; Нет дубины
 NOBATTY db      4
