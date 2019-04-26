@@ -378,8 +378,8 @@ CalculateBattyPhase
 
 CounterDX       db      0       ; счетчик задержки
 CounterDY       db      0
-DelayDX         db      5       ; задержка приращения по X
-DelayDY         db      5
+DelayDX         db      2       ; задержка приращения по X
+DelayDY         db      2
 
 NewProcessBall
         call    UpdateX
