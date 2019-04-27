@@ -409,6 +409,12 @@ UX1
         ; собственно прирастим координату
         call    XPlusDX
         sta     BallX
+
+        ; сохранить прекалк X в экранный X
+        rar
+        rar
+        ani     3eh
+        sta     BallX_scr
         
         ret
 
