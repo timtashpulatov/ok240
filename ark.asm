@@ -427,8 +427,10 @@ CheckNewX
         jz      CheckNewXDone
         ; выбить кирпич
         ani     80h     ; выбиваемый?
-        jnz     .+5
+        jnz     JustLetsReflectX
         mvi     m, 0
+        call    DestroyBrickByIndex
+JustLetsReflectX
         call    LetsReflectX
 CheckNewXDone        
         ret
@@ -523,8 +525,10 @@ CheckNewY
         jz      CheckNewYDone
         ; выбить кирпич
         ani     80h     ; выбиваемый?
-        jnz     .+5 
+        jnz     JustLetsReflectY
         mvi     m, 0
+        call    DestroyBrickByIndex
+JustLetsReflectY
         call    LetsReflectY
 CheckNewYDone        
         ret
@@ -1152,7 +1156,32 @@ DestroyBrickXPlusOne
 
         ret
   
-        
+; *************************************************
+; Стереть кирпич по его индексу
+; *************************************************
+DestroyBrickByIndex
+
+        call    BrickIndexToScreenCoords
+        xra   a
+        call  PaintBrick1
+
+        ret
+
+; *************************************************
+; Преобразовать индекс кирпича (A) в экранные координаты (BC)
+; *************************************************
+BrickIndexToScreenCoords
+        push    a
+        rar
+        ani     0f8h
+        mov     c, a
+        pop     a
+        ani     0fh
+        ral
+        mov     b, a
+        ret
+
+
 ; *************************************************
 ; Стереть кирпич
 ; *************************************************
