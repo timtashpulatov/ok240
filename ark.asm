@@ -437,7 +437,16 @@ CheckNewXDone
 ; Проверить X в аккумуляторе на границы и кирпичи слева-справа
 ; ***********************************************************
 ShallWeReflectByX
-
+; если движемся вперед, к координате надо прибавить ширину мячика
+        mvi     c, 0
+        push    a
+        lda     BallDX
+        ora     a
+        jm      .+5
+        mvi     c, 6
+        pop     a
+        add     c
+        
         ora     a
         rlc
         rlc
@@ -521,6 +530,17 @@ CheckNewYDone
         ret
 
 ShallWeReflectY
+; если движемся вниз, к координате надо прибавить высоту мячика
+        mvi     c, 0
+        push    a
+        lda     BallDY
+        ora     a
+        jm      .+5
+        mvi     c, 6
+        pop     a
+        add     c
+
+
 
         ani     0b11111000      ; или 0b01111000?
         ral
