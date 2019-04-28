@@ -429,6 +429,7 @@ CheckNewX
         ani     80h     ; выбиваемый?
         jnz     JustLetsReflectX
         mvi     m, 0
+        call    XPlusDX ; фу так делать
         call    DestroyBrickByIndex
 JustLetsReflectX
         call    LetsReflectX
@@ -527,6 +528,7 @@ CheckNewY
         ani     80h     ; выбиваемый?
         jnz     JustLetsReflectY
         mvi     m, 0
+        call    YPlusDY ; фу так делать
         call    DestroyBrickByIndex
 JustLetsReflectY
         call    LetsReflectY
