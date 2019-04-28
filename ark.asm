@@ -535,12 +535,12 @@ CheckNewYDone
 
 ShallWeReflectByY
 ; если движемся вниз, к координате надо прибавить высоту мячика
-        mvi     c, 0
+        mvi     c, -2
         push    a
         lda     BallDY
         ora     a
         jm      .+5
-        mvi     c, 8
+        mvi     c, 6
         pop     a
         add     c
 
