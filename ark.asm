@@ -46,7 +46,7 @@ BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     48h     ;32
 DEFAULTBALLY    equ     20h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     0;1
+DEFAULTBALLDY   equ     1
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -429,8 +429,9 @@ CheckNewX
         ani     80h     ; выбиваемый?
         jnz     JustLetsReflectX
         mvi     m, 0
-        call    XPlusDX ; фу так делать
-        call    DestroyBrickByIndex
+        ;call    XPlusDX ; фу так делать
+        ;call    DestroyBrickByIndex
+        call    DestroyBrickByPlayfieldAddr
 JustLetsReflectX
         call    LetsReflectX
 CheckNewXDone        
@@ -528,8 +529,9 @@ CheckNewY
         ani     80h     ; выбиваемый?
         jnz     JustLetsReflectY
         mvi     m, 0
-        call    YPlusDY ; фу так делать
-        call    DestroyBrickByIndex
+        ;call    YPlusDY ; фу так делать
+        ;call    DestroyBrickByIndex
+        call    DestroyBrickByPlayfieldAddr
 JustLetsReflectY
         call    LetsReflectY
 CheckNewYDone        
@@ -1167,6 +1169,29 @@ DestroyBrickByIndex
         xra   a
         call  PaintBrick1       ; PaintBrick: B=X, C=Y
 
+        ret
+
+; *************************************************
+; Стереть кирпич по его адресу в таблице (HL)
+; *************************************************
+DestroyBrickByPlayfieldAddr
+        mov     a, l
+        rar
+;        rar
+;        rar
+;        rar
+        ani     78h
+        mov     c, a    ; Y
+        
+        mov     a, l
+        ani     0fh
+        ral
+        ral
+        
+        
+        mov     b, a    ; X
+        xra     a
+        call    PaintBrick1
         ret
 
 ; *************************************************
