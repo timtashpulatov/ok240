@@ -429,8 +429,6 @@ CheckNewX
         ani     80h     ; выбиваемый?
         jnz     JustLetsReflectX
         mvi     m, 0
-        ;call    XPlusDX ; фу так делать
-        ;call    DestroyBrickByIndex
         call    DestroyBrickByPlayfieldAddr
 JustLetsReflectX
         call    LetsReflectX
@@ -523,28 +521,26 @@ UY1
 ; *************************************************
 CheckNewY
         call    YPlusDY
-        call    ShallWeReflectY
+        call    ShallWeReflectByY
         jz      CheckNewYDone
         ; выбить кирпич
         ani     80h     ; выбиваемый?
         jnz     JustLetsReflectY
         mvi     m, 0
-        ;call    YPlusDY ; фу так делать
-        ;call    DestroyBrickByIndex
         call    DestroyBrickByPlayfieldAddr
 JustLetsReflectY
         call    LetsReflectY
 CheckNewYDone        
         ret
 
-ShallWeReflectY
+ShallWeReflectByY
 ; если движемся вниз, к координате надо прибавить высоту мячика
         mvi     c, 0
         push    a
         lda     BallDY
         ora     a
         jm      .+5
-        mvi     c, 6
+        mvi     c, 8
         pop     a
         add     c
 
