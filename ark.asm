@@ -425,7 +425,9 @@ CheckNewX
         call    XPlusDX
         call    ShallWeReflectByX
         jz      CheckNewXDone
-        ; TODO выбить кирпич
+        ; выбить кирпич
+        ani     80h     ; выбиваемый?
+        jnz     .+5
         mvi     m, 0
         call    LetsReflectX
 CheckNewXDone        
@@ -510,7 +512,10 @@ CheckNewY
         call    YPlusDY
         call    ShallWeReflectY
         jz      CheckNewYDone
-        ; TODO выбить кирпич
+        ; выбить кирпич
+        ani     80h     ; выбиваемый?
+        jnz     .+5 
+        mvi     m, 0
         call    LetsReflectY
 CheckNewYDone        
         ret
