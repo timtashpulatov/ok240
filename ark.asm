@@ -1165,7 +1165,7 @@ DestroyBrickByIndex
 
         call    BrickIndexToScreenCoords
         xra   a
-        call  PaintBrick1
+        call  PaintBrick1       ; PaintBrick: B=X, C=Y
 
         ret
 
@@ -1174,11 +1174,13 @@ DestroyBrickByIndex
 ; *************************************************
 BrickIndexToScreenCoords
         push    a
+        ani     0f0h
         rar
-        ani     0f8h
         mov     c, a
+        
         pop     a
         ani     0fh
+        ral
         ral
         mov     b, a
         ret
