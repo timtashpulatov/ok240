@@ -552,6 +552,10 @@ ShallWeReflectByY
         mov     c, a
         
         lda     BallX
+        adi     6
+        ani     0f8h
+        
+        
         ora     a
         rlc
         rlc
