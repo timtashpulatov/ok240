@@ -458,6 +458,7 @@ ShallWeReflectByX
         mov     c, a
 
         lda     BallY
+        adi     3
 
         ani     0b11111000      ; или 0b01111000?
         ral
