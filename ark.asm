@@ -544,14 +544,19 @@ CheckNewY
         call    BallCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
 
-        
-        
-
 ; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
-CheckBrickX_DX_1_Y_DY
+        lda     BallX_new
+        ani     0fh
+        cpi     11
+        jm      CheckNewYContinue
 
+        call    BallCoords2BrickPtr
+        inx     hl
+        call    DestroyBrickByPlayfieldAddr
 
-
+CheckNewYContinue
+        call    LetsReflectY
+        ret
 
         call    ShallWeReflectByY
         jz      CheckNewYDone
@@ -606,6 +611,11 @@ ShallWeReflectByY
         ret
 
 LetsReflectY
+        lda     BricksHit
+        ora     a
+        jnz     LetsReflectYDo
+        ret
+LetsReflectYDo        
         lda     BallDY
         cma
         inr     a
@@ -1219,6 +1229,13 @@ DestroyBrickByPlayfieldAddr
         ret
 
 DoTheJob
+        ani     80h
+        jnz     DoTheJobWillYa
+        ret
+
+DoTheJobWillYa
+        mvi     m, 0
+
         mov     a, l
         rar
         ani     78h
