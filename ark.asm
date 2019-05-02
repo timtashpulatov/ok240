@@ -537,13 +537,11 @@ BricksHit       db      0
 ; *************************************************
 CheckNewY
         call    YPlusDY
-
 ; кирпич (x+dx, y+dy) проверяем всегда
         xra     a
         sta     BricksHit
         call    BallCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
-
 ; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
         lda     BallX_new
         ani     0fh
@@ -556,18 +554,6 @@ CheckNewY
 
 CheckNewYContinue
         call    LetsReflectY
-        ret
-
-        call    ShallWeReflectByY
-        jz      CheckNewYDone
-        ; выбить кирпич
-        ani     80h     ; выбиваемый?
-        jnz     JustLetsReflectY
-        mvi     m, 0
-        call    DestroyBrickByPlayfieldAddr
-JustLetsReflectY
-        call    LetsReflectY
-CheckNewYDone        
         ret
 
 ShallWeReflectByY
