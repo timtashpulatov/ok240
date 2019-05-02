@@ -100,7 +100,7 @@ VeryBegin
 
 ;        mvi     a, 0 ; TODO
 ;        sta     BallBrickIndex
-        call    BallPos2BrickIndex
+        call    BallNewPos2BrickIndex
 
         lxi     hl, BALL
         shld    BALLPHASE
@@ -385,7 +385,7 @@ NewProcessBall
         call    EraseBall
         call    UpdateX
         call    UpdateY
-        call    BallPos2BrickIndex
+        call    BallNewPos2BrickIndex
         call    PaintBall
         jmp     CheckDone
         ret
@@ -427,16 +427,16 @@ CheckNewX
 ; кирпич (x+dx, y+dy) проверяем всегда
         xra     a
         sta     BricksHit
-        call    BallCoords2BrickPtr
+        call    BallNewCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
-; кирпич (x+dx, y+dy+1) проверяем, если 0<=Y<=2
-        lda     BallY_new
-        ani     07h
-        cpi     3
+; кирпич (x+dx+1, y+dy) проверяем, если 0<=Y<11
+        lda     BallX_new
+        ani     0fh
+        cpi     11
         jm      CheckNewXContinue
 
-        call    BallCoords2BrickPtr
-        lxi     bc, 16
+        call    BallNewCoords2BrickPtr
+        lxi     bc, 01
         dad     bc
         call    DestroyBrickByPlayfieldAddr
 
@@ -535,7 +535,8 @@ UY1
 ; *************************************************
 ; Получить из координат мячика указатель на кирпич в HL
 ; *************************************************
-BallCoords2BrickPtr
+BallNewCoords2BrickPtr
+        call    BallNewPos2BrickIndex
         lda     BallBrickIndex
         mov     c, a
         mvi     b, 0
@@ -551,7 +552,7 @@ CheckNewY
 ; кирпич (x+dx, y+dy) проверяем всегда
         xra     a
         sta     BricksHit
-        call    BallCoords2BrickPtr
+        call    BallNewCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
 ; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
         lda     BallX_new
@@ -559,7 +560,7 @@ CheckNewY
         cpi     11
         jm      CheckNewYContinue
 
-        call    BallCoords2BrickPtr
+        call    BallNewCoords2BrickPtr
         inx     hl
         call    DestroyBrickByPlayfieldAddr
 
@@ -659,7 +660,7 @@ ProcessBallPlease
         
         call    EraseBall
 
-  ;call    BallPos2BrickIndex
+  ;call    BallNewPos2BrickIndex
 ;   lda     BallX
 ;   call    ShallWeReflectByX
 
@@ -915,14 +916,14 @@ CheckBrickXCommon
 ; *******************************************************************
 ; Преобразовать координаты мячика в индекс кирпича в массиве кирпичей
 ; *******************************************************************
-BallPos2BrickIndex
-        lda     BallY
+BallNewPos2BrickIndex
+        lda     BallY_new
 
         ani     0b11111000      ; или 0b01111000?
         ral
         mov     c, a
 
-        lda     BallX
+        lda     BallX_new
         ora     a
         rlc
         rlc
