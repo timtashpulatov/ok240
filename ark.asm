@@ -436,8 +436,9 @@ CheckNewX
         jm      CheckNewXContinue
 
         call    BallNewCoords2BrickPtr
-        lxi     bc, 01
-        dad     bc
+        ;lxi     bc, 01
+        ;dad     bc
+        inx     hl
         call    DestroyBrickByPlayfieldAddr
 
 CheckNewXContinue
@@ -555,14 +556,14 @@ CheckNewY
         call    BallNewCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
 ; кирпич (x+dx, y+dy+1) проверяем, если 3<=Y<7
-        lda     BallX_new
+        lda     BallY_new
         ani     07h
         cpi     3
         jm      CheckNewYContinue
 
         call    BallNewCoords2BrickPtr
         lxi     bc, 16
-        dad     hl
+        dad     bc
         call    DestroyBrickByPlayfieldAddr
 CheckNewYContinue
         call    LetsReflectY
