@@ -424,6 +424,33 @@ UX1
 ; *************************************************
 CheckNewX
         call    XPlusDX
+; кирпич (x+dx, y+dy) проверяем всегда
+        xra     a
+        sta     BricksHit
+        call    BallCoords2BrickPtr
+        call    DestroyBrickByPlayfieldAddr
+; кирпич (x+dx, y+dy+1) проверяем, если ??? Y ???
+        lda     BallY_new
+        ani     07h
+        cpi     11
+        jm      CheckNewYContinue
+
+        call    BallCoords2BrickPtr
+        inx     hl
+        call    DestroyBrickByPlayfieldAddr
+
+CheckNewYContinue
+        call    LetsReflectY
+
+
+
+
+
+
+
+
+
+        call    XPlusDX
         call    ShallWeReflectByX
         jz      CheckNewXDone
         ; выбить кирпич
@@ -529,8 +556,6 @@ BallCoords2BrickPtr
         lxi     hl, LEVEL_1
         dad     bc
         ret
-
-BricksHit       db      0
 
 ; *************************************************
 ; Проверим новую координату Y и отразимся, если нужно
@@ -2845,7 +2870,6 @@ BALL    db      0, 0, 0, 0, 0, 0, 0, 0
         ds      16
 
 BALLMASK
-        db      0b11111111
         db      0b11110011
         db      0b11100001
         db      0b11000000
@@ -2853,8 +2877,9 @@ BALLMASK
         db      0b11100001
         db      0b11110011
         db      0b11111111
-
-        db      0ffh, 0f3h, 0e1h, 0c0h, 0c0h, 0e1h, 0f3h, 0ffh
+        db      0b11111111
+        
+        db      0f3h, 0e1h, 0c0h, 0c0h, 0e1h, 0f3h, 0ffh, 0ffh
         
         db      255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255
@@ -2962,6 +2987,7 @@ BallPhase       dw      BALL
 BallMaskPhase   dw      BALLMASK
 
 ReflectFlag     db      0
+BricksHit       db      0
 
 BattyPos        db      10                      ; Позиция ракетки
 BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
