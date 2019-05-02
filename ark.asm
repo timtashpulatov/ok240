@@ -1227,7 +1227,7 @@ DestroyBrickByPlayfieldAddr
 
 DoTheJob
         ani     80h
-        jnz     DoTheJobWillYa
+        jz      DoTheJobWillYa
         ret
 
 DoTheJobWillYa
@@ -2852,7 +2852,7 @@ SCORE_1
 ; Верхний и нижний ряды у мячика можно срезать и выводить только ШЕСТЬ строк
 
 BALL    db      0, 0, 0, 0, 0, 0, 0, 0
-        db      0, 12, 1ah, 39h, 3dh, 1eh, 12, 0
+        db      12, 1ah, 39h, 3dh, 1eh, 12, 0, 0
         ds      16
 
 BALLMASK
