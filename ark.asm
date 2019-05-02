@@ -429,38 +429,19 @@ CheckNewX
         sta     BricksHit
         call    BallCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
-; кирпич (x+dx, y+dy+1) проверяем, если ??? Y ???
+; кирпич (x+dx, y+dy+1) проверяем, если 0<=Y<=2
         lda     BallY_new
         ani     07h
-        cpi     11
-        jm      CheckNewYContinue
+        cpi     3
+        jm      CheckNewXContinue
 
         call    BallCoords2BrickPtr
-        inx     hl
+        lxi     bc, 16
+        dad     bc
         call    DestroyBrickByPlayfieldAddr
 
-CheckNewYContinue
-        call    LetsReflectY
-
-
-
-
-
-
-
-
-
-        call    XPlusDX
-        call    ShallWeReflectByX
-        jz      CheckNewXDone
-        ; выбить кирпич
-        ani     80h     ; выбиваемый?
-        jnz     JustLetsReflectX
-        mvi     m, 0
-        call    DestroyBrickByPlayfieldAddr
-JustLetsReflectX
+CheckNewXContinue
         call    LetsReflectX
-CheckNewXDone        
         ret
 
 ; ***********************************************************
@@ -506,6 +487,11 @@ ShallWeReflectByX
 ; Радикально сменить направление по X
 ; *************************************************
 LetsReflectX
+        lda     BricksHit
+        ora     a
+        jnz     LetsReflectXDo
+        ret
+LetsReflectXDo
         lda     BallDX
         cma
         inr     a
