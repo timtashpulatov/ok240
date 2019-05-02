@@ -100,7 +100,7 @@ VeryBegin
 
 ;        mvi     a, 0 ; TODO
 ;        sta     BallBrickIndex
-;        call    BallPos2BrickIndex
+        call    BallPos2BrickIndex
 
         lxi     hl, BALL
         shld    BALLPHASE
@@ -385,6 +385,7 @@ NewProcessBall
         call    EraseBall
         call    UpdateX
         call    UpdateY
+        call    BallPos2BrickIndex
         call    PaintBall
         jmp     CheckDone
         ret
@@ -492,6 +493,7 @@ XPlusDX
         mov     c, a
         lda     BallX
         add     c
+        sta     BallX_new
         ret
 
 ; *************************************************
@@ -518,10 +520,39 @@ UY1
         ret
 
 ; *************************************************
+; Получить из координат мячика указатель на кирпич в HL
+; *************************************************
+BallCoords2BrickPtr
+        lda     BallBrickIndex
+        mov     c, a
+        mvi     b, 0
+        lxi     hl, LEVEL_1
+        dad     bc
+        ret
+
+BricksHit       db      0
+
+; *************************************************
 ; Проверим новую координату Y и отразимся, если нужно
 ; *************************************************
 CheckNewY
         call    YPlusDY
+
+; кирпич (x+dx, y+dy) проверяем всегда
+        xra     a
+        sta     BricksHit
+        call    BallCoords2BrickPtr
+        call    DestroyBrickByPlayfieldAddr
+
+        
+        
+
+; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
+CheckBrickX_DX_1_Y_DY
+
+
+
+
         call    ShallWeReflectByY
         jz      CheckNewYDone
         ; выбить кирпич
@@ -590,6 +621,7 @@ YPlusDY
         mov     c, a
         lda     BallY
         add     c
+        sta     BallY_new
         ret
 
 ; ******************************************************************************
@@ -1176,11 +1208,19 @@ DestroyBrickByIndex
 ; Стереть кирпич по его адресу в таблице (HL)
 ; *************************************************
 DestroyBrickByPlayfieldAddr
+
+        lda     BricksHit
+        ora     m
+        sta     BricksHit
+        
+        mov     a, m
+        ora     a
+        jnz     DoTheJob
+        ret
+
+DoTheJob
         mov     a, l
         rar
-;        rar
-;        rar
-;        rar
         ani     78h
         mov     c, a    ; Y
         
@@ -1188,8 +1228,7 @@ DestroyBrickByPlayfieldAddr
         ani     0fh
         ral
         ral
-        
-        
+
         mov     b, a    ; X
         xra     a
         call    PaintBrick1
@@ -2909,8 +2948,10 @@ BmpPtr          dw      0
 BallCoords      dw      0                       ; Координаты мячика
 BallX           db      0
 BallY           db      0
+BallX_new       db      0
+BallY_new       db      0
 BallX_scr       db      0                       ; Старший байт экранного адреса
-BallBrickIndex db      0                       ; Кирпичная позиция на игровом поле
+BallBrickIndex  db      0                       ; Кирпичная позиция на игровом поле
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
