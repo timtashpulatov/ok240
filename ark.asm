@@ -453,39 +453,39 @@ CheckNewXContinue
 ; ***********************************************************
 ShallWeReflectByX
 ; если движемся вперед, к координате надо прибавить ширину мячика
-        mvi     c, 0
-        push    a
-        lda     BallDX
-        ora     a
-        jm      .+5
-        mvi     c, 6
-        pop     a
-        add     c
+        ; mvi     c, 0
+        ; push    a
+        ; lda     BallDX
+        ; ora     a
+        ; jm      .+5
+        ; mvi     c, 6
+        ; pop     a
+        ; add     c
         
-        ora     a
-        rlc
-        rlc
-        rlc
-        rlc
-        ani     0fh
-        mov     c, a
+        ; ora     a
+        ; rlc
+        ; rlc
+        ; rlc
+        ; rlc
+        ; ani     0fh
+        ; mov     c, a
 
-        lda     BallY
-        adi     3
+        ; lda     BallY
+        ; adi     3
 
-        ani     0b11111000      ; или 0b01111000?
-        ral
-        add     c
-        mov     c, a
+        ; ani     0b11111000      ; или 0b01111000?
+        ; ral
+        ; add     c
+        ; mov     c, a
 
-        mvi     b, 0
-        lxi     hl, LEVEL_1
-        dad     bc
+        ; mvi     b, 0
+        ; lxi     hl, LEVEL_1
+        ; dad     bc
         
-        mov     a, m
-        ora     a
+        ; mov     a, m
+        ; ora     a
                 
-        ret
+        ; ret
 
 ; *************************************************
 ; Радикально сменить направление по X
@@ -573,43 +573,43 @@ CheckNewYContinue
 
 ShallWeReflectByY
 ; если движемся вниз, к координате надо прибавить высоту мячика
-        mvi     c, 0
-        push    a
-        lda     BallDY
-        ora     a
-        jm      .+5
-        mvi     c, 6
-        pop     a
-        add     c
+        ; mvi     c, 0
+        ; push    a
+        ; lda     BallDY
+        ; ora     a
+        ; jm      .+5
+        ; mvi     c, 6
+        ; pop     a
+        ; add     c
 
 
 
-        ani     0b11111000      ; или 0b01111000?
-        ral
-        mov     c, a
+        ; ani     0b11111000      ; или 0b01111000?
+        ; ral
+        ; mov     c, a
         
-        lda     BallX
-        adi     6
-        ani     0f8h
+        ; lda     BallX
+        ; adi     6
+        ; ani     0f8h
         
         
-        ora     a
-        rlc
-        rlc
-        rlc
-        rlc
-        ani     0fh
+        ; ora     a
+        ; rlc
+        ; rlc
+        ; rlc
+        ; rlc
+        ; ani     0fh
 
-        add     c
-        mov     c, a
+        ; add     c
+        ; mov     c, a
 
-        mvi     b, 0
-        lxi     hl, LEVEL_1
-        dad     bc
+        ; mvi     b, 0
+        ; lxi     hl, LEVEL_1
+        ; dad     bc
         
-        mov     a, m
-        ora     a
-        ret
+        ; mov     a, m
+        ; ora     a
+        ; ret
 
 LetsReflectY
         lda     BricksHit
