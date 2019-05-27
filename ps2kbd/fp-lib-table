@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name ps2kbd)(type KiCad)(uri ${KIPRJMOD}/lib/ps2kbd.pretty)(options "")(descr ""))
+)
