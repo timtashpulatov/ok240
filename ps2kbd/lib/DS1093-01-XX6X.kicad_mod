@@ -22,7 +22,7 @@
   (pad - thru_hole circle (at 3.4 8.5) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask))
   (pad - thru_hole circle (at -3.4 11) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask))
   (pad - thru_hole circle (at 3.4 11) (size 1.6 1.6) (drill 1) (layers *.Cu *.Mask))
-  (model C:/Users/tnt23/Downloads/Mini-DIN-6P.step
+  (model Mini-DIN-6P.step
     (offset (xyz 0 0 6.5))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 90))
