@@ -424,7 +424,7 @@ UX1
 ; *************************************************
 CheckNewX
         call    XPlusDX
-; кирпич (x+dx, y+dy) проверяем всегда
+; кирпич (newx, newy) проверяем всегда
         xra     a
         sta     BricksHit
         call    BallNewCoords2BrickPtr
@@ -432,7 +432,7 @@ CheckNewX
         lda     BricksHit
         ora     a
         jnz     CheckNewXContinue
-; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
+; кирпич (newx+1, newy) проверяем, если 11<=X<15
         lda     BallX_new
         ani     0fh
         cpi     10
@@ -447,7 +447,7 @@ CheckNewX
         jnz     CheckNewXContinue
 
 CNX1
-; кирпич (x+dx, y+dy+1) проверяем, если 3<=Y<7
+; кирпич (newx, newy+1) проверяем, если 3<=Y<7
         lda     BallY_new
         ani     07h
         cpi     3
@@ -457,7 +457,16 @@ CNX1
         lxi     bc, 16
         dad     bc
         call    DestroyBrickByPlayfieldAddr
+        lda     BricksHit
+        ora     a
+        jnz     CheckNewXContinue
 
+        lxi     bc, -17
+        dad     bc
+        call    DestroyBrickByPlayfieldAddr
+
+        
+        
 CheckNewXContinue
         call    LetsReflectX
         ret
