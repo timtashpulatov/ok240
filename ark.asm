@@ -429,6 +429,9 @@ CheckNewX
         sta     BricksHit
         call    BallNewCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
+        lda     BricksHit
+        ora     a
+        jnz     CheckNewXContinue
 ; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
         lda     BallX_new
         ani     0fh
@@ -439,6 +442,10 @@ CheckNewX
         lxi     bc, 01
         dad     bc
         call    DestroyBrickByPlayfieldAddr
+        lda     BricksHit
+        ora     a
+        jnz     CheckNewXContinue
+
 CNX1
 ; кирпич (x+dx, y+dy+1) проверяем, если 3<=Y<7
         lda     BallY_new
