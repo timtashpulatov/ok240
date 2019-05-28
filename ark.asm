@@ -43,10 +43,10 @@ DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
-DEFAULTBALLX    equ     48h     ;32
-DEFAULTBALLY    equ     20h     ;224
+DEFAULTBALLX    equ     58h     ;32
+DEFAULTBALLY    equ     12h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     1
+DEFAULTBALLDY   equ     0
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -435,10 +435,10 @@ CheckNewX
 ; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
         lda     BallX_new
         ani     0fh
-        cpi     11
+        cpi     10
         jm      CNX1
 
-        call    BallNewCoords2BrickPtr
+        ;call    BallNewCoords2BrickPtr
         lxi     bc, 01
         dad     bc
         call    DestroyBrickByPlayfieldAddr
@@ -453,7 +453,7 @@ CNX1
         cpi     3
         jm      CheckNewXContinue
         
-        call    BallNewCoords2BrickPtr
+        ;call    BallNewCoords2BrickPtr
         lxi     bc, 16
         dad     bc
         call    DestroyBrickByPlayfieldAddr
