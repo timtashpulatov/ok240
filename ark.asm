@@ -492,7 +492,14 @@ LetsReflectX
         lda     BricksHit
         ora     a
         jnz     LetsReflectXDo
+
+        lda     BallX
+        cpi     LEFTMARGIN
+        jz      LetsReflectXdo
+        cpi     RIGHTMARGIN
+        jz      LetsReflectXdo
         ret
+        
 LetsReflectXDo
         lda     BallDX
         cma
@@ -573,7 +580,14 @@ LetsReflectY
         lda     BricksHit
         ora     a
         jnz     LetsReflectYDo
+        
+        lda     BallY
+        cpi     TOPMARGIN
+        jz      LetsReflectYDo
+        cpi     BOTTOMMARGIN
+        jz      LetsReflectYDo
         ret
+        
 LetsReflectYDo        
         lda     BallDY
         cma
