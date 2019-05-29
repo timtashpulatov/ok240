@@ -432,13 +432,13 @@ CheckNewX
         lda     BricksHit
         ora     a
         jnz     CheckNewXContinue
+        
 ; кирпич (newx+1, newy) проверяем, если 11<=X<15
         lda     BallX_new
         ani     0fh
         cpi     10
         jm      CNX1
 
-        ;call    BallNewCoords2BrickPtr
         lxi     bc, 01
         dad     bc
         call    DestroyBrickByPlayfieldAddr
@@ -453,7 +453,7 @@ CNX1
         cpi     3
         jm      CheckNewXContinue
         
-        ;call    BallNewCoords2BrickPtr
+        call    BallNewCoords2BrickPtr
         lxi     bc, 16
         dad     bc
         call    DestroyBrickByPlayfieldAddr
@@ -461,9 +461,18 @@ CNX1
         ora     a
         jnz     CheckNewXContinue
 
-        lxi     bc, -17
+        lda     BallX_new
+        ani     0fh
+        cpi     10
+        jm      CheckNewXContinue
+
+        lxi     bc, 01
         dad     bc
         call    DestroyBrickByPlayfieldAddr
+        lda     BricksHit
+        ora     a
+        jnz     CheckNewXContinue
+
 
         
         
