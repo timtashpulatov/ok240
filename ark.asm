@@ -46,7 +46,7 @@ BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     58h     ;32
 DEFAULTBALLY    equ     12h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     0
+DEFAULTBALLDY   equ     1
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -534,10 +534,8 @@ UY1
 ; *************************************************
 BallNewCoords2BrickPtr
         call    BallNewPos2BrickIndex
-        lda     BallBrickIndex
-        mov     c, a
-        mvi     b, 0
-        lxi     hl, LEVEL_1
+        lhld    BallBrickIndex
+        lxi     bc, LEVEL_1
         dad     bc
         ret
 
@@ -663,6 +661,10 @@ BallNewPos2BrickIndex
         ral
         mov     c, a
 
+        mvi     a, 0
+        adc     a
+        mov     b, a
+
         lda     BallX_new
         ora     a
         rlc
@@ -673,7 +675,8 @@ BallNewPos2BrickIndex
         add     c
 
         sta     BallBrickIndex
-
+        mov     a, b
+        sta     BallBrickIndex+1
         ret
 
 
@@ -2530,7 +2533,7 @@ BallY           db      0
 BallX_new       db      0
 BallY_new       db      0
 BallX_scr       db      0                       ; Старший байт экранного адреса
-BallBrickIndex  db      0                       ; Кирпичная позиция на игровом поле
+BallBrickIndex  dw      0                       ; Кирпичная позиция на игровом поле
 BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
