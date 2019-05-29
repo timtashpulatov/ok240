@@ -405,7 +405,9 @@ UX1
         sta     CounterDX
         
         ; проверим на отскок
-        call    CheckNewX
+        call    XPlusDX
+        call    CheckNew
+        call    LetsReflectX
         
         ; собственно прирастим координату
         call    XPlusDX
@@ -422,8 +424,7 @@ UX1
 ; *************************************************
 ; Проверим новую координату и отразимся, если нужно
 ; *************************************************
-CheckNewX
-        call    XPlusDX
+CheckNew
 ; кирпич (newx, newy) проверяем всегда
         xra     a
         sta     BricksHit
@@ -473,11 +474,7 @@ CNX1
         ora     a
         jnz     CheckNewXContinue
 
-
-        
-        
 CheckNewXContinue
-        call    LetsReflectX
         ret
 
 ; ***********************************************************
@@ -560,7 +557,9 @@ UY1
         sta     CounterDY
 
         ; проверим на отскок
-        call    CheckNewY
+        call    YPlusDY
+        call    CheckNew
+        call    LetsReflectY
 
         ; собственно прирастим координату
         call    YPlusDY
