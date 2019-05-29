@@ -272,7 +272,7 @@ HouseKeeping
 
         mvi     a, 41h          ; белый фон
         out     VIDEO
-        call    ProcessBall
+        call    NewProcessBall
         
         mvi     a, 42h          ; красный фон
         out     VIDEO
@@ -432,7 +432,7 @@ CheckNew
         call    DestroyBrickByPlayfieldAddr
         lda     BricksHit
         ora     a
-        jnz     CheckNewXContinue
+        jnz     CheckNewDone
         
 ; кирпич (newx+1, newy) проверяем, если 11<=X<15
         lda     BallX_new
@@ -445,14 +445,14 @@ CheckNew
         call    DestroyBrickByPlayfieldAddr
         lda     BricksHit
         ora     a
-        jnz     CheckNewXContinue
+        jnz     CheckNewDone
 
 CNX1
 ; кирпич (newx, newy+1) проверяем, если 3<=Y<7
         lda     BallY_new
         ani     07h
         cpi     3
-        jm      CheckNewXContinue
+        jm      CheckNewDone
         
         call    BallNewCoords2BrickPtr
         lxi     bc, 16
@@ -460,61 +460,23 @@ CNX1
         call    DestroyBrickByPlayfieldAddr
         lda     BricksHit
         ora     a
-        jnz     CheckNewXContinue
+        jnz     CheckNewDone
 
         lda     BallX_new
         ani     0fh
         cpi     10
-        jm      CheckNewXContinue
+        jm      CheckNewDone
 
         lxi     bc, 01
         dad     bc
         call    DestroyBrickByPlayfieldAddr
         lda     BricksHit
         ora     a
-        jnz     CheckNewXContinue
+        jnz     CheckNewDone
 
-CheckNewXContinue
+CheckNewDone
         ret
 
-; ***********************************************************
-; Проверить X в аккумуляторе на границы и кирпичи слева-справа
-; ***********************************************************
-ShallWeReflectByX
-; если движемся вперед, к координате надо прибавить ширину мячика
-        ; mvi     c, 0
-        ; push    a
-        ; lda     BallDX
-        ; ora     a
-        ; jm      .+5
-        ; mvi     c, 6
-        ; pop     a
-        ; add     c
-        
-        ; ora     a
-        ; rlc
-        ; rlc
-        ; rlc
-        ; rlc
-        ; ani     0fh
-        ; mov     c, a
-
-        ; lda     BallY
-        ; adi     3
-
-        ; ani     0b11111000      ; или 0b01111000?
-        ; ral
-        ; add     c
-        ; mov     c, a
-
-        ; mvi     b, 0
-        ; lxi     hl, LEVEL_1
-        ; dad     bc
-        
-        ; mov     a, m
-        ; ora     a
-                
-        ; ret
 
 ; *************************************************
 ; Радикально сменить направление по X
@@ -602,46 +564,6 @@ CheckNewYContinue
         call    LetsReflectY
         ret
 
-ShallWeReflectByY
-; если движемся вниз, к координате надо прибавить высоту мячика
-        ; mvi     c, 0
-        ; push    a
-        ; lda     BallDY
-        ; ora     a
-        ; jm      .+5
-        ; mvi     c, 6
-        ; pop     a
-        ; add     c
-
-
-
-        ; ani     0b11111000      ; или 0b01111000?
-        ; ral
-        ; mov     c, a
-        
-        ; lda     BallX
-        ; adi     6
-        ; ani     0f8h
-        
-        
-        ; ora     a
-        ; rlc
-        ; rlc
-        ; rlc
-        ; rlc
-        ; ani     0fh
-
-        ; add     c
-        ; mov     c, a
-
-        ; mvi     b, 0
-        ; lxi     hl, LEVEL_1
-        ; dad     bc
-        
-        ; mov     a, m
-        ; ora     a
-        ; ret
-
 LetsReflectY
         lda     BricksHit
         ora     a
@@ -653,7 +575,6 @@ LetsReflectYDo
         inr     a
         sta     BallDY
         ret
-
 
 ; *************************************************
 ; Инкрементнём Y
@@ -680,92 +601,7 @@ BOTTOMMARGIN    equ     240
 ; Мячевой процессинг
 ;
 ; ****************************************************************************
-ProcessBall
-        lda     BallDelay
-        ora     a
-        jz      ProcessBallPlease
-        dcr     a
-        sta     BallDelay
-        ret
-        
-ProcessBallPlease
-        mvi     a, DEFAULTBALLDELAY
-        sta     BallDelay
-        
-        call    EraseBall
 
-  ;call    BallNewPos2BrickIndex
-;   lda     BallX
-;   call    ShallWeReflectByX
-
-; ------------- займемся координатой по горизонтали X
-        xra     a
-        sta     ReflectFlag
-
-CheckXRight
-; кирпич справа
-        call    CheckBrickX
-        lxi     de, BallDX
-        jz      CheckXRightUnder
-; выбить кирпич
-        rlc                     ; признак очень твердого кирпича
-        jc      SetReflectFlagX
-        mvi     m, 0
-        ;call    DestroyBrick
-        call    DestroyBrickX
-SetReflectFlagX
-        mvi     a, 1
-        sta     ReflectFlag
-
-CheckXRightUnder
-        lda     BallY
-        ani     7
-        cpi     2
-        jc      CheckXMargins
-; кирпич справа внизу
-        call    CheckBrickXPlusOne
-        lxi     de, BallDX
-        jz      CheckXMargins
-; выбить кирпич справа внизу        
-        rlc
-        jc      SetReflectFlagXUnder
-        mvi     m, 0
-        call    DestroyBrickXPlusOne
-SetReflectFlagXUnder
-        mvi     a, 1
-        sta     ReflectFlag
-
-CheckXMargins
-; проверить границы поля
-        lda     BallX
-        cpi     LEFTMARGIN
-        jz      ReflectX
-        cpi     RIGHTMARGIN
-        jz      ReflectX
-
-; изменить направление движения по горизонтали
-        lda     ReflectFlag
-        ora     a
-        jz      CXNext1
-ReflectX
-        ldax    de
-        cma
-        inr     a
-        stax    de
-CXNext1        
-        lxi     hl, BallX
-        ldax    de
-        add     m               ; прибавить к X шаг
-        mov     m, a
-        ; сохранить прекалк X в экранный X
-        rar
-        rar
-        ani     3eh
-        sta     BallX_scr
-
-;    jmp CheckDone        
-
-CheckY        
 ; -------------займемся координатой по вертикали Y
 ; В фазах 0,1,2 мячик не выходит за пределы 8 пикселей:
 ;
@@ -779,77 +615,6 @@ CheckY
 ; и проверять нужно только кирпич под ним. 
 ; Если координата мячика НЕ кратна 16 (8..15, 24..39, 40 и т.д.), то в фазах 3,4,5,6,7 нужно проверять
 ; кирпич под ним и его соседа справа 
-
-        xra     a
-        sta     ReflectFlag
-
-CheckYUnder
-; кирпич подо мною
-        call    CheckBrickY
-        lxi     de, BallDY
-        jz      CheckYUnderRight
-; выбить кирпич
-        rlc                     ; признак очень твердого кирпича
-        jc      SetReflectFlagY
-        mvi     m, 0
-        ;call    DestroyBrick
-        call    DestroyBrickY
-SetReflectFlagY        
-        mvi     a, 1
-        sta     ReflectFlag
-; TODO для фаз 0,1,2 не проверять нижний правый кирпич
-
-CheckYUnderRight
-        lda     BallX
-        ani     0b00001000              ; координата мячика кратна 16?
-        jz      CheckYMargins             ;да, проверяем только кирпич снизу
-        lda     BallX
-        ani     7
-        cpi     3
-        jc      CheckYMargins
-; проверяем кирпич снизу и справа
-        call    CheckBrickYPlusOne
-        jz      CheckYMargins
-; выбить кирпич внизу справа
-        rlc
-        jc      SetReflectFlagYRight         ; попался небьющийся кирпич
-        mvi     m, 0
-        call    DestroyBrickYPlusOne
-SetReflectFlagYRight
-        mvi     a, 1
-        sta     ReflectFlag
-
-CheckYMargins
-; проверить границы поля
-        lda     BallY
-        cpi     TOPMARGIN
-        jz      ReflectY
-        cpi     BOTTOMMARGIN
-        jz      ReflectY
-
-        lda     ReflectFlag
-        ora     a
-        jz      CYNext1
-; change direction
-ReflectY
-        ldax    de
-        cma
-        inr     a
-        stax    de
-        
-CYNext1
-        lxi     hl, BallY
-        ldax    de
-        add     m               ; прибавить к Y шаг
-        mov     m, a
-; проверить на границы поля        
-;        cmp     b
-;        jz      ReflectY
-; проверить на кирпич        
-;        call    CheckBrick
-;        jz      CheckDone
-        
-        
 
 CheckDone
 
@@ -887,65 +652,6 @@ CheckDone1
         call    PaintBall
         ret
 
-; *************************************************
-; *************************************************
-CheckBrickX
-        lxi     hl, LEVEL_1
-        lda     BallY
-        call    CheckBrickXCommon
-        ret
-; *************************************************
-; *************************************************
-CheckBrickXPlusOne
-        lxi     hl, LEVEL_1
-        lda     BallY
-        adi     8
-        call    CheckBrickXCommon
-        ret
-; *************************************************
-; *************************************************
-CheckBrickXCommon
-        rlc
-        push    a
-        
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-        pop     a
-        ani     0b11110000
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-; теперь в HL указатель на строку с кирпичом
-        mvi     c, -1
-        lda     BallDX
-        rlc
-        jc      .+5
-        mvi     c, 7
-        
-        lda     BallX
-        add     c
-        
-        rar
-        rar
-        rar
-        rar
-
-        ani     0fh
-
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; а теперь в HL указатель на конкретный кирпич
-        mov     a, m
-        ora     a
-        ret
 
 ; *******************************************************************
 ; Преобразовать координаты мячика в индекс кирпича в массиве кирпичей
