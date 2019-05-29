@@ -421,13 +421,20 @@ UX1
         
         ret
 
+LEFTMARGIN      equ     32
+RIGHTMARGIN     equ     216
+TOPMARGIN       equ     16
+BOTTOMMARGIN    equ     240
+
 ; *************************************************
 ; Проверим новую координату и отразимся, если нужно
 ; *************************************************
 CheckNew
-; кирпич (newx, newy) проверяем всегда
+
         xra     a
         sta     BricksHit
+
+; кирпич (newx, newy) проверяем всегда        
         call    BallNewCoords2BrickPtr
         call    DestroyBrickByPlayfieldAddr
         lda     BricksHit
@@ -591,10 +598,7 @@ YPlusDY
 
 
 
-LEFTMARGIN      equ     32
-RIGHTMARGIN     equ     216
-TOPMARGIN       equ     16
-BOTTOMMARGIN    equ     240
+
 ; ****************************************************************************
 ; Мячевой процессинг
 ;
