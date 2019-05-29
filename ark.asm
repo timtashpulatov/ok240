@@ -677,189 +677,7 @@ BallNewPos2BrickIndex
         ret
 
 
-; *************************************************
-; Проверить кирпич снизу или сверху
-; NB: Только если мячик не на сетке кирпичей (16), т.е. сдвинут на пол-кирпича:
-;     если фаза мячика 0,1,2 - проверяем только кирпич в этом ряду
-;     для остальных фаз проверяем кирпич в этом ряду и в соседнем
-; *************************************************
-CheckBrickY
-        lxi     hl, LEVEL_1
-; hack        
-        mvi     c, 0
-        lda     BallDY
-        rlc
-        jc      .+5
-        mvi     c, 8
 
-        lda     BallY
-        add     c               ; hack
-
-        mov     c, a
-        lda     BallDY
-        add     c
-
-        rlc
-        push    a
-        
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-        pop     a
-        ani     0b11110000
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; теперь в HL указатель на строку с кирпичом
-        lda     BallX
-        rar
-        rar
-        rar
-        rar
-
-        ani     0fh
-
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; а теперь в HL указатель на конкретный кирпич
-        mov     a, m
-        ora     a
-        ret
-
-
-CheckBrickYPlusOne
-        lxi     hl, LEVEL_1
-; hack        
-        mvi     c, 0
-        lda     BallDY
-        rlc
-        jc      .+5
-        mvi     c, 8
-
-        lda     BallY
-        add     c               ; hack
-
-        mov     c, a
-        lda     BallDY
-        add     c
-
-        rlc
-        push    a
-        
-        mvi     a, 0
-        adc     h
-        mov     h, a
-        
-        pop     a
-        ani     0b11110000
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; теперь в HL указатель на строку с кирпичом
-        lda     BallX
-        rar
-        rar
-        rar
-        rar
-
-        ani     0fh
-        inr     a
-
-        add     l
-        mov     l, a
-        mvi     a, 0
-        adc     h
-        mov     h, a
-; а теперь в HL указатель на конкретный кирпич
-        mov     a, m
-        ora     a
-        ret
-
-
-
-; *************************************************
-; 
-; *************************************************
-DestroyBrickY
-        push    hl
-        push    de
-        push    bc
-
-        ;lda     BallX
-        ;rar
-        ;rar
-        lda     BallX_scr
-        
-        ani     03ch
-        mov     b, a
-
-; hack
-        mvi     c, -8
-        lda     BallDY
-        rlc
-        jc      .+5
-        mvi     c, 16
-
-        lda     BallY
-        add     c       ; why?
-        
-        ani     0f8h
-        mov     c, a
-
-        xra     a
-        call    PaintBrick1
-
-        pop     bc
-        pop     de
-        pop     hl
-        
-        ret
-        
-; *************************************************
-; 
-; *************************************************
-DestroyBrickYPlusOne
-        push    hl
-        push    de
-        push    bc
-
-        lda     BallX
-        adi     8
-        rar
-        rar
-        
-        ani     03ch
-        mov     b, a
-
-; hack
-        mvi     c, -8
-        lda     BallDY
-        rlc
-        jc      .+5
-        mvi     c, 16
-
-        lda     BallY
-        add     c       ; why?
-        
-        ani     0f8h
-        mov     c, a
-
-        xra     a
-        call    PaintBrick1
-
-        pop     bc
-        pop     de
-        pop     hl
-        
-        ret
 
 ; *************************************************
 ; *************************************************
@@ -985,8 +803,14 @@ DoTheJobWillYa
         ral
 
         mov     b, a    ; X
+    push bc        
         xra     a
         call    PaintBrick1
+
+     pop bc
+     call AddBonusToList 
+
+        
         ret
 
 ; *************************************************
@@ -1603,7 +1427,7 @@ RenderBrickToMongolia
 
 
 MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
-BONUSDEFAULTSPEED       equ     5
+BONUSDEFAULTSPEED       equ     2
 BonusListIndex  db      0
 
 ;                       Ptr     Cur.Speed Init.Speed    Y       X       Reserved
