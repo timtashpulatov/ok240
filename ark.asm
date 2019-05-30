@@ -38,7 +38,7 @@ LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
-DEFAULTBALLDELAY        equ     5
+DEFAULTBALLDELAY        equ     3
 DEFAULTBattyDelay       equ     2
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
@@ -270,15 +270,16 @@ HouseKeeping
         jz      NoPaletteDebug
         
 
-        mvi     a, 41h          ; белый фон
+        
+        mvi     a, 46h          ; зеленый фон
         out     VIDEO
         call    NewProcessBall
         
-        mvi     a, 42h          ; красный фон
+        mvi     a, 41h          ; белый фон
         out     VIDEO
         call    ProcessBatty
         
-        mvi     a, 46h          ; зеленый фон
+        mvi     a, 42h          ; красный фон
         out     VIDEO
         call    ProcessBonusList
         
@@ -299,7 +300,7 @@ SyncToRetrace
         ; подождем наступления ретрейса
         in      41h
         ani     2
-        jnz      SyncToRetrace
+        jz      SyncToRetrace
         ret
 
 ; *************************************************
@@ -551,29 +552,6 @@ BallNewCoords2BrickPtr
         lhld    BallBrickIndex
         lxi     bc, LEVEL_1
         dad     bc
-        ret
-
-; *************************************************
-; Проверим новую координату Y и отразимся, если нужно
-; *************************************************
-CheckNewY
-        call    YPlusDY
-; кирпич (x+dx, y+dy) проверяем всегда
-        xra     a
-        sta     BricksHit
-        call    BallNewCoords2BrickPtr
-        call    DestroyBrickByPlayfieldAddr
-; кирпич (x+dx+1, y+dy) проверяем, если 11<=X<15
-        lda     BallX_new
-        ani     0fh
-        cpi     11
-        jm      CheckNewYContinue
-
-        call    BallNewCoords2BrickPtr
-        inx     hl
-        call    DestroyBrickByPlayfieldAddr
-CheckNewYContinue
-        call    LetsReflectY
         ret
 
 LetsReflectY
@@ -1365,7 +1343,7 @@ RenderBrickToMongolia
 
 
 MAXBONUSNUM     equ     5       ; 10      ; а что, тоже неплохое число
-BONUSDEFAULTSPEED       equ     2
+BONUSDEFAULTSPEED       equ     0
 BonusListIndex  db      0
 
 ;                       Ptr     Cur.Speed Init.Speed    Y       X       Reserved
