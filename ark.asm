@@ -38,13 +38,13 @@ LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
-DEFAULTBALLDELAY        equ     2
-DEFAULTBATTYDELAY       equ     1
+DEFAULTBALLDELAY        equ     5
+DEFAULTBATTYDELAY       equ     0
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     58h     ;32
-DEFAULTBALLY    equ     224     ;12h     ;224
+DEFAULTBALLY    equ     100     ;12h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     1
 
@@ -425,7 +425,7 @@ UX1
 LEFTMARGIN      equ     32
 RIGHTMARGIN     equ     216
 TOPMARGIN       equ     16
-BOTTOMMARGIN    equ     240
+BOTTOMMARGIN    equ     232
 
 ; *************************************************
 ; Проверим новую координату и отразимся, если нужно
@@ -567,9 +567,23 @@ LetsReflectY
         ret
 
 WhereIsMyBatty
+        lda     BattyPos
+        mov     c, a
+        lda     BallX
+        sub     c       ; delta = Xball - Xbatty
+        jm      CheckMissLeft
 
-Miss        
+CheckMissRight
+        sui     24
+        jm      LetsReflectYDo
+        jmp     Miss
+
+CheckMissLeft
+        adi     6
+        jm      Miss
+        jmp     LetsReflectYDo
         
+Miss    jmp     Miss
         
 LetsReflectYDo        
         lda     BallDY
