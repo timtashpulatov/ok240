@@ -38,8 +38,8 @@ LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
-DEFAULTBALLDELAY        equ     3
-DEFAULTBattyDelay       equ     2
+DEFAULTBALLDELAY        equ     2
+DEFAULTBATTYDELAY       equ     1
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
