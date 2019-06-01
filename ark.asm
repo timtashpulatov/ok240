@@ -114,6 +114,9 @@ VeryBegin
         sta     DelayDY
         sta     CounterDY
 
+        mvi     a, FX_BUURP
+        sta     SoundFX
+
 ; Кирпич 1
         lxi     bc, 0400h
         lxi     hl, BONUS16
@@ -263,6 +266,18 @@ CurUp
 ; Музло
 ; *******************************************
 ; Звук
+FX_NONE         equ     0
+FX_CLICK        equ     1
+FX_BUURP        equ     2
+
+DoSoundFX
+        lda     SoundFX
+        cpi     FX_CLICK
+        jz      SND_CLICK
+        cpi     FX_BUURP
+        jz      SND_DROP
+
+        ret
 
 SND_DROP
         push    hl
@@ -281,6 +296,9 @@ SND_CLICK
         jmp     BEEP
         
 BEEP    
+        xra     a
+        sta     SoundFX
+        
         pop     hl
         mvi     c, 7
         jmp     CHAROUT
@@ -324,6 +342,8 @@ NoPaletteDebug
 ; ----- Второй фрейм -----
 SecondFrame
 ; добавить нормальную синхронизацию по кадру
+
+        call    DoSoundFX
 
         jmp     Begin
 
@@ -539,7 +559,9 @@ LetsReflectXDo
         cma
         inr     a
         sta     BallDX
-        call    SND_CLICK
+        ; call    SND_CLICK
+        mvi     a, FX_CLICK
+        sta     SoundFX
         ret
 
 ; *************************************************
@@ -617,7 +639,9 @@ CheckMissLeft
         jm      Miss
         jmp     LetsReflectYDo
         
-Miss    call    SND_DROP
+Miss            
+        mvi     a, FX_BUURP
+        sta     SoundFX
         ret
         
 LetsReflectYDo        
@@ -625,8 +649,8 @@ LetsReflectYDo
         cma
         inr     a
         sta     BallDY
-        
-        call    SND_CLICK
+        mvi     a, FX_CLICK
+        sta     SoundFX
         ret
 
 ; *************************************************
@@ -2542,6 +2566,8 @@ TuneCount       db      0
 
 DebugStepMode   db      1
 DebugPalette    db      0
+
+SoundFX         db      0
 
 
 BattyPtr        dw      BATTYBUF                
