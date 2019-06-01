@@ -258,6 +258,33 @@ CurUp
         sta     BattyDirection
         jmp     Begin
 
+
+; Музло
+; *******************************************
+; Звук
+
+SND_DROP
+        push    hl
+        lxi     h, 0a000h
+        shld    BELL_FREQ
+        lxi     h, 0004h
+        shld    BELL_LEN
+        jmp     BEEP
+
+SND_CLICK
+        push    hl
+        lxi     h, 0200h
+        shld    BELL_FREQ
+        lxi     h, 0020h
+        shld    BELL_LEN
+        jmp     BEEP
+        
+BEEP    
+        pop     hl
+        mvi     c, 7
+        jmp     CHAROUT
+        
+
 ; *************************************************
 ; Хаускипинг
 ; *************************************************
@@ -340,7 +367,8 @@ MoveDone
         call    PaintBatty
         ret
 L20f
-        inr     a
+        ;inr     a
+        adi     2
         sta     BattyPos
         jmp     MoveDone
 
@@ -353,7 +381,8 @@ MoveLeft
         sta     BattyDirection
         jmp     MoveDone
 MoveLeftJa        
-        dcr     a
+        ;dcr     a
+        sui     2
         sta     BattyPos
         jmp     MoveDone
 
@@ -509,6 +538,7 @@ LetsReflectXDo
         cma
         inr     a
         sta     BallDX
+        call    SND_CLICK
         ret
 
 ; *************************************************
@@ -586,13 +616,16 @@ CheckMissLeft
         jm      Miss
         jmp     LetsReflectYDo
         
-Miss    jmp     Miss
+Miss    call    SND_DROP
+        ret
         
 LetsReflectYDo        
         lda     BallDY
         cma
         inr     a
         sta     BallDY
+        
+        call    SND_CLICK
         ret
 
 ; *************************************************
