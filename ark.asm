@@ -262,15 +262,14 @@ CurUp
 ; Хаускипинг
 ; *************************************************
 HouseKeeping
-        ;call    Dly
+
+; ----- Первый фрейм -----
         call    SyncToRetrace
         
         lda     DebugPalette
         ora     a
         jz      NoPaletteDebug
-        
 
-        
         mvi     a, 46h          ; зеленый фон
         out     VIDEO
         call    NewProcessBall
@@ -285,15 +284,19 @@ HouseKeeping
         
         mvi     a, 40h          ; дефолтный черный фон
         out     VIDEO
-        jmp     Begin
+        jmp     SecondFrame
         
 NoPaletteDebug
-
         call    NewProcessBall
-
-;        call    ProcessBall
         call    ProcessBatty
         call    ProcessBonusList
+        jmp     SecondFrame
+
+
+; ----- Второй фрейм -----
+SecondFrame
+; добавить нормальную синхронизацию по кадру
+
         jmp     Begin
 
 SyncToRetrace
