@@ -342,8 +342,15 @@ NoPaletteDebug
 ; ----- Второй фрейм -----
 SecondFrame
 ; добавить нормальную синхронизацию по кадру
+        in      41h
+        ani     2
+        jnz     SecondFrame
 
         call    DoSoundFX
+        
+        call    SyncToRetrace
+
+
 
         jmp     Begin
 
@@ -379,7 +386,7 @@ L1F2
 MoveRight
         call    EraseBatty
         lda     BattyPos
-        cpi     220
+        cpi     200
         jnz     L20f
         mvi     a, BATTY_STOP
         sta     BattyDirection
@@ -396,7 +403,7 @@ L20f
 MoveLeft
         call    EraseBatty
         lda     BattyPos
-        ora     a
+        cpi     32
         jnz     MoveLeftJa
         mvi     a, BATTY_STOP   ; Как насчет отталкиваться?
         sta     BattyDirection
