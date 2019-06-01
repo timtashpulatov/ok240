@@ -2579,7 +2579,7 @@ BGCOLOR         db      0
 ; Градус тюнза
 TuneCount       db      0
 
-DebugStepMode   db      1
+DebugStepMode   db      0       ; 1
 DebugPalette    db      0
 
 SoundFX         db      0
