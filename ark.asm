@@ -52,6 +52,8 @@ DEFAULTBALLDY   equ     1
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
 
+DEFAULTBATTYPOS equ     80
+
         org     100h
 
     ;    call    NewNoteTest
@@ -77,7 +79,7 @@ VeryBegin
         mvi     a, 1
         sta     LEVEL
 
-        mvi     a, 10
+        mvi     a, DEFAULTBATTYPOS
         sta     BattyPos
 
         mvi     a, DEFAULTBALLDELAY
@@ -486,6 +488,7 @@ LEFTMARGIN      equ     32
 RIGHTMARGIN     equ     216
 TOPMARGIN       equ     16
 BOTTOMMARGIN    equ     232
+BATTYMARGIN     equ     0f0h
 
 ; *************************************************
 ; Проверим новую координату и отразимся, если нужно
@@ -625,6 +628,8 @@ LetsReflectY
         lda     BallY
         cpi     TOPMARGIN
         jz      LetsReflectYDo
+;        cpi     BOTTOMMARGIN
+;        jz      LetsReflectYDo
         cpi     BOTTOMMARGIN
         jz      WhereIsMyBatty
         ret
@@ -656,6 +661,7 @@ LetsReflectYDo
         cma
         inr     a
         sta     BallDY
+        
         mvi     a, FX_CLICK
         sta     SoundFX
         ret
@@ -1275,7 +1281,7 @@ PaintBatty
 
         lhld    BattyPtr
 GoBatty        
-        mvi     c, 0f0h         ; вертикальная позиция дубины
+        mvi     c, BATTYMARGIN ; 0f0h         ; вертикальная позиция дубины
         lda     BattyPos
         rar
         rar
