@@ -44,7 +44,7 @@ BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     58h     ;32
-DEFAULTBALLY    equ     12h     ;224
+DEFAULTBALLY    equ     224     ;12h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
 DEFAULTBALLDY   equ     1
 
@@ -563,8 +563,13 @@ LetsReflectY
         cpi     TOPMARGIN
         jz      LetsReflectYDo
         cpi     BOTTOMMARGIN
-        jz      LetsReflectYDo
+        jz      WhereIsMyBatty
         ret
+
+WhereIsMyBatty
+
+Miss        
+        
         
 LetsReflectYDo        
         lda     BallDY
