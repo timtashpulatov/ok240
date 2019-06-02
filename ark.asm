@@ -55,7 +55,7 @@ DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
 
 DEFAULTBATTYPOS equ     80
-BATTYDISTANCE   equ     16
+BATTYDISTANCE   equ     3
 
         org     100h
 
