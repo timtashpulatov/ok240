@@ -41,7 +41,7 @@ LEVEL_LINE_XY   equ     0600h + 9*8
 PREVIEW_COORD   equ     020fh
 HKCOUNT         equ     8000
 
-DEFAULTBALLDELAY        equ     5
+;DEFAULTBALLDELAY        equ     4
 DEFAULTBATTYDELAY       equ     0
 BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
@@ -55,6 +55,7 @@ DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
 
 DEFAULTBATTYPOS equ     80
+BATTYDISTANCE   equ     16
 
         org     100h
 
@@ -84,8 +85,11 @@ VeryBegin
         mvi     a, DEFAULTBATTYPOS
         sta     BattyPos
 
-        mvi     a, DEFAULTBALLDELAY
-        sta     BallDelay
+        mvi     a, BATTYDISTANCE
+        sta     BattyDistanceToRun
+
+;        mvi     a, DEFAULTBALLDELAY
+;        sta     BallDelay
 
         mvi     a, DEFAULTBATTYDELAY
         sta     BattyDelay
@@ -254,16 +258,22 @@ CurDown
 CurLeft
         mvi     a, BATTY_LEFT
         sta     BattyDirection
+        mvi     a, BATTYDISTANCE
+        sta     BattyDistanceToRun
         jmp     Begin
 
 CurRight
         mvi     a, BATTY_RIGHT
         sta     BattyDirection
+        mvi     a, BATTYDISTANCE
+        sta     BattyDistanceToRun        
         jmp     Begin
 
 CurUp
         mvi     a, BATTY_STOP
         sta     BattyDirection
+        xra     a
+        sta     BattyDistanceToRun
         jmp     Begin
 
 
@@ -397,6 +407,17 @@ MoveRight
 MoveDone        
         call    CalculateBattyPhase
         call    PaintBatty
+        
+        lda     BattyDistanceToRun
+        ora     a
+        jnz     MoveDoneDone
+        mvi     a, BATTY_STOP
+        sta     BattyDirection
+        ret
+MoveDoneDone        
+        dcr     a
+        sta     BattyDistanceToRun
+        
         ret
 L20f
         ;inr     a
@@ -2542,7 +2563,7 @@ BallX_new       db      0
 BallY_new       db      0
 BallX_scr       db      0                       ; Старший байт экранного адреса
 BallBrickIndex  dw      0                       ; Кирпичная позиция на игровом поле
-BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
+;BallDelay       db      DEFAULTBALLDELAY        ; Скорость мячика
 BallDX          db      0
 BallDY          db      0
 BallPhase       dw      BALL
@@ -2554,6 +2575,7 @@ BricksHit       db      0
 BattyPos        db      10                      ; Позиция ракетки
 BattyDelay      db      DEFAULTBattyDelay       ; Скорость ракетки
 BattyDirection  db      0
+BattyDistanceToRun      db      0
 
 BmpHeight1      ds      1
 BmpHeight2      ds      1
