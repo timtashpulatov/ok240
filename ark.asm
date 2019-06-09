@@ -1602,7 +1602,7 @@ TimeToMove
 
         inr     m       ; прирастим координату
         mov     a, m
-        cpi     BOTTOMMARGIN-8
+        cpi     BATTYMARGIN     ;BOTTOMMARGIN
         jnz     ContinueMoving
 ; прекратить жизненный цикл бонуса в силу разных причин
         mvi     l, 0    ; в начало заголовка (бонус-буфер лежит на границе 256)
