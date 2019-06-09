@@ -341,6 +341,8 @@ HouseKeeping
         mvi     a, 42h          ; красный фон
         out     VIDEO
         call    ProcessBonusList
+        call    ProcessBonusList
+        call    ProcessBonusList
         
         mvi     a, 40h          ; дефолтный черный фон
         out     VIDEO
@@ -349,6 +351,8 @@ HouseKeeping
 NoPaletteDebug
         call    NewProcessBall
         call    ProcessBatty
+        call    ProcessBonusList
+        call    ProcessBonusList
         call    ProcessBonusList
         jmp     SecondFrame
 
@@ -651,9 +655,9 @@ LetsReflectY
         lda     BallY
         cpi     TOPMARGIN
         jz      LetsReflectYDo
-;        cpi     BOTTOMMARGIN
-;        jz      LetsReflectYDo
         cpi     BOTTOMMARGIN
+        jz      LetsReflectYDo
+        cpi     BATTYMARGIN
         jz      WhereIsMyBatty
         ret
 
