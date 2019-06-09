@@ -340,6 +340,7 @@ HouseKeeping
         
         mvi     a, 42h          ; красный фон
         out     VIDEO
+        
         call    ProcessBonusList
         call    ProcessBonusList
         call    ProcessBonusList
@@ -351,9 +352,11 @@ HouseKeeping
 NoPaletteDebug
         call    NewProcessBall
         call    ProcessBatty
+        
         call    ProcessBonusList
         call    ProcessBonusList
         call    ProcessBonusList
+        
         jmp     SecondFrame
 
 
@@ -364,8 +367,30 @@ SecondFrame
         ani     2
         jnz     SecondFrame
 
-        call    DoSoundFX
+        ; странный способ определить, не просран ли мячик
+        lda     SoundFX
+        cpi     FX_BUURP
+        jnz     SecondFrameCont
+
+        ; мяч просран; начинаем все сызнова
+        ; инит переменных, декремент стопки дубин и т.д.
+
+        call    EraseBall
         
+        mvi     a, DEFAULTBALLX
+        sta     BallX
+        mvi     a, DEFAULTBALLY
+        sta     BallY
+        
+        mvi     a, DEFAULTBALLDX
+        sta     BallDX
+        mvi     a, DEFAULTBALLDY
+        sta     BallDY
+
+SecondFrameCont        
+
+        call    DoSoundFX
+
         call    SyncToRetrace
 
 
@@ -514,7 +539,7 @@ UX1
 LEFTMARGIN      equ     32
 RIGHTMARGIN     equ     216
 TOPMARGIN       equ     16
-BOTTOMMARGIN    equ     240
+BOTTOMMARGIN    equ     224 ;240
 BATTYMARGIN     equ     232
 
 ; *************************************************
@@ -655,10 +680,10 @@ LetsReflectY
         lda     BallY
         cpi     TOPMARGIN
         jz      LetsReflectYDo
-        cpi     BOTTOMMARGIN
-        jz      LetsReflectYDo
-        cpi     BATTYMARGIN
+        cpi     BATTYMARGIN-8
         jz      WhereIsMyBatty
+;        cpi     BOTTOMMARGIN
+;        jz      LetsReflectYDo
         ret
 
 WhereIsMyBatty
