@@ -514,8 +514,8 @@ UX1
 LEFTMARGIN      equ     32
 RIGHTMARGIN     equ     216
 TOPMARGIN       equ     16
-BOTTOMMARGIN    equ     232
-BATTYMARGIN     equ     0f0h
+BOTTOMMARGIN    equ     240
+BATTYMARGIN     equ     232
 
 ; *************************************************
 ; Проверим новую координату и отразимся, если нужно
