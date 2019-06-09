@@ -31,7 +31,7 @@ CURSYS          equ     0bfedh
 BELL_FREQ       equ     0bff4h
 BELL_LEN        equ     0bff6h
 
-WIDTH           equ     16
+WIDTH           equ     24      ;16
 HEIGHT          equ     16
 SCORE_COORDS    equ     0238h
 LEVEL_COORDS    equ     0258h
@@ -1322,7 +1322,7 @@ DrawLevel
         mvi     b, HEIGHT
         mvi     c, WIDTH
       
-        mvi     e, 254
+        lxi     de, HEIGHT*WIDTH
         lxi     hl, LEVEL_1
 DLLoop
         mov     a, m
@@ -1352,7 +1352,9 @@ DLLoop
         mov     c, a
 DDL0
         pop     hl
-        dcr     e
+        dcx     de
+        mov     a, d
+        ora     e
         jnz     DLLoop
         
         ret
@@ -2532,6 +2534,17 @@ LEVEL_1
         db      0, 82h, 9,10,11,12, 9,10,11,12, 9,10,11,12, 83h, 0
         db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
         db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
+
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0        
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0        
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0        
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0
+        db      0, 82h, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0        
+
+
 
 LEVEL_1_END
 ;        ds      WIDTH*HEIGHT
