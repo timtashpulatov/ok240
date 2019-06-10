@@ -4,12 +4,9 @@ const int DataPin = 4;
 const int IRQpin =  3;
 const byte ACKpin = 2;
 
-
 const int nSTB = 5;
 
-
 PS2Keyboard keyboard;
-
 
 void setup() {
   
@@ -17,11 +14,9 @@ void setup() {
   pinMode (nSTB, OUTPUT);
   digitalWrite (nSTB, HIGH);
 
-
   // PD6, PD7 map to Ok240's PA6 and PA7
   pinMode (6, OUTPUT);
   pinMode (7, OUTPUT);
-
 
   // PB0-PB5 map to Ok240's PA0-PA5
   pinMode (8, OUTPUT);
@@ -31,18 +26,16 @@ void setup() {
   pinMode (12, OUTPUT);
   pinMode (13, OUTPUT);
 
-
   // PD2 ACK strobe from OK240's PC7
   pinMode(ACKpin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(ACKpin), ClearSTB, RISING);
 
-
   keyboard.begin (DataPin, IRQpin);
+//  Serial.begin(115200);
+//  Serial.println("Keyboard Test:");
 }
 
-
 void loop() {
-
 
   if (keyboard.available()) {
     
@@ -56,16 +49,52 @@ void loop() {
     if (c & 0x10) {digitalWrite (12, HIGH);} else {digitalWrite (12, LOW);}
     if (c & 0x20) {digitalWrite (13, HIGH);} else {digitalWrite (13, LOW);}
 
-
     if (c & 0x40) {digitalWrite (6, HIGH);} else {digitalWrite (6, LOW);}
     if (c & 0x80) {digitalWrite (7, HIGH);} else {digitalWrite (7, LOW);} // Probably not needed for OK240
 
-
   // Strobe low
     digitalWrite (nSTB, LOW);
+
+
+//    delay (1);
+
+
+    // Bits 0-5 to PB0-PB5
+    //PORTB = PORTB | (c & 0x3f);
+    
+    // Bits 6-7 to PD6-PD7
+    //PORTD = PORTD | (c & 0xc0);
+
+/*    
+    // check for some of the special keys
+    if (c == PS2_ENTER) {
+      Serial.println();
+    } else if (c == PS2_TAB) {
+      Serial.print("[Tab]");
+    } else if (c == PS2_ESC) {
+      Serial.print("[ESC]");
+    } else if (c == PS2_PAGEDOWN) {
+      Serial.print("[PgDn]");
+    } else if (c == PS2_PAGEUP) {
+      Serial.print("[PgUp]");
+    } else if (c == PS2_LEFTARROW) {
+      Serial.print("[Left]");
+    } else if (c == PS2_RIGHTARROW) {
+      Serial.print("[Right]");
+    } else if (c == PS2_UPARROW) {
+      Serial.print("[Up]");
+    } else if (c == PS2_DOWNARROW) {
+      Serial.print("[Down]");
+    } else if (c == PS2_DELETE) {
+      Serial.print("[Del]");
+    } else {
+      
+      // otherwise, just print all normal characters
+      Serial.print(c);      
+    }
+*/
   }
 }
-
 
 void ClearSTB () {
     // Strobe high
