@@ -1,11 +1,13 @@
-#include <PS2Keyboard.h>
+#include <PS2KeyAdvanced.h>
+#include <PS2KeyMap.h>
 
 const int DataPin = 4;
 const int IRQpin =  3;
 const byte ACKpin = 2;
 const int nSTB = 5;
 
-PS2Keyboard keyboard;
+PS2KeyAdvanced keyboard;
+PS2KeyMap keymap;
 
 
 void setup() {
@@ -40,10 +42,16 @@ void setup() {
 
   keyboard.begin (DataPin, IRQpin);
 
+  keyboard.setNoBreak (1);
+
   // Reset
+  Reset ();
+}
+
+void Reset () {
   digitalWrite (A0, LOW);
   delay (1);
-  digitalWrite (A0, HIGH);
+  digitalWrite (A0, HIGH);  
 }
 
 
@@ -54,21 +62,27 @@ void loop() {
     
     // read the next key
     char c = keyboard.read();
-  
-    if (c & 0x01) {digitalWrite (8, HIGH);} else {digitalWrite (8, LOW);}
-    if (c & 0x02) {digitalWrite (9, HIGH);} else {digitalWrite (9, LOW);}
-    if (c & 0x04) {digitalWrite (10, HIGH);} else {digitalWrite (10, LOW);}
-    if (c & 0x08) {digitalWrite (11, HIGH);} else {digitalWrite (11, LOW);}
-    if (c & 0x10) {digitalWrite (12, HIGH);} else {digitalWrite (12, LOW);}
-    if (c & 0x20) {digitalWrite (13, HIGH);} else {digitalWrite (13, LOW);}
+
+    c = keymap.remapKey(c);
+
+/*    if (((c & 0xff) == PS2_KEY_DELETE) && (c & PS2_ALT) && (c & PS2_CTRL)) {
+      Reset ();
+    } else
+*/    if ((c & 0xff) > 0) {
+      if (c & 0x01) {digitalWrite (8, HIGH);} else {digitalWrite (8, LOW);}
+      if (c & 0x02) {digitalWrite (9, HIGH);} else {digitalWrite (9, LOW);}
+      if (c & 0x04) {digitalWrite (10, HIGH);} else {digitalWrite (10, LOW);}
+      if (c & 0x08) {digitalWrite (11, HIGH);} else {digitalWrite (11, LOW);}
+      if (c & 0x10) {digitalWrite (12, HIGH);} else {digitalWrite (12, LOW);}
+      if (c & 0x20) {digitalWrite (13, HIGH);} else {digitalWrite (13, LOW);}
+
+      if (c & 0x40) {digitalWrite (6, HIGH);} else {digitalWrite (6, LOW);}
+      if (c & 0x80) {digitalWrite (7, HIGH);} else {digitalWrite (7, LOW);} // Probably not needed for OK240
 
 
-    if (c & 0x40) {digitalWrite (6, HIGH);} else {digitalWrite (6, LOW);}
-    if (c & 0x80) {digitalWrite (7, HIGH);} else {digitalWrite (7, LOW);} // Probably not needed for OK240
-
-
-  // Strobe low
-    digitalWrite (nSTB, LOW);
+      // Strobe low
+      digitalWrite (nSTB, LOW);
+    }
   }
 }
 
