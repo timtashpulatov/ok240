@@ -86,22 +86,39 @@ void loop() {
     /*if (c == 0x287f) {  */
       Serial.println ("Reset!");
       Reset ();
-    } else
-    if ((c & 0xff) > 0) {
-      if (c & 0x01) {digitalWrite (8, HIGH);} else {digitalWrite (8, LOW);}
-      if (c & 0x02) {digitalWrite (9, HIGH);} else {digitalWrite (9, LOW);}
-      if (c & 0x04) {digitalWrite (10, HIGH);} else {digitalWrite (10, LOW);}
-      if (c & 0x08) {digitalWrite (11, HIGH);} else {digitalWrite (11, LOW);}
-      if (c & 0x10) {digitalWrite (12, HIGH);} else {digitalWrite (12, LOW);}
-      if (c & 0x20) {digitalWrite (13, HIGH);} else {digitalWrite (13, LOW);}
+    };
+    
+   
+      
 
-      if (c & 0x40) {digitalWrite (6, HIGH);} else {digitalWrite (6, LOW);}
-      if (c & 0x80) {digitalWrite (7, HIGH);} else {digitalWrite (7, LOW);} // Probably not needed for OK240
+      /* Remap certain codes */      
+      switch (code) {
+        case 0x115: c = 8; break;      /* Left */
+        case 0x116: c = 0x18; break;   /* Right */
+        case 0x117: c = 0x19; break;   /* Up */
+        case 0x118: c = 0x1a; break;   /* Down */
+        default:
+          break;
+      }
+      
+      Serial.println (c, HEX);
+
+      if ((c > 0) && (c < 0x100)) {
+      
+        if (c & 0x01) {digitalWrite (8, HIGH);} else {digitalWrite (8, LOW);}
+        if (c & 0x02) {digitalWrite (9, HIGH);} else {digitalWrite (9, LOW);}
+        if (c & 0x04) {digitalWrite (10, HIGH);} else {digitalWrite (10, LOW);}
+        if (c & 0x08) {digitalWrite (11, HIGH);} else {digitalWrite (11, LOW);}
+        if (c & 0x10) {digitalWrite (12, HIGH);} else {digitalWrite (12, LOW);}
+        if (c & 0x20) {digitalWrite (13, HIGH);} else {digitalWrite (13, LOW);}
+
+        if (c & 0x40) {digitalWrite (6, HIGH);} else {digitalWrite (6, LOW);}
+        if (c & 0x80) {digitalWrite (7, HIGH);} else {digitalWrite (7, LOW);} // Probably not needed for OK240
 
 
-      // Strobe low
-      digitalWrite (nSTB, LOW);
-    }
+        // Strobe low
+        digitalWrite (nSTB, LOW);    
+      }
   }
 }
 
