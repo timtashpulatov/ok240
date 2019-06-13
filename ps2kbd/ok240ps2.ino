@@ -1,5 +1,6 @@
 #include <PS2KeyAdvanced.h>
 #include <PS2KeyMap.h>
+#include <PS2KeyData.h>
 
 const int DataPin = 4;
 const int IRQpin =  3;
@@ -11,6 +12,8 @@ PS2KeyMap keymap;
 
 
 void setup() {
+
+  Serial.begin( 115200 );
   
   // PD5 is low active out strobe
   pinMode (nSTB, OUTPUT);
@@ -41,8 +44,15 @@ void setup() {
   digitalWrite (A0, HIGH);
 
   keyboard.begin (DataPin, IRQpin);
-
+  
+  // Disable Break codes (key release) from PS2KeyAdvanced
   keyboard.setNoBreak (1);
+  
+  // and set no repeat on CTRL, ALT, SHIFT, GUI while outputting
+  keyboard.setNoRepeat( 1 );
+
+  // Typematic rate (0x1f = 2 CPS) and delay (in 0.25s increments)
+  keyboard.typematic (0x10, 0);
 
   // Reset
   Reset ();
@@ -61,14 +71,23 @@ void loop() {
   if (keyboard.available()) {
     
     // read the next key
-    char c = keyboard.read();
+    int code = keyboard.read();
 
-    c = keymap.remapKey(c);
+    Serial.println (code, HEX);
+    
+    int c = keymap.remapKey(code);
+  
+    Serial.println (c, HEX);
 
-/*    if (((c & 0xff) == PS2_KEY_DELETE) && (c & PS2_ALT) && (c & PS2_CTRL)) {
+    Serial.print ("\n");
+
+
+    if (((c & 0xff) == PS2_DELETE) && (c & PS2_ALT) && (c & PS2_CTRL)) {
+    /*if (c == 0x287f) {  */
+      Serial.println ("Reset!");
       Reset ();
     } else
-*/    if ((c & 0xff) > 0) {
+    if ((c & 0xff) > 0) {
       if (c & 0x01) {digitalWrite (8, HIGH);} else {digitalWrite (8, LOW);}
       if (c & 0x02) {digitalWrite (9, HIGH);} else {digitalWrite (9, LOW);}
       if (c & 0x04) {digitalWrite (10, HIGH);} else {digitalWrite (10, LOW);}
