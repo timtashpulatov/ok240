@@ -70,6 +70,8 @@ VeryBegin
         call    ResetScroll
         call    ClearScreen
         
+        call    EraseMongolia
+        
 ; Инициализация важных и нужных переменных
         lxi     hl, HKCOUNT
         shld    SPEED
@@ -1472,6 +1474,19 @@ RenderBrickToMongolia
         pop     bc
         pop     de
         pop     hl
+        ret
+
+; *******************************************
+; Зачистить внутреннюю Монголию
+; *******************************************
+EraseMongolia
+        lxi     hl, Mongolia
+EraseMongoliaLoop
+        mvi     m, 0
+        inx     hl
+        mov     a, h
+        cpi     0x80
+        jnz     EraseMongoliaLoop
         ret
 
 
