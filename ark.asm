@@ -127,6 +127,9 @@ VeryBegin
         mvi     a, FX_BUURP
         sta     SoundFX
 
+        mvi     a, 3
+        sta     Batties
+
 ; Кирпич 1
         lxi     bc, 0400h
         lxi     hl, BONUS16
@@ -165,6 +168,8 @@ VeryBegin
         call    PaintBatty        
 
         call    InitBonusList
+
+        call    DrawBatties
 
 
         call    BumpBitmap8x16
@@ -1344,6 +1349,15 @@ GoBatty
         mov     b, a
 
         call    PaintHorizontalBitmap4
+        ret
+
+; *************************************************
+; Нарисовать стопку дубин
+; *************************************************
+DrawBatties
+        lxi     hl, BATTY1
+        lxi     bc, 0x34e0
+        call    PaintHorizontalBitmap4 ;PaintBitmap
         ret
 
 ; *************************************************
@@ -2684,6 +2698,9 @@ DebugStepMode   db      0       ; 1
 DebugPalette    db      0
 
 SoundFX         db      0
+
+; Счетчик ракеток
+Batties         db      3
 
 
 BattyPtr        dw      BATTYBUF                
