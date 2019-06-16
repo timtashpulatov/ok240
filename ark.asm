@@ -436,7 +436,7 @@ L1F2
 MoveRight
         call    EraseBatty
         lda     BattyPos
-        cpi     200
+        cpi     200-24
         jnz     L20f
         mvi     a, BATTY_STOP
         sta     BattyDirection
@@ -1357,7 +1357,17 @@ GoBatty
 DrawBatties
         lxi     hl, BATTY1
         lxi     bc, 0x34e0
-        call    PaintHorizontalBitmap4 ;PaintBitmap
+        call    PaintHorizontalBitmap4
+
+        lxi     hl, BATTY1
+        lxi     bc, 0x34e0-10
+        call    PaintHorizontalBitmap4
+
+        lxi     hl, BATTY1
+        lxi     bc, 0x34e0-20
+        call    PaintHorizontalBitmap4
+
+
         ret
 
 ; *************************************************
