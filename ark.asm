@@ -1626,10 +1626,14 @@ TimeToMove
 ; стереть с экрана TODO
 ; тупо нарисуем пустое место
         push    hl
-        mov     c, m
+        mov     a, m
+        sui     9
+        mov     c, a
         inx     hl
-        mov     b, m
-        lxi     hl, COOLBRICK
+        mov     a, m
+        sui     0c0h
+        mov     b, a
+        lxi     hl, BITMAP0
         call    PaintBitmap
         pop     hl
 
