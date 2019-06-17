@@ -711,8 +711,18 @@ CheckMissLeft
         jmp     LetsReflectYDo
         
 Miss            
+        ; Ыыыыыыы
         mvi     a, FX_BUURP
         sta     SoundFX
+
+        lda     Batties
+        ora     a
+        jz      Miss1
+        dcr     a
+        sta     Batties
+        
+        call    DrawBatties
+Miss1                
         ret
         
 LetsReflectYDo        
