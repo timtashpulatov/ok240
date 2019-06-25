@@ -659,10 +659,10 @@ WorkBitmapPreview
  
         lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
         pop     hl
+        push    hl
         lxi     d, 64
         dad     d
         mvi     a, 3
-        push    hl
         call    PaintBitmap
 
         lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
