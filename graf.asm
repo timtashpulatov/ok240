@@ -642,10 +642,38 @@ WorkBitmapPreview
 
         lxi     b, (PREVIEW_X+2)*512+PREVIEW_Y*8
         pop     hl
+        push    hl
         lxi     d, 16
         dad     d
         mvi     a, 3
         call    PaintBitmap
+
+
+        lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
+        pop     hl
+        push    h
+        lxi     d, 64-16
+        dad     d
+        mvi     a, 3
+        call    PaintBitmap
+ 
+        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
+        pop     hl
+        lxi     d, 64
+        dad     d
+        mvi     a, 3
+        push    hl
+        call    PaintBitmap
+
+        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
+        pop     hl
+        lxi     d, 64+16
+        dad     d
+        mvi     a, 3
+        call    PaintBitmap
+
+
+
 
 ; Нарисуем красивую полосочку сверху        
         lxi     b, PREVIEW_X*512
@@ -666,19 +694,19 @@ WorkBitmapPreview
         call    PaintBitmap        
 
 ; И снизу        
-        lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
+        lxi     b, PREVIEW_X*512+(PREVIEW_Y+2)*8
         lxi     h, TOPLINE
         mvi     a, 3
         push    hl
         call    PaintBitmap        
 
-        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
+        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+2)*8
         mvi     a, 3
         pop     hl
         push    hl
         call    PaintBitmap        
         
-        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
+        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+2)*8
         mvi     a, 3
         pop     hl
         call    PaintBitmap        
