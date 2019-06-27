@@ -337,28 +337,36 @@ PaintScore
         push    hl
         push    bc
 
+        lda     SCORE3
+        lxi     bc, 0x3418
+        call    PaintDigit
+
+
         lda     SCORE2
+        push    a
         rar
         rar
         rar
         rar
-        lxi     bc, 0x3410
+        lxi     bc, 0x3618
         call    PaintDigit
         
-        lda     SCORE2
-        lxi     bc, 0x3610
+        pop     a
+        lxi     bc, 0x3818
         call    PaintDigit
 
         lda     SCORE1
+        push    a
         rar
         rar
         rar
         rar
-        lxi     bc, 0x3810
+        lxi     bc, 0x3a18
         call    PaintDigit
         
+        pop     a
         lda     SCORE1
-        lxi     bc, 0x3a10
+        lxi     bc, 0x3c18
         call    PaintDigit
 
 
@@ -1467,15 +1475,15 @@ GoBatty
 ; *************************************************
 DrawBatties
         lxi     hl, BATTY1
-        lxi     bc, 0x34e0
+        lxi     bc, 0x36e0
         call    PaintHorizontalBitmap4
 
         lxi     hl, BATTY1
-        lxi     bc, 0x34e0-10
+        lxi     bc, 0x36e0-10
         call    PaintHorizontalBitmap4
 
         lxi     hl, BATTY1
-        lxi     bc, 0x34e0-20
+        lxi     bc, 0x36e0-20
         call    PaintHorizontalBitmap4
 
 
