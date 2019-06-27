@@ -171,6 +171,7 @@ VeryBegin
 
         call    DrawBatties
 
+   mvi a, 2
    call PaintDigit
 
 
@@ -330,11 +331,22 @@ BEEP
 ; Нарисовать цифру из DIGITS
 ; *************************************************
 PaintDigit
+        ani     0fh
+        ral
+        ral
+        ral
+        ral
+        mov     c, a
+        mvi     b, 0
         lxi     hl, DIGITS
+        dad     bc
+
+        push    hl
         lxi     bc, 0x3410
         call    PaintBitmap
         
-        lxi     hl, DIGITS+256
+        pop     hl
+        inr     h
         lxi     bc, 0x3418
         call    PaintBitmap
         ret
