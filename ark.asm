@@ -171,6 +171,8 @@ VeryBegin
 
         call    DrawBatties
 
+   call PaintDigit
+
 
         call    BumpBitmap8x16
         
@@ -324,6 +326,19 @@ BEEP
         mvi     c, 7
         jmp     CHAROUT
         
+; *************************************************
+; Нарисовать цифру из DIGITS
+; *************************************************
+PaintDigit
+        lxi     hl, DIGITS
+        lxi     bc, 0x3410
+        call    PaintBitmap
+        
+        lxi     hl, DIGITS+256
+        lxi     bc, 0x3418
+        call    PaintBitmap
+        ret
+
 
 ; *************************************************
 ; Хаускипинг
@@ -2540,9 +2555,18 @@ SCORE_1
         db      0, 3ch, 24h, 2ch, 28h, 0eeh, 82h, 0feh
         db      0, 3ch, 24h, 2ch, 38h, 0feh, 0feh, 0feh
 
-
-        
         db      0, 0, 0, 0, 0, 0, 0, 0
+
+DIGITS  db64    Pj5nZ2dnZ2cAAAAAAAAAAB4eHBwcHBwcAAAAAAAAAAA+PnNzcHA+PgAAAAAAAAAAPj5zc3BwPj4A
+        db64    AAAAAAAAAObm5ubm5v7+AAAAAAAAAAAAfAA8QEA8AAAAAAAAAAAAAHgAPEREOAAAAAAAAAAAAAB8
+        db64    AEAgEBAAAAAAAAAAAAAAOEQ4REQ4AAAAAAAAAAAAADhEeEAgEAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGcAAAAAAAAAAGdnZz4+AAAcAAAAAAAAAAAcHBwc
+        db64    HAAAAwAAAAAAAAAAA3Nzf38AAHAAAAAAAAAAAHBzcz4+AADgAAAAAAAAAADg4ODg4AAAAAAAAAAA
+        db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+
 
 ; Верхний и нижний ряды у мячика можно срезать и выводить только ШЕСТЬ строк
 
@@ -2607,7 +2631,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 
 
 
-        .org 1100h
+        .org 1300h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
