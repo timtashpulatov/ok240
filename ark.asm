@@ -171,8 +171,8 @@ VeryBegin
 
         call    DrawBatties
 
-   mvi a, 2
-   call PaintDigit
+   
+        call    PaintScore
 
 
         call    BumpBitmap8x16
@@ -326,11 +326,37 @@ BEEP
         pop     hl
         mvi     c, 7
         jmp     CHAROUT
+      
+      
+; *************************************************
+; Вывести СКОРЕ
+; *************************************************
+PaintScore
+        push    hl
+        push    bc
+
+        lda     SCORE
+        rar
+        rar
+        rar
+        rar
+        lxi     bc, 0x3410
+        call    PaintDigit
+        
+        lda     SCORE
+        lxi     bc, 0x3610
+        call    PaintDigit
+        
+        pop     bc
+        pop     hl
+        
+        ret
         
 ; *************************************************
 ; Нарисовать цифру из DIGITS
 ; *************************************************
 PaintDigit
+        push    bc
         ani     0fh
         ral
         ral
@@ -340,14 +366,20 @@ PaintDigit
         mvi     b, 0
         lxi     hl, DIGITS
         dad     bc
+        pop     bc
+
 
         push    hl
-        lxi     bc, 0x3410
+        push    bc
         call    PaintBitmap
+        pop     hl
+        lxi     bc, 8
+        dad     bc
+        push    hl
+        pop     bc
         
         pop     hl
         inr     h
-        lxi     bc, 0x3418
         call    PaintBitmap
         ret
 
@@ -397,9 +429,9 @@ NoPaletteDebug
 ; ----- Второй фрейм -----
 SecondFrame
 ; добавить нормальную синхронизацию по кадру
-        in      41h
-        ani     2
-        jnz     SecondFrame
+ ;       in      41h
+ ;       ani     2
+ ;       jnz     SecondFrame
 
         ; странный способ определить, не просран ли мячик
         lda     SoundFX
@@ -433,9 +465,9 @@ SecondFrameCont
 
 SyncToRetrace
         ; подождем наступления ретрейса
-        in      41h
-        ani     2
-        jz      SyncToRetrace
+;        in      41h
+;        ani     2
+;        jz      SyncToRetrace
         ret
 
 ; *************************************************
@@ -895,6 +927,16 @@ DoTheJob
         ret
 
 DoTheJobWillYa
+
+; счет
+        lda     SCORE
+        inr     a
+        daa
+        sta     SCORE
+        
+        call    PaintScore
+        
+
         mvi     m, 0
 
         mov     a, l
@@ -1894,28 +1936,28 @@ Cls     mvi     m, 0
 ; *************************************************
 ; Вывести счет
 ; *************************************************
-PaintScore
+;PaintScore
         
-        push    de
-        push    bc
+;        push    de
+;        push    bc
         
-        xra     a
-        sta     SuppressLeadingZeroes
+;        xra     a
+;        sta     SuppressLeadingZeroes
         
-        lda     SCORE
-        ora     a
-        jz      PSDone          ; чего его выводить, если он нулевой
+;        lda     SCORE
+;        ora     a
+;        jz      PSDone          ; чего его выводить, если он нулевой
         
-        mov     d, a
-        mvi     e, 8
-        lxi     b, SCORE_COORDS
-        call    PSLoop
+;        mov     d, a
+;        mvi     e, 8
+;        lxi     b, SCORE_COORDS
+;        call    PSLoop
 
-PSDone        
-        pop     bc
-        pop     de
+;PSDone        
+;        pop     bc
+;        pop     de
         
-        ret
+;        ret
 
 ; *************************************************
 ; Вывести уровень
