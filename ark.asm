@@ -77,7 +77,9 @@ VeryBegin
         shld    SPEED
         shld    CountDown
         xra     a
-        sta     SCORE
+        sta     SCORE3
+        sta     SCORE2
+        sta     SCORE1
         sta     X
         sta     Y
         
@@ -335,7 +337,7 @@ PaintScore
         push    hl
         push    bc
 
-        lda     SCORE
+        lda     SCORE2
         rar
         rar
         rar
@@ -343,10 +345,23 @@ PaintScore
         lxi     bc, 0x3410
         call    PaintDigit
         
-        lda     SCORE
+        lda     SCORE2
         lxi     bc, 0x3610
         call    PaintDigit
+
+        lda     SCORE1
+        rar
+        rar
+        rar
+        rar
+        lxi     bc, 0x3810
+        call    PaintDigit
         
+        lda     SCORE1
+        lxi     bc, 0x3a10
+        call    PaintDigit
+
+
         pop     bc
         pop     hl
         
@@ -951,15 +966,30 @@ DoTheJobWillYa
 
 
 ; счет
-        lda     SCORE
+        lda     SCORE1
         inr     a
         daa
-        sta     SCORE
+        sta     SCORE1
+        jnc     DTJDone
+
+        lda     SCORE2
+        inr     a
+        daa
+        sta     SCORE2
+
+        jnc     DTJDone
+
+        lda     SCORE3
+        inr     a
+        daa
+        sta     SCORE3
         
+        
+DTJDone        
         call    PaintScore
 
 
-        
+
         ret
 
 ; *************************************************
@@ -2778,8 +2808,10 @@ BmpHeight2      ds      1
 RNG             db      0
 ; Обратный отсчет для хаускипера
 CountDown       dw      0
-; Score
-SCORE           db      0
+; Score - храним в BCD формате, 99 99 99 макс
+SCORE3          db      0
+SCORE2          db      0
+SCORE1          db      0
 ; Level
 LEVEL           db      1
 ; Стремительность
