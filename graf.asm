@@ -120,6 +120,11 @@ KeyFunctions
         dw      Copy
         db      'P'
         dw      Paste
+
+        db      'A'
+        dw      JumpPlus256
+        db      'Q'
+        dw      JumpMinus256
         
         db      1bh
         dw      WARMBOOT
@@ -165,6 +170,14 @@ Paste
         lxi     d, CLIPBOARD
         xchg
         jmp     CL0
+
+JumpPlus256
+        lxi     d, 256
+        jmp     SNB
+        
+JumpMinus256
+        lxi     d, -256
+        jmp     SNB
 
 SelectPrevBitmap
         lxi     d, -16
@@ -652,7 +665,7 @@ WorkBitmapPreview
         lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
         pop     hl
         push    h
-        lxi     d, 64-16
+        lxi     d, 256-16
         dad     d
         mvi     a, 3
         call    PaintBitmap
@@ -660,14 +673,14 @@ WorkBitmapPreview
         lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
         pop     hl
         push    hl
-        lxi     d, 64
+        lxi     d, 256
         dad     d
         mvi     a, 3
         call    PaintBitmap
 
         lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
         pop     hl
-        lxi     d, 64+16
+        lxi     d, 256+16
         dad     d
         mvi     a, 3
         call    PaintBitmap
