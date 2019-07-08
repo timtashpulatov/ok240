@@ -2730,7 +2730,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 ; Кирпичики
 ; 00 - пустое место
 ; *********************************************************************
-
+PLAYFIELD
 LEVEL_1 
         db      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0
         db      82h, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,83h, 0, 0, 0
@@ -2792,6 +2792,28 @@ LEVEL_2
         db      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
         db      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 
+
+; *************************************************
+; Распаковать уровень (HL) в игровое поле
+; заодно подсчитать количество кирпичей
+; *************************************************
+UnpackLevel
+        xra     a
+        sta     BricksToGo
+        mvi     c, 22*11
+UnpackLevelLoop
+        mov     a, m
+        ora     a
+        jz      ULCont          ; пустое место
+        ani     0x80
+        jnz     ULCont          ; бетон
+        lda     BricksToGo
+        inr     a
+        sta     BricksToGo
+ULCont
+        dcr     c
+        jnz     UnpackLevelLoop
+        ret
 
 LEVELS_END        
 
@@ -2869,8 +2891,10 @@ SoundFX         db      0
 ; Счетчик ракеток
 Batties         db      3
 
+BattyPtr        dw      BATTYBUF
 
-BattyPtr        dw      BATTYBUF                
+BricksToGo      db      0       ; счетчик кирпичиков в уровне
+
 
 ; *********************************************************************
 ; Буфера (.)(.)
