@@ -2800,9 +2800,15 @@ LEVEL_2
 UnpackLevel
         xra     a
         sta     BricksToGo
+        sta     Tmp
+        push    hl
+        lxi     hl, PlayField
+        shld    TmpW
+        pop     hl
         mvi     c, 22*11
 UnpackLevelLoop
         mov     a, m
+        call    LayBrick
         ora     a
         jz      ULCont          ; пустое место
         ani     0x80
@@ -2814,6 +2820,34 @@ ULCont
         dcr     c
         jnz     UnpackLevelLoop
         ret
+
+LayBrick
+        push    a
+        push    hl
+        push    de
+        push    bc
+        
+        lhld    TmpW
+        mov     m, a
+        inx     hl
+        
+        lda     Tmp
+        inr     a
+        cpi     11+1
+        jnz     LayBrickCont
+        xra     a
+        sta     Tmp
+        lxi     bc, 4
+        dad     bc
+LayBrickCont        
+        shld    TmpW
+        
+        pop     bc
+        pop     de
+        pop     hl
+        pop     a
+        ret
+
 
 LEVELS_END        
 
@@ -2894,7 +2928,8 @@ Batties         db      3
 BattyPtr        dw      BATTYBUF
 
 BricksToGo      db      0       ; счетчик кирпичиков в уровне
-
+Tmp             db      0       ; переменная для всяких нужд
+TmpW            dw      0
 
 ; *********************************************************************
 ; Буфера (.)(.)
