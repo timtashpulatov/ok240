@@ -177,9 +177,9 @@ VeryBegin
 
         call    DrawBatties
 
-   
         call    PaintScore
 
+        call    PaintLevel
 
         call    BumpBitmap8x16
         
@@ -333,6 +333,31 @@ BEEP
         mvi     c, 7
         jmp     CHAROUT
       
+
+; *************************************************
+; Вывести ЛЕВЕЛ
+; *************************************************
+PaintLevel
+        push    hl
+        push    bc
+
+        lda     Level
+        push    a
+        rar
+        rar
+        rar
+        rar
+        lxi     bc, 0x3650
+        call    PaintDigit
+
+        pop     a
+        lxi     bc, 0x3850
+        call    PaintDigit
+
+        pop     bc
+        pop     hl
+
+        ret
       
 ; *************************************************
 ; Вывести СКОРЕ
@@ -2918,7 +2943,7 @@ SCORE3          db      0
 SCORE2          db      0
 SCORE1          db      0
 ; Level
-LEVEL           db      1
+LEVEL           db      99
 ; Стремительность
 SPEED           dw      HKCOUNT
 ; Регистров вечно не хватает, а давить ведущие нули в счете хочется
