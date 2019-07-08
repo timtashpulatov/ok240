@@ -2839,7 +2839,7 @@ LayBrick
         lda     Tmp
         inr     a
         sta     Tmp
-        cpi     11+1
+        cpi     11
         jnz     LayBrickCont
         xra     a
         sta     Tmp
