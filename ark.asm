@@ -1003,6 +1003,12 @@ DTJDone
         call    PaintScore
 
 
+; Не кончились ли у нас кирпичи в уровне?
+        lda     BricksToGo
+        dcr     a
+        sta     BricksToGo
+
+
 
         ret
 
@@ -1480,15 +1486,15 @@ GoBatty
 ; Нарисовать стопку дубин
 ; *************************************************
 DrawBatties
-        lxi     hl, BATTY1
+        lxi     hl, BATTY1+1
         lxi     bc, 0x36e0
         call    PaintHorizontalBitmap4
 
-        lxi     hl, BATTY1
+        lxi     hl, BATTY1+1
         lxi     bc, 0x36e0-10
         call    PaintHorizontalBitmap4
 
-        lxi     hl, BATTY1
+        lxi     hl, BATTY1+1
         lxi     bc, 0x36e0-20
         call    PaintHorizontalBitmap4
 
