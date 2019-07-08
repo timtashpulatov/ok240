@@ -165,7 +165,7 @@ VeryBegin
 
         call    PaintBall
 
-        lxi hl, Level_2
+        lxi hl, Level_01
     call        UnpackLevel        
 
 
@@ -786,7 +786,7 @@ UY1
 BallNewCoords2BrickPtr
         call    BallNewPos2BrickIndex
         lhld    BallBrickIndex
-        lxi     bc, LEVEL_1
+        lxi     bc, PLAYFIELD
         dad     bc
         ret
 
@@ -1203,7 +1203,7 @@ ret
         sub     c
         sta     BmpHeight2
 
-        lxi     hl, LEVEL_1
+        lxi     hl, PLAYFIELD
         call    GetRightBrickPtr
         
         push    hl
@@ -1233,7 +1233,7 @@ ret
         xchg
 
         push    de
-        lxi     hl, LEVEL_1+16
+        lxi     hl, PLAYFIELD+16
         call    GetRightBrickPtr                
         pop     de
         
@@ -1534,7 +1534,7 @@ DrawLevel
         mvi     c, WIDTH
       
         lxi     de, HEIGHT*WIDTH
-        lxi     hl, LEVEL_1
+        lxi     hl, PLAYFIELD
 DLLoop
         mov     a, m
         
@@ -2803,7 +2803,7 @@ LEVEL_1
 LEVEL_1_END
 
 ; Типичный уровень - 22 ряда по 11 кирпичей в ряду
-LEVEL_2
+LEVEL_01
         ;db      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -2829,6 +2829,33 @@ LEVEL_2
 
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+LEVEL_02
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      7, 8, 9, 0, 0, 0, 0, 0, 0, 0, 0                 ; 4 - красный
+        db      7, 8, 9, 5, 0, 0, 0, 0, 0, 0, 0                 ; 8 - типа желтый
+        db      7, 8, 9, 5, 6, 0, 0, 0, 0, 0, 0                 ; 6 - синий
+        db      7, 8, 9, 5, 6, 4, 0, 0, 0, 0, 0      ; 12 - фиолетовый
+        db      7, 8, 9, 5, 6, 4, 10, 0, 0, 0, 0
+        db      7, 8, 9, 5, 6, 4, 10, 11, 0, 0, 0
+
+        db      7, 8, 9, 5, 6, 4, 10, 11, 12, 0, 0
+        db      7, 8, 9, 5, 6, 4, 10, 11, 12, 7, 0
+        db      7, 8, 9, 5, 6, 4, 10, 11, 12, 7, 8
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
 
 ; *************************************************
 ; Распаковать уровень (HL) в игровое поле
@@ -2886,6 +2913,9 @@ LayBrickCont
         pop     hl
         pop     a
         ret
+
+
+
 
 
 LEVELS_END        
