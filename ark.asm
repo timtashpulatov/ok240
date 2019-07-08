@@ -985,13 +985,14 @@ DoTheJobWillYa
         sta     SCORE1
         jnc     DTJDone
 
+        ora     a
         lda     SCORE2
         inr     a
         daa
         sta     SCORE2
-
         jnc     DTJDone
 
+        ora     a
         lda     SCORE3
         inr     a
         daa
