@@ -810,7 +810,7 @@ LetsReflectY
 ;        jz      LetsReflectYDo
         ret
 
-WhereIsMyBatty
+WhereIsMyBatty                  ; TODO хорошо бы учесть фазу мячика
         lda     BattyPos
         mov     c, a
         lda     BallX
@@ -1018,28 +1018,9 @@ DoTheJobWillYa
 
 
 ; счет
-        lda     SCORE1
-        ;inr     a
-        adi     5
-        daa
-        sta     SCORE1
-        jnc     DTJDone
-
-        ora     a
-        lda     SCORE2
-        inr     a
-        daa
-        sta     SCORE2
-        jnc     DTJDone
-
-        ora     a
-        lda     SCORE3
-        inr     a
-        daa
-        sta     SCORE3
+        mvi     a, 5
+        call    UpdateScore
         
-        
-DTJDone        
         call    PaintScore
 
 
@@ -1049,7 +1030,34 @@ DTJDone
         sta     BricksToGo
 
 
+        ret
 
+; *************************************************
+; Начислить очки (дельта в аккумуляторе)
+; *************************************************
+UpdateScore
+        push    bc
+        mov     c, a
+        lda     SCORE1
+        add     c
+        daa
+        sta     SCORE1
+        jnc     UpdateScoreDone
+
+        ora     a
+        lda     SCORE2
+        inr     a
+        daa
+        sta     SCORE2
+        jnc     UpdateScoreDone
+
+        ora     a
+        lda     SCORE3
+        inr     a
+        daa
+        sta     SCORE3
+UpdateScoreDone
+        pop     bc
         ret
 
 ; *************************************************
@@ -1814,10 +1822,33 @@ TimeToMove
 
         inr     m       ; прирастим координату
         mov     a, m
-        cpi     BATTYMARGIN+8     ;BOTTOMMARGIN
-        jnz     ContinueMoving
+        cpi     BATTYMARGIN ;+8     ;BOTTOMMARGIN
+        jc      ContinueMoving
 ; прекратить жизненный цикл бонуса в силу разных причин
+; встреча с дубиной?
+        inr     l       ; старший байт экранного адреса
+        lda     BattyPos
+        
+        mov     c, a
+        mov     a, m
+        sub     c
+        jm      BonusCheckMissLeft
 
+BonusCheckMissRight
+        sui     24
+        jm      Hit
+        jmp     ContinueMoving
+
+BonusCheckMissLeft
+        adi     6
+        jm      ContinueMoving
+        jmp     Hit
+        
+Hit            
+        mvi     a, 50
+        call    UpdateScore
+        
+        
 ; стереть с экрана TODO
 ; тупо нарисуем пустое место
         push    hl
