@@ -515,6 +515,8 @@ SecondFrameCont
 
         call    DoSoundFX
 
+        call    PaintScore
+
         call    SyncToRetrace
 
 
@@ -1021,7 +1023,7 @@ DoTheJobWillYa
         mvi     a, 5
         call    UpdateScore
         
-        call    PaintScore
+;        call    PaintScore
 
 
 ; Не кончились ли у нас кирпичи в уровне?
