@@ -1853,7 +1853,7 @@ BonusCheckMissLeft
         jmp     Hit
         
 Hit            
-        mvi     a, 50
+        mvi     a, 50h          ; потому что BCD ;-)
         call    UpdateScore
 RIP        
         pop     hl
