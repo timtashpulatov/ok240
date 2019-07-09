@@ -47,9 +47,9 @@ BATTY_STOP      equ     0
 BATTY_RIGHT     equ     1
 BATTY_LEFT      equ     2
 DEFAULTBALLX    equ     58h     ;32
-DEFAULTBALLY    equ     100     ;12h     ;224
+DEFAULTBALLY    equ     200     ;12h     ;224
 DEFAULTBALLDX   equ     1       ; debug Y first ; 1
-DEFAULTBALLDY   equ     1
+DEFAULTBALLDY   equ     -1
 
 DefaultDelayDX  equ     1
 DefaultDelayDY  equ     1
@@ -1000,6 +1000,7 @@ DoTheJobWillYa
         ral
 
         mov     b, a    ; X
+        
     push bc        
         xra     a
         call    PaintBrick1
@@ -2830,8 +2831,7 @@ LEVEL_01
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        db      6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
 
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
