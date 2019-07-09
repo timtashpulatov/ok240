@@ -989,9 +989,17 @@ DoTheJobWillYa
 
         mvi     m, 0
 
+;        lhld    BallBrickIndex
+
+        ; hack
+        mov     a, h
+        sui     Playfield >> 8  ; о боже
+        
+        rrc
         mov     a, l
         rar
-        ani     78h
+        
+        ani     0f8h
         mov     c, a    ; Y
         
         mov     a, l
