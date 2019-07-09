@@ -1828,27 +1828,31 @@ TimeToMove
 ; встреча с дубиной?
         inr     l       ; старший байт экранного адреса
         lda     BattyPos
+        rar
+        rar
+        rar
+        adi     0c0h
         
         mov     c, a
         mov     a, m
+        
         sub     c
         jm      BonusCheckMissLeft
 
 BonusCheckMissRight
         sui     24
         jm      Hit
-        jmp     ContinueMoving
+        jmp     RIP
 
 BonusCheckMissLeft
         adi     6
-        jm      ContinueMoving
+        jm      RIP
         jmp     Hit
         
 Hit            
         mvi     a, 50
         call    UpdateScore
-        
-        
+RIP        
 ; стереть с экрана TODO
 ; тупо нарисуем пустое место
         push    hl
