@@ -1829,13 +1829,13 @@ TimeToMove
         push    hl
         inr     l       ; старший байт экранного адреса
         lda     BattyPos
-        rar
-        rar
-        rar
-        adi     0c0h
-        
         mov     c, a
+
         mov     a, m
+        sui     0c0h
+        ral
+        ral
+        
         
         sub     c
         jm      BonusCheckMissLeft
