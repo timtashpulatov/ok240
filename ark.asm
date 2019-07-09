@@ -2389,13 +2389,13 @@ BumpBitmap8x8
         lxi     hl, SCREEN+8
 ; выводим первый столбик, снизу вверх
         sphl
-        lxi     bc, 0fc1eh
+        lxi     bc, 7ef7h       ;0fc1eh
         push    bc
-        lxi     bc, 4723h
+        lxi     bc, 0a3d1h      ;4723h
         push    bc
-        lxi     bc, 4321h
+        lxi     bc, 0a3d7h      ;4321h
         push    bc
-        lxi     bc, 42fch
+        lxi     bc, 0ab7eh      ;42fch
         push    bc
 ; это бонусный битмап, он ползет сверху вниз, а выводится снизу вверх
 ; что весьма удобно для затирания следа сверху
@@ -2404,13 +2404,13 @@ BumpBitmap8x8
 ; выводим второй столбик
         inr     h
         sphl
-        lxi     bc, 001ch
+        lxi     bc, 7ed5h       ;001ch
         push    bc
-        lxi     bc, 0a642h
+        lxi     bc, 0ebc5h      ;0a642h
         push    bc
-        lxi     bc, 0a240h
+        lxi     bc, 8bc5h       ;0a240h
         push    bc
-        lxi     bc, 2000h        
+        lxi     bc, 0ef7eh      ;2000h        
         push    bc
 ; затираем след во втором плане
         lxi     bc, 0000h
