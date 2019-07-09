@@ -1826,6 +1826,7 @@ TimeToMove
         jc      ContinueMoving
 ; прекратить жизненный цикл бонуса в силу разных причин
 ; встреча с дубиной?
+        push    hl
         inr     l       ; старший байт экранного адреса
         lda     BattyPos
         rar
@@ -1853,6 +1854,7 @@ Hit
         mvi     a, 50
         call    UpdateScore
 RIP        
+        pop     hl
 ; стереть с экрана TODO
 ; тупо нарисуем пустое место
         push    hl
