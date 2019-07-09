@@ -341,17 +341,23 @@ PaintLevel
         push    hl
         push    bc
 
+; нарисуем фейковый ноль для симметрии (вряд ли когда-нибудь уровней будет больше 99)
+
+        xra     a
+        lxi     bc, 0x3650
+        call    PaintDigit
+
         lda     Level
         push    a
         rar
         rar
         rar
         rar
-        lxi     bc, 0x3650
+        lxi     bc, 0x3850
         call    PaintDigit
 
         pop     a
-        lxi     bc, 0x3850
+        lxi     bc, 0x3a50
         call    PaintDigit
 
         pop     bc
