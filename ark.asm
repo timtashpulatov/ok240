@@ -171,6 +171,21 @@ VeryBegin
 
         call    DrawLevel
 
+
+        lxi     bc, 0208h
+        lxi     hl, VERT_FRAME
+        call    PaintBitmap
+
+        lxi     bc, 0210h
+        lxi     hl, VERT_FRAME+16
+        call    PaintBitmap
+
+        lxi     bc, 0218h
+        lxi     hl, VERT_FRAME+32
+        call    PaintBitmap
+
+
+
         call    PaintBatty        
 
         call    InitBonusList
@@ -2752,6 +2767,9 @@ DIGITS
         db64    AABgYGdnPj4AAAAAAAAAAAAAZ2dnZz4+AAAAAAAAAAAAADg4HBwcHAAAAAAAAAAAAABnZ2dnPj4A
         db64    AAAAAAAAAAAAYGBnZz4+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+
+VERT_FRAME
+        db64    v78CvwK/v7+/vwK/Ar+/v7+/EVVVVVVEv78RVVVVVUS/v78CvwK/v7+/vwK/Ar+/
 
 ; Верхний и нижний ряды у мячика можно срезать и выводить только ШЕСТЬ строк
 
