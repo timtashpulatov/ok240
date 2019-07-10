@@ -203,7 +203,7 @@ VeryBegin
         lxi     hl, VERT_FRAME+96
         call    PaintBitmap
 
-        lxi     bc, 0608h
+        lxi     bc, 3008h
         lxi     hl, VERT_FRAME+112
         call    PaintBitmap
 
@@ -2831,11 +2831,11 @@ BATTY1  db      4
         ; db      0, 0, 15, 15, 15, 0, 0, 0
         ; ds      16
 
-        db      6, 255, 57h, 0abh, 57h, 255, 6, 0
+        db      254, 255, 57h, 0abh, 57h, 255, 6, 0
         db      0, 0, 0fch, 0fch, 0fch, 0, 0, 0
-        db      0, 255, 55h, 0aah, 55h, 255, 0, 0
+        db      255, 255, 55h, 0aah, 55h, 255, 0, 0
         db      0, 0, 255, 255, 255, 0, 0, 0
-        db      6, 15, 13, 14, 13, 15, 6, 0
+        db      7, 15, 13, 14, 13, 15, 6, 0
         db      0, 0, 3, 3, 3, 0, 0, 0
         ds      16
 
