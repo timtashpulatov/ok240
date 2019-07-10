@@ -171,17 +171,40 @@ VeryBegin
 
         call    DrawLevel
 
+; Рамка игрового поля: вертикальная часть
 
-        lxi     bc, 0208h
+        lxi     bc, 0210h
         lxi     hl, VERT_FRAME
         call    PaintBitmap
 
-        lxi     bc, 0210h
+        lxi     bc, 0218h
         lxi     hl, VERT_FRAME+16
         call    PaintBitmap
 
-        lxi     bc, 0218h
+        lxi     bc, 0220h
         lxi     hl, VERT_FRAME+32
+        call    PaintBitmap
+
+        lxi     bc, 0228h
+        lxi     hl, VERT_FRAME+48
+        call    PaintBitmap
+
+        lxi     bc, 0230h
+        lxi     hl, VERT_FRAME+64
+        call    PaintBitmap
+
+; Левый уголок, горизонталь, правый уголок
+
+        lxi     bc, 0208h
+        lxi     hl, VERT_FRAME+80
+        call    PaintBitmap
+
+        lxi     bc, 0408h
+        lxi     hl, VERT_FRAME+96
+        call    PaintBitmap
+
+        lxi     bc, 0608h
+        lxi     hl, VERT_FRAME+112
         call    PaintBitmap
 
 
@@ -2769,7 +2792,10 @@ DIGITS
         db64    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 
 VERT_FRAME
-        db64    v78CvwK/v7+/vwK/Ar+/v7+/EVVVVVVEv78RVVVVVUS/v78CvwK/v7+/vwK/Ar+/
+        db64    Xl4EXgReXl5eXgReBF5eXl4IKioqIl5eXggqKioiXl5eXgReBF5eAF5eBF4EXl4AAAwsLCwsLCwA
+        db64    DCwsLCwsLCwsLCwsLCwALCwsLCwsLAAAAPj8rEysAAAA+PysTKwAAAD//6pVqgAAAP//qlWqAAAA
+        db64    Fy8uLSwAAAAXLy4tLAA=
+
 
 ; Верхний и нижний ряды у мячика можно срезать и выводить только ШЕСТЬ строк
 
@@ -2834,7 +2860,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 
 
 
-        .org 1300h
+        .org 1400h
 ; *********************************************************************
 ; Кирпичики
 ; 00 - пустое место
