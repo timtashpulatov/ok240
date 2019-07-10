@@ -133,34 +133,28 @@ VeryBegin
         sta     Batties
 
 ; Кирпич 1
-        lxi     bc, 0400h
-        lxi     hl, BONUS16
-        call    PaintBrick
+        ; lxi     bc, 0400h
+        ; lxi     hl, BONUS16
+        ; call    PaintBrick
 
-        lxi     bc, 0808h
-        lxi     hl, BRICK1
-        call    PaintBrick
+        ; lxi     bc, 0808h
+        ; lxi     hl, BRICK1
+        ; call    PaintBrick
 
-        lxi     bc, 0c08h
-        lxi     hl, BRICK1
-        call    PaintBrick
+        ; lxi     bc, 0c08h
+        ; lxi     hl, BRICK1
+        ; call    PaintBrick
 
-        lxi     bc, 1010h
-        lxi     hl, BRICK2
-        call    PaintBrick
+        ; lxi     bc, 1010h
+        ; lxi     hl, BRICK2
+        ; call    PaintBrick
         
-        lxi     bc, 1410h
-        lxi     hl, BRICK2
-        call    PaintBrick
+        ; lxi     bc, 1410h
+        ; lxi     hl, BRICK2
+        ; call    PaintBrick
 
         call    FillBattyBuf
         call    FillBallPhases
-
-
-;        lxi     bc, 00e8h
- ;       lxi     hl, BATTYBUF-1
-  ;      call    PaintHorizontalBitmap
-
 
 
         call    PaintBall
@@ -207,7 +201,10 @@ VeryBegin
         lxi     hl, VERT_FRAME+112
         call    PaintBitmap
 
-
+; SCHET
+        lxi     hl, SCHET
+        lxi     bc, 360eh
+        call    PaintHorizontalBitmap4
 
         call    PaintBatty        
 
@@ -2797,6 +2794,10 @@ VERT_FRAME
         db64    Fy8uLSwAAAAXLy4tLAA=
 
 
+SCHET   db64    AAAAAAAAAH5+A39/f39/AAAAAAAAAAB8fX19fX9+fAAAAAAAAAAAfn4DfwN/f38AAAAAAAAAAFc/
+        db64    f1dXV1dXAA==
+
+
 ; Верхний и нижний ряды у мячика можно срезать и выводить только ШЕСТЬ строк
 
 BALL    db      0, 0, 0, 0, 0, 0, 0, 0
@@ -2867,7 +2868,7 @@ BALLPTRARRAY    dw      BALLPHASES,     BALLPHASES+32,  BALLPHASES+64,  BALLPHAS
 ; *********************************************************************
 PLAYFIELD
 LEVEL_1 
-        db      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0
+        db      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 0, 0, 0
         db      82h, 81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,81h,83h, 0, 0, 0
         db      82h, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83h, 0, 0, 0
         db      82h, 5, 5, 0, 0, 81h, 0, 81h, 0, 0, 0,0,83h, 0, 0, 0
