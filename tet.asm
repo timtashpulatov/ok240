@@ -1758,10 +1758,10 @@ ANOTHER_BRICK
 ;        db      0ffh, 0bdh, 43h, 5bh, 4bh, 43h, 3dh, 3
         db      0, 3ch, 42h, 5ah, 4ah, 42h, 3ch, 0
 
-CHECKERS
+CHECKERS1
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
-CHECKERS1
+CHECKERS
         db      88h, 0, 22h, 0, 88h, 0, 22h, 0
         db      88h, 0, 22h, 0, 88h, 0, 22h, 0
 
