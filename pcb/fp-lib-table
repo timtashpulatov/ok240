@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "ok240")(type "KiCad")(uri "${KIPRJMOD}/footprints")(options "")(descr ""))
+)
