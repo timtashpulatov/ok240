@@ -1,4 +1,4 @@
-23059128980727323
+23062536864656295
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -94941,6 +94941,13 @@ Was C300.fp_dup108
 2
 2
 ok240
+Cpol
+C100_dup251
+
+0
+2
+2
+ok240
 DIP8
 DIP8.fp_dup55
 
@@ -94975,6 +94982,13 @@ DIP28.fp_dup33
 0
 28
 28
+ok240
+DIP40
+Was DIP40.fp_dup10
+
+0
+40
+40
 ok240
 KT315
 KT315
