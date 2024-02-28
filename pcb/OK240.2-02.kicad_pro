@@ -232,7 +232,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "../../../ok240pcb.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
