@@ -21414,7 +21414,7 @@
 				)
 			)
 		)
-		(property "Value" "X5"
+		(property "Value" ""
 			(at 3.302 1.524 0)
 			(layer "F.Fab")
 			(uuid "38b67bf4-8599-469a-b14b-93ed953d1b18")
@@ -21841,19 +21841,7 @@
 			(uuid "baea0f76-b81c-4e42-8da3-04121d852065")
 		)
 		(embedded_fonts no)
-		(model ":KICAD7_3DMODEL_DIR:Connector_PinHeader_2.54mm.3dshapes/PinHeader_2x15_P2.54mm_Vertical.step"
-			(hide yes)
-			(offset
-				(xyz 0 0 0)
-			)
-			(scale
-				(xyz 1 1 1)
-			)
-			(rotate
-				(xyz 0 0 90)
-			)
-		)
-		(model ":KICAD7_3DMODEL_DIR:Connector_IDC.3dshapes/IDC-Header_2x15_P2.54mm_Horizontal.step"
+		(model "${KICAD9_3DMODEL_DIR}/Connector_IDC.3dshapes/IDC-Header_2x15_P2.54mm_Horizontal.step"
 			(offset
 				(xyz -35.56 -2.54 0)
 			)
@@ -21861,7 +21849,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 -90)
+				(xyz -0 -0 -90)
 			)
 		)
 	)
@@ -60769,19 +60757,7 @@
 			(uuid "825d17c7-9563-4b05-af66-a448251d6df9")
 		)
 		(embedded_fonts no)
-		(model ":KICAD7_3DMODEL_DIR:Connector_PinHeader_2.54mm.3dshapes/PinHeader_2x15_P2.54mm_Vertical.step"
-			(hide yes)
-			(offset
-				(xyz 0 0 0)
-			)
-			(scale
-				(xyz 1 1 1)
-			)
-			(rotate
-				(xyz 0 0 90)
-			)
-		)
-		(model ":KICAD7_3DMODEL_DIR:Connector_IDC.3dshapes/IDC-Header_2x15_P2.54mm_Horizontal.step"
+		(model "${KICAD9_3DMODEL_DIR}/Connector_IDC.3dshapes/IDC-Header_2x15_P2.54mm_Horizontal.step"
 			(offset
 				(xyz -35.56 -2.54 0)
 			)
@@ -60789,7 +60765,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 -90)
+				(xyz -0 -0 -90)
 			)
 		)
 	)
@@ -65665,7 +65641,7 @@
 		(uuid "ecf8e863-2b0c-4043-8746-9423aaad069d")
 		(at 105.9688 65.786)
 		(descr "HEADER30_2.fp_dup2")
-		(property "Reference" "Xe"
+		(property "Reference" "X4"
 			(at 0 -2.794 0)
 			(layer "F.SilkS")
 			(uuid "34d6937a-d719-4356-b37d-a67afd99e8d5")
@@ -65676,7 +65652,7 @@
 				)
 			)
 		)
-		(property "Value" "X4"
+		(property "Value" "FLOPPY"
 			(at 3.302 1.524 0)
 			(layer "F.Fab")
 			(uuid "b64bccec-fdfc-4400-8088-539e5b7488a1")
@@ -66103,19 +66079,7 @@
 			(uuid "019e9989-28ef-42cc-b20b-25b0f53817aa")
 		)
 		(embedded_fonts no)
-		(model ":KICAD7_3DMODEL_DIR:Connector_PinHeader_2.54mm.3dshapes/PinHeader_2x15_P2.54mm_Vertical.step"
-			(hide yes)
-			(offset
-				(xyz 0 0 0)
-			)
-			(scale
-				(xyz 1 1 1)
-			)
-			(rotate
-				(xyz 0 0 90)
-			)
-		)
-		(model ":KICAD7_3DMODEL_DIR:Connector_IDC.3dshapes/IDC-Header_2x15_P2.54mm_Horizontal.step"
+		(model "${KICAD9_3DMODEL_DIR}/Connector_IDC.3dshapes/IDC-Header_2x15_P2.54mm_Horizontal.step"
 			(offset
 				(xyz -35.56 -2.54 0)
 			)
@@ -66123,7 +66087,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 -90)
+				(xyz -0 -0 -90)
 			)
 		)
 	)
