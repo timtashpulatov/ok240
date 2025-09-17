@@ -65,9 +65,6 @@ START:	LDA	0xb20d		;A=1st character of parameter 1
 	MVI	C,PRINT
 	CALL	BDOS
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; DONE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DONE:
         call    0xb3d5          ; ??
         jmp     0xb986          ; ??
@@ -102,7 +99,7 @@ PURGE:	MVI	B,1		;times out after 1 second if no data
 ;RECEIVE$FILE -- Receive the file via XMODEM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 RECEIVEFILE:
-	CALL	ERASEOLDFILE
+	CALL	e
 	CALL	MAKENEWFILE
 	MVI	A,NAK
 	CALL	SEND		;SEND NAK
