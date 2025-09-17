@@ -42,7 +42,11 @@ FCB	EQU	5CH	;DEFAULT FCB
 PARAM1	EQU	FCB+1	;COMMAND LINE PARAMETER 1 IN FCB
 PARAM2	EQU	PARAM1+16	;COMMAND LINE PARAMETER 2
 
-	.org 100h
+RSECTNO	EQU	0xb208	;RECEIVED SECTOR NUMBER
+SECTNO	EQU	0xb209	;CURRENT SECTOR NUMBER
+
+
+	.org 0dd1ch
 	
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,13 +58,19 @@ PARAM2	EQU	PARAM1+16	;COMMAND LINE PARAMETER 2
 ;
 ;Falls through to DOXFER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-START:	LDA	PARAM1		;A=1st character of parameter 1
+START:	LDA	0xb20d		;A=1st character of parameter 1
 	CPI	' '		;make sure file name present
-	JNZ	HAVEFN		;yes, have a file name
+	JZ	HAVEFN		;yes, have a file name
 	LXI	D,MHELP		;display usage message
 	MVI	C,PRINT
 	CALL	BDOS
-	RET			;return to CPM
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; DONE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+DONE:
+        call    0xb3d5          ; ??
+        jmp     0xb986          ; ??
 
 HAVEFN:	
 	LXI	D,MSENDC	;CONSOLE port send message
@@ -69,10 +79,10 @@ HAVEFN:
 ;DOXFER -- Switch to a local stack and start transfer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DOXFER:	
-	LXI	H,0		;HL=0
-	DAD	SP		;HL=STACK FROM CP/M
-	SHLD	STACK		;..SAVE IT
-	LXI	SP,STACK	;SP=MY STACK
+; 	LXI	H,0		;HL=0
+; 	DAD	SP		;HL=STACK FROM CP/M
+; 	SHLD	STACK		;..SAVE IT
+; 	LXI	SP,STACK	;SP=MY STACK
 	XRA	A
 	STA	SECTNO		;init sector number to zero
 	MVI	C,PRINT		;print the send message
@@ -183,7 +193,7 @@ DOACK:	MVI	A,ACK
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 WRITEERROR:
 	CALL	ERXIT
-	DB	CR,LF,LF,'Error Writing File',CR,LF,'$'
+	DB	CR,LF,LF,'WErr',CR,LF,'$'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;GOT$EOT -- Handle end-of-transfer
@@ -197,7 +207,7 @@ GOTEOT:
 	INR	A
 	JNZ	XFERCPLT
 	CALL	ERXIT
-	DB	CR,LF,LF,'Error Closing File',CR,LF,'$'
+	DB	CR,LF,LF,'CErr',CR,LF,'$'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ERASE$OLD$FILE -- Delete any existing file before transfer
@@ -233,8 +243,7 @@ MAKENEWFILE:
 ;DIRFUL -- Print directory full error and exit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DIRFUL:	CALL	ERXIT
-	DB	CR,LF,LF,"Error - Can't Make File",CR,LF
-	DB	"(directory must be full)",CR,LF,'$'
+	DB	CR,LF,LF, "Full",CR,LF,'$'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ERXIT -- Exit and print an error message
@@ -245,10 +254,11 @@ DIRFUL:	CALL	ERXIT
 ERXIT:	POP	D		;GET MESSAGE
 	MVI	C,PRINT
 	CALL	BDOS		;PRINT MESSAGE
-EXIT:	LHLD	STACK		;GET ORIGINAL STACK
-	SPHL			;RESTORE IT
-	RET			;Back to CP/M
-
+EXIT:	
+;         LHLD	STACK		;GET ORIGINAL STACK
+; 	SPHL			;RESTORE IT
+; 	RET			;Back to CP/M
+        jmp     Done
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;RECV -- XMODEM receive routine
@@ -316,29 +326,26 @@ SENDW	IN	USARTC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 XFERCPLT:
 	CALL	ERXIT
-	DB	CR,LF,LF,'Transfer Complete',CR,LF,'$'
+	DB	CR,LF,LF,'OK',CR,LF,'$'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ABORT -- Exit from a user abort
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ABORT:	call	ERXIT
-	db	CR,LF,LF,'Transfer Aborted',CR,LF,'$'
-
+	db	CR,LF,LF,'NOK',CR,LF,'$'
+        
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Message Strings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-MSENDC:	db	'Send file using XMODEM on RS232...$'
-MHELP:	db	CR,LF,'PCGET v1.0.1 for OKEAH-240',CR,LF,LF
-	db	'Receives a file from a PC through a serial port',CR,LF
-	db	'using the XMODEM protocol.',CR,LF,LF
-	db	'Usage: PCGET file.ext',CR,LF,'$'
+MSENDC:	db	CR,LF,'Go!',CR,LF,'$'
+MHELP:	db	CR,LF,'File name?',CR,LF,'$'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Variables and Storage Defines
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	DS	40	;STACK AREA
 STACK	DS	2	;STACK POINTER
-RSECTNO	DS	1	;RECEIVED SECTOR NUMBER
-SECTNO	DS	1	;CURRENT SECTOR NUMBER
+; RSECTNO	DS	1	;RECEIVED SECTOR NUMBER
+; SECTNO	DS	1	;CURRENT SECTOR NUMBER
 
 	END
