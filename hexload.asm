@@ -59,6 +59,16 @@ SetFileNameInFCB:
         lxi     d, FCB
         mvi     c, F_WRITE
         call    BDOS
+
+; Write another sector
+        lxi     d, 0c080h
+        mvi     c, SETDMA
+        call    BDOS
+
+
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
         
 ; Close file
         lxi     d, FCB
