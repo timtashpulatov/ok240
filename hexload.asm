@@ -1,4 +1,4 @@
-	.project pops
+	.project read.hex
 
 WARMBOOT        equ     0e003h
 COUT            equ     0e00ch
@@ -23,9 +23,10 @@ UART_CTRL       equ     0a1h
 CR              equ     10
 LF              equ     13
 
-        .org    100h
-        
+        .org    08000h
+;       .org    0dd1ch  ; Start address of READ user command in REL.8 ROM        
 
+#ifdef pops
         lxi     de, GREETING
         mvi     c, C_WRITESTR
         call    BDOS
@@ -76,6 +77,8 @@ SetFileNameInFCB:
         call    BDOS
         
         jmp     Done
+
+#endif
         
 WaitForLineBeginning
         call    RIN
@@ -85,14 +88,14 @@ WaitForLineBeginning
         xra     a
         mov     d, a    ; init checksum
         
-        call    RIN_BYTE
+        call    RIN_BYTE        ; byte count
         jz      EndOfFile
-        mov     e, a    ; byte count
-        call    RIN_BYTE
-        mov     h, a    ; address HI
-        call    RIN_BYTE
-        mov     l, a    ; address LO
-        call    RIN_BYTE
+        mov     e, a    
+        call    RIN_BYTE        ; address HI
+        mov     h, a    
+        call    RIN_BYTE        ; address LO
+        mov     l, a    
+        call    RIN_BYTE        ; record type
         
         mov     c, e
 ReceiveRecord
@@ -158,9 +161,14 @@ CTN:
         ora     a
         ret
         
+#ifdef pops        
         
 GREETING:
         db      CR,LF,'Pops!',CR,LF,'$'
 FILEEXT_BEGIN:
         db      0,'12345678SAV'
 FILEEXT_END:        
+
+#endif
+
+        end
