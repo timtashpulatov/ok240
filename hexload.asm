@@ -8,8 +8,8 @@ FCB             equ     5ch
 
 BDOS            equ     5
 
+P_TERMCPM       equ     0
 C_WRITESTR      equ     9
-
 F_CLOSE         equ     16
 F_WRITE         equ     21
 F_MAKE          equ     22
@@ -23,7 +23,7 @@ UART_CTRL       equ     0a1h
 CR              equ     10
 LF              equ     13
 
-        .org    1000h
+        .org    100h
         
 
         lxi     de, GREETING
@@ -65,6 +65,8 @@ SetFileNameInFCB:
         mvi     c, F_CLOSE
         call    BDOS
         
+        jmp     Done
+        
 WaitForLineBeginning
         call    RIN
         cpi     ':'
@@ -105,7 +107,9 @@ Error:
         mvi     c, C_WRITESTR
         call    BDOS
 Done:        
-        jmp     WARMBOOT
+        mvi     c, P_TERMCPM
+        jmp     BDOS
+
 Err:    db      CR,LF,'?Err',CR,LF,'$'        
         
 RIN_BYTE:
