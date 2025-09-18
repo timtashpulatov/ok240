@@ -9,8 +9,12 @@ FCB             equ     5ch
 BDOS            equ     5
 
 C_WRITESTR      equ     9
-SETDMA          equ     12
+
+F_CLOSE         equ     16
+F_WRITE         equ     21
 F_MAKE          equ     22
+
+SETDMA          equ     26
 
 
 UART_DATA       equ     0a0h
@@ -41,9 +45,24 @@ SetFileNameInFCB:
         jnz     SetFileNameInFCB
 
 ; Make new file
-
         lxi     d, FCB
         mvi     c, F_MAKE
+        call    BDOS
+        
+; Write some garbage
+; Set DMA address
+        lxi     d, 0c000h
+        mvi     c, SETDMA
+        call    BDOS
+
+; Write one sector
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
+        
+; Close file
+        lxi     d, FCB
+        mvi     c, F_CLOSE
         call    BDOS
         
 WaitForLineBeginning
