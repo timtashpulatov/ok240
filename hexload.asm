@@ -4,9 +4,14 @@ WARMBOOT        equ     0e003h
 COUT            equ     0e00ch
 RIN             equ     0e00fh
 
+FCB             equ     5ch
+
 BDOS            equ     5
 
 C_WRITESTR      equ     9
+SETDMA          equ     12
+F_MAKE          equ     22
+
 
 UART_DATA       equ     0a0h
 UART_CTRL       equ     0a1h
@@ -19,6 +24,26 @@ LF              equ     13
 
         lxi     de, GREETING
         mvi     c, C_WRITESTR
+        call    BDOS
+        
+; Fill FCB
+        lxi     h, FCB
+        push    h
+        
+        mvi     c, FILEEXT_END-FILEEXT_BEGIN
+        lxi     de, FILEEXT_BEGIN
+SetFileNameInFCB:
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+        dcr     c
+        jnz     SetFileNameInFCB
+
+; Make new file
+
+        lxi     d, FCB
+        mvi     c, F_MAKE
         call    BDOS
         
 WaitForLineBeginning
@@ -103,3 +128,6 @@ CTN:
         
 GREETING:
         db      CR,LF,'Pops!',CR,LF,'$'
+FILEEXT_BEGIN:
+        db      0,'12345678SAV'
+FILEEXT_END:        
