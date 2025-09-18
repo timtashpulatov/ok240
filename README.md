@@ -8,7 +8,7 @@ https://svofski.github.io/pretty-8080-assembler/?https://raw.githubusercontent.c
 
 https://svofski.github.io/pretty-8080-assembler/?https://raw.githubusercontent.com/timtashpulatov/ok240/master/ark.asm
 
-https://svofski.github.io/pretty-8080-assembler/?https://raw.githubusercontent.com/timtashpulatov/ok240/master/pcget.asm
+https://svofski.github.io/pretty-8080-assembler/?https://raw.githubusercontent.com/timtashpulatov/ok240/master/hexload.asm
 
 Literature:
 
