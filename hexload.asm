@@ -1,4 +1,4 @@
-	.project read.hex
+	.project read
 
 WARMBOOT        equ     0e003h
 COUT            equ     0e00ch
@@ -23,13 +23,14 @@ UART_CTRL       equ     0a1h
 CR              equ     10
 LF              equ     13
 
-        .org    08000h
-;       .org    0dd1ch  ; Start address of READ user command in REL.8 ROM        
 
-#ifdef pops
+        .org    0dd1ch  ; Start address of READ user command in REL.8 ROM        
+
         lxi     de, GREETING
         mvi     c, C_WRITESTR
         call    BDOS
+
+#ifdef pops
         
 ; Fill FCB
         lxi     h, FCB
@@ -162,13 +163,12 @@ CTN:
         ret
         
 #ifdef pops        
-        
-GREETING:
-        db      CR,LF,'Pops!',CR,LF,'$'
 FILEEXT_BEGIN:
         db      0,'12345678SAV'
 FILEEXT_END:        
-
 #endif
+
+GREETING:
+        db      CR,LF,'Reading HEX via RS232 interface...','$'
 
         end
