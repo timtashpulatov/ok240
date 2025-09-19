@@ -4,7 +4,8 @@ HEXOUT          equ     0e003h
 COUT            equ     0e00ch
 RIN             equ     0e00fh
 
-LENGTH          equ     0b208h      ; use CPP command buffer as var storage  
+LENGTH          equ     0b208h  ; use CPP command buffer as var storage  
+PARAM           equ     0b20ch  ; optional param after 'READ ' command
 
 FCB             equ     5ch
 
@@ -26,9 +27,9 @@ CR              equ     10
 LF              equ     13
 
 
-        ; .org    0dd1ch  ; Start address of READ user command in REL.8 ROM        
+        .org    0dd1ch  ; Start address of READ user command in REL.8 ROM        
 
-        .org 100h
+        ; .org 100h
 
         lxi     de, GREETING
         call    PrintDE
@@ -153,6 +154,17 @@ Done:
         lxi     de, BytesRead
         call    PrintDE
 
+; See if optional parameters are given
+        lda     PARAM
+        cpi     ' '
+        jnz     Done1
+
+        mvi     a, '$'
+        sta     PARAM+12
+        lxi     de, PARAM+1
+        call    PrintDE
+
+Done1:
         mvi     c, P_TERMCPM
         jmp     BDOS
 
@@ -227,4 +239,3 @@ GREETING:
         db      CR,LF,'Read HEX from RS232... ','$'
 
         end
-
