@@ -157,7 +157,7 @@ Done:
         jmp     BDOS
 
 BytesRead:
-        db      ' bytes.',CR,LF,'$'
+        db      'h bytes.',CR,LF,'$'
 Err:    db      'error!',CR,LF,'$'        
         
 RIN_BYTE:
@@ -227,3 +227,4 @@ GREETING:
         db      CR,LF,'Read HEX from RS232... ','$'
 
         end
+
