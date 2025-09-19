@@ -4,6 +4,8 @@ HEXOUT          equ     0e003h
 COUT            equ     0e00ch
 RIN             equ     0e00fh
 
+LENGTH          equ     0b208h      ; use CPP command buffer as var storage  
+
 FCB             equ     5ch
 
 BDOS            equ     5
@@ -82,7 +84,7 @@ SetFileNameInFCB:
 
 #endif
         
-LENGTH  equ     0b208h        
+
         
         lxi     hl, 0
         shld    LENGTH
@@ -140,7 +142,7 @@ EndOfFile:
         jz      Done
 Error:        
         lxi     de, ERR
-        call    PrintDE
+        jmp     PrintDE
 Done:        
         lhld    LENGTH
         mov     a, h
@@ -156,7 +158,7 @@ Done:
 
 BytesRead:
         db      ' bytes.',CR,LF,'$'
-Err:    db      CR,LF,'?Err',CR,LF,'$'        
+Err:    db      'error!',CR,LF,'$'        
         
 RIN_BYTE:
         push    b
