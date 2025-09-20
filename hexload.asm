@@ -144,8 +144,11 @@ EndOfFile:
 Error:        
         lxi     de, ERR
         jmp     PrintDE
-Done:        
+Done:   
+
+; Print number of bytes received (in hex)
         lhld    LENGTH
+        push    hl
         mov     a, h
         call    HEXOUT
         mov     a, l
@@ -153,6 +156,21 @@ Done:
 
         lxi     de, BytesRead
         call    PrintDE
+        pop     hl
+
+; Calculate number of blocks
+        mov     a, l
+        adi     0ffh
+        mov     a, h
+        aci     0
+        push    psw
+        call    HEXOUT
+
+        lxi     de, BlocksRead
+        call    PrintDE
+        pop     psw
+
+
 
 ; See if optional parameters are given
         lda     PARAM
@@ -164,12 +182,48 @@ Done:
         lxi     de, PARAM+1
         call    PrintDE
 
+; Fill FCB
+        lxi     h, FCB
+        push    h
+        
+        mvi     c, FILEEXT_END-FILEEXT_BEGIN
+        lxi     de, FILEEXT_BEGIN
+SetFileNameInFCB:
+        ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+        dcr     c
+        jnz     SetFileNameInFCB
+
+; Make new file
+        lxi     d, FCB
+        mvi     c, F_MAKE
+        call    BDOS
+
+; Set DMA address
+        lxi     d, 0100h
+        mvi     c, SETDMA
+        call    BDOS
+
+; Write one sector
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
+
+; Close file
+        lxi     d, FCB
+        mvi     c, F_CLOSE
+        call    BDOS
+
 Done1:
         mvi     c, P_TERMCPM
         jmp     BDOS
 
 BytesRead:
-        db      'h bytes.',CR,LF,'$'
+        db      'h bytes (','$'
+BlocksRead:
+        db      ' blocks)',CR,LF,'$'
 Err:    db      'error!',CR,LF,'$'        
         
 RIN_BYTE:
@@ -213,27 +267,9 @@ PrintDE:
         jmp    BDOS
 
 
-#ifdef pops        
-MyRIN:
-        in      0a1h
-        ani     2
-        jz      Machine
-        
-        in      0a0h
-        ani     7fh
-        ret
-        
-Machine:
-        in      0e1h
-        xri     38h
-        out     0e1h
-
-        jmp     MyRIN
-        
 FILEEXT_BEGIN:
         db      0,'12345678SAV'
 FILEEXT_END:        
-#endif
 
 GREETING:
         db      CR,LF,'Read HEX from RS232... ','$'
