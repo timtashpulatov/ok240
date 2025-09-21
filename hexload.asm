@@ -94,12 +94,12 @@ EndOfFile:
         call    RIN_BYTE
         call    RIN_BYTE
         call    RIN_BYTE
-        jz      Done
+        jz      FileReceived
 Error:        
         lxi     de, ERR
         jmp     PrintDE
-Done:   
 
+FileReceived:
 ; Print number of bytes received (in hex)
         lhld    LENGTH
         push    hl
@@ -113,6 +113,7 @@ Done:
         pop     hl
 
 ; Calculate number of blocks
+; "<pages> is the number of 256 byte pages starting at address 100(h) to save"
         mov     a, l
         adi     0ffh
         mov     a, h
@@ -120,7 +121,7 @@ Done:
         push    psw
         call    HEXOUT
 
-        lxi     de, BlocksRead
+        lxi     de, PagesRead
         call    PrintDE
         pop     psw
 
@@ -166,8 +167,8 @@ Done1:
 
 BytesRead:
         db      'h bytes (','$'
-BlocksRead:
-        db      ' blocks)',CR,LF,'$'
+PagesRead:
+        db      ' pages)',CR,LF,'$'
 Err:    db      'error!',CR,LF,'$'        
         
 RIN_BYTE:
