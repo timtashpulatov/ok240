@@ -4,8 +4,9 @@ HEXOUT          equ     0e003h
 COUT            equ     0e00ch
 RIN             equ     0e00fh
 
-LENGTH          equ     0b208h  ; use CPP command buffer as var storage  
-PARAM           equ     0b20ch  ; optional param after 'READ ' command
+LENGTH          equ     0b208h  ; use CPP command buffer as var storage
+SECTORS           equ     0b20ah  ; ditto
+PTR             equ     0b20bh  ; write pointer
 
 FCB             equ     5ch
 
@@ -100,9 +101,8 @@ Error:
         jmp     PrintDE
 
 FileReceived:
-; Print number of bytes received (in hex)
+; Print number of bytes received (in hex) 
         lhld    LENGTH
-        push    hl
         mov     a, h
         call    HEXOUT
         mov     a, l
@@ -110,20 +110,21 @@ FileReceived:
 
         lxi     de, BytesRead
         call    PrintDE
-        pop     hl
 
-; Calculate number of blocks
+; Calculate number of pages
 ; "<pages> is the number of 256 byte pages starting at address 100(h) to save"
+; 1 256-byte page = 2 128 byte sectors
+        lhld    LENGTH
         mov     a, l
         adi     0ffh
         mov     a, h
         aci     0
-        push    psw
+        ral
+        sta     SECTORS
         call    HEXOUT
-
+ 
         lxi     de, PagesRead
         call    PrintDE
-        pop     psw
 
 ; See if optional filename was given
         call    fillfcb0
@@ -131,7 +132,7 @@ FileReceived:
 
         lda     COMFCB+1
         cpi     ' '
-        jz     Done1
+        jz     Done
 
 ; Create new file
         lxi     d, COMFCB
@@ -140,8 +141,13 @@ FileReceived:
         inr     a
         jz      Error
 
+        lxi     h, 0100h
+        shld    PTR
+
+WriteSectors:
 ; Set DMA address
-        lxi     d, 0100h
+        lhld    PTR
+        xchg
         mvi     c, SETDMA
         call    BDOS
 
@@ -153,6 +159,16 @@ FileReceived:
         ora      a
         jnz     Error
 
+        lhld    PTR
+        lxi     d, 128
+        dad     d
+        shld    PTR
+
+        lda     SECTORS
+        dcr     a
+        sta     SECTORS
+        jnz     WriteSectors
+
 ; Close file
         lxi     d, COMFCB
         mvi     c, F_CLOSE
@@ -161,7 +177,7 @@ FileReceived:
         cpi     0ffh
         jz      Error
 
-Done1:
+Done:
         mvi     c, P_TERMCPM
         jmp     BDOS
 
