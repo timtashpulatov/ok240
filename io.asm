@@ -7,7 +7,7 @@
  
         lxi     h, 80h  ; FCB
  
-        mov     m, a
+        mov     a, m
         ora     a
         jnz     PortAddr
 
