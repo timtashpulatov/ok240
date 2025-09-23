@@ -5,46 +5,45 @@
  ; If one parameter is given, perform IN <param1> operation
  ; For two parameters, perform OUT <param1>, <param2>
  
-        lda     80h     ; FCB
+        lxi     h, 80h  ; FCB
+ 
+        mov     m, a
         ora     a
         jnz     PortAddr
 
         jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
 
 PortAddr:
-        ; cpi     3
-        ; jnz     Write
-        
-        lda     82h     ; 1st param first byte
-        call    ConvertNibble
+        inx     h       ; FCB+1
+        inx     h       ; FCB+2
+        call    ConvertNibble   ; 1st param first byte
         rlc
         rlc
         rlc
         rlc
-
         mov     c, a
         
-        lda     83h
+        inx     h       ; FCB+3
         call    ConvertNibble
         ora     c
         sta     Work+3
 
 PortData:
-        lda     85h     ; 2nd param first byte
-        call    ConvertNibble
+        inx     h       ; FCB+4
+        inx     h       ; FCB+5
+        call    ConvertNibble   ; 2nd param first byte
         rlc
         rlc
         rlc
         rlc
-
         mov     c, a
         
-        lda     86h
+        inx     h       ; FCB+6
         call    ConvertNibble
         ora     c
         sta     Work+1
         
-        lda     80h
+        lda     80h     ; FCB
         cpi     3
         jnz     Write
 
@@ -64,6 +63,7 @@ Work:
 
 
 ConvertNibble:
+        mov     a, m
         sui     '0'
         cpi     10
         rc
