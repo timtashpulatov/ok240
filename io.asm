@@ -2,9 +2,6 @@
         .org    100h
  
  ; Read from or write to IO port
- ; If one parameter is given, perform IN <param1> operation
- ; For two parameters, perform OUT <param1>, <param2>
- 
         lxi     h, 80h  ; FCB
  
         mov     a, m
