@@ -11,7 +11,14 @@
         ora     a
         jnz     PortAddr
 
-        jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
+;        jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
+
+        lxi     d, Help
+        mvi     c, 9
+        jmp     5
+Help:   db      'IO v0.1', 10, 13
+        db      'Usage: IO PP - read from port PP', 10, 13
+        db      '       IO PP DD - write DD to port PP', 10, 13, '$'
 
 PortAddr:
         inx     h       ; FCB+1
@@ -27,12 +34,7 @@ PortData:
         
         lda     80h     ; FCB
         cpi     3
-        jnz     Write
-
-Read:
-        mvi     a, 0dbh
-        sta     Work+2
-        jmp     Work
+        jz      Work
 
 Write:
         mvi     a, 0d3h
