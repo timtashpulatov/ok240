@@ -34,7 +34,24 @@ In:
         jmp     0e003h
 
 Write:
-        rst     0
+        lda     85h     ; first param first byte
+        call    ConvertNibble
+        rlc
+        rlc
+        rlc
+        rlc
+
+        mov     c, a
+        
+        lda     86h
+        call    ConvertNibble
+        ora     c
+        sta     Out+1
+        
+Out:
+        mvi     a, 00
+        out     00
+        jmp     0e003h
 
 ConvertNibble:
         sui     '0'
