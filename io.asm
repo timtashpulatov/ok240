@@ -7,13 +7,13 @@
  
         lda     80h     ; FCB
         ora     a
-        jnz     In
+        jnz     Read
 
         jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
 
-In:
+Read:
         cpi     3
-        jnz     Out
+        jnz     Write
         
         lda     82h     ; first param first byte
         call    ConvertNibble
@@ -27,10 +27,13 @@ In:
         lda     83h
         call    ConvertNibble
         ora     c
+        sta     In+1
         
+In:
+        in      00
         jmp     0e003h
 
-Out:
+Write:
         rst     0
 
 ConvertNibble:
