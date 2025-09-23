@@ -16,31 +16,13 @@
 PortAddr:
         inx     h       ; FCB+1
         inx     h       ; FCB+2
-        call    ConvertNibble   ; 1st param first byte
-        rlc
-        rlc
-        rlc
-        rlc
-        mov     c, a
-        
-        inx     h       ; FCB+3
-        call    ConvertNibble
-        ora     c
+        call    ConvertParam    ; 1st param first byte
         sta     Work+3
 
 PortData:
         inx     h       ; FCB+4
         inx     h       ; FCB+5
-        call    ConvertNibble   ; 2nd param first byte
-        rlc
-        rlc
-        rlc
-        rlc
-        mov     c, a
-        
-        inx     h       ; FCB+6
-        call    ConvertNibble
-        ora     c
+        call    ConvertParam    ; 2nd param first byte
         sta     Work+1
         
         lda     80h     ; FCB
@@ -61,6 +43,19 @@ Work:
         in      00
         jmp     0e003h
 
+
+ConvertParam:
+        call    ConvertNibble
+        rlc
+        rlc
+        rlc
+        rlc
+        mov     c, a
+        
+        inx     h
+        call    ConvertNibble
+        ora     c
+        ret
 
 ConvertNibble:
         mov     a, m
