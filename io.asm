@@ -7,15 +7,15 @@
  
         lda     80h     ; FCB
         ora     a
-        jnz     Read
+        jnz     PortAddr
 
         jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
 
-Read:
-        cpi     3
-        jnz     Write
+PortAddr:
+        ; cpi     3
+        ; jnz     Write
         
-        lda     82h     ; first param first byte
+        lda     82h     ; 1st param first byte
         call    ConvertNibble
         rlc
         rlc
@@ -27,14 +27,10 @@ Read:
         lda     83h
         call    ConvertNibble
         ora     c
-        sta     In+1
-        
-In:
-        in      00
-        jmp     0e003h
+        sta     Work+3
 
-Write:
-        lda     85h     ; first param first byte
+PortData:
+        lda     85h     ; 2nd param first byte
         call    ConvertNibble
         rlc
         rlc
@@ -46,12 +42,26 @@ Write:
         lda     86h
         call    ConvertNibble
         ora     c
-        sta     Out+1
+        sta     Work+1
         
-Out:
+        lda     80h
+        cpi     3
+        jnz     Write
+
+Read:
+        mvi     a, 0dbh
+        sta     Work+2
+        jmp     Work
+
+Write:
+        mvi     a, 0d3h
+        sta     Work+2
+
+Work:        
         mvi     a, 00
-        out     00
+        in      00
         jmp     0e003h
+
 
 ConvertNibble:
         sui     '0'
@@ -59,3 +69,4 @@ ConvertNibble:
         rc
         sui     7
         ret
+        
