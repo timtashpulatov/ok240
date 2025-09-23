@@ -5,23 +5,37 @@
  ; If one parameter is given, perform IN <param1> operation
  ; For two parameters, perform OUT <param1>, <param2>
  
-        lda     80h     ; FCB+1
+        lda     80h     ; FCB
         ora     a
         jnz     In
 
-
         jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
-
-;         lxi     de, Help
-;         mvi     c, 9
-;         call    BDOS
-;         rst     0
-; Help:
-;         db      '?', 13, 10, '$'
 
 In:
         cpi     3
         jnz     Out
+        
+        lda     82h     ; first param first byte
+        call    ConvertNibble
+        rlc
+        rlc
+        rlc
+        rlc
+
+        mov     c, a
+        
+        lda     83h
+        call    ConvertNibble
+        ora     c
+        
+        jmp     0e003h
 
 Out:
         rst     0
+
+ConvertNibble:
+        sui     '0'
+        cpi     10
+        rc
+        sui     7
+        ret
