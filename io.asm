@@ -5,15 +5,15 @@
         lxi     h, 80h  ; FCB
  
         mov     a, m
-        ora     a
-        jnz     PortAddr
+        cpi     1
+        jnc     PortAddr
 
 ;        jmp     0b422h  ; CP/M 2.2 REL.8 commerr1 routine
 
         lxi     d, Help
         mvi     c, 9
         jmp     5
-Help:   db      'IO v0.1', 10, 13
+Help:   db      'IO v0.2', 10, 13
         db      'Usage: IO PP - read from port PP', 10, 13
         db      '       IO PP DD - write DD to port PP', 10, 13, '$'
 
@@ -40,7 +40,30 @@ Write:
 Work:        
         mvi     a, 00
         in      00
-        jmp     0e003h
+        ; jmp     0e003h
+
+        push    psw
+        rrc
+        rrc
+        rrc
+        rrc
+        call    PrintNibble
+        pop     psw
+        jmp     PrintNibble
+
+
+PrintNibble:
+        ani     0fh
+        adi     '0'
+        cpi     03ah
+        jc      $+5
+        adi     7
+        mov     e, a
+        mvi     c, 2    ; Console Output
+        jmp     5
+        
+
+
 
 
 ConvertParam:
