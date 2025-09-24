@@ -49,7 +49,7 @@ Work:
         rrc
         call    PrintNibble
         pop     psw
-        jmp     PrintNibble
+        ; jmp     PrintNibble
 
 
 PrintNibble:
