@@ -8,19 +8,20 @@
         ; db      'AB'
         ; mov     b, c
         ; mov     b, d
-
+InitUserPort:
         mvi     a, 0ffh  ; port A input (data). ports B and C output (address and paging)
         out     PORT_CTRL
+        ret
 
-; Set ROM page (page number in C)
+; Set ROM page (page number in A)
 SetPage:        
-        mov     a, c
         ani     0fh             ; pages 0..15
         out     PORTC
         ori     0b10000000      ; strobe high
         out     PORTC
         ani     0b01111111      ; strobe low
         out     PORTC
+        ret
 
 ; Address in HL
 SetAddress:
@@ -29,7 +30,30 @@ SetAddress:
         mov     a, h
         ani     7fh
         out     PORTC           ; address bits A14..A8
+        ret
 
 ReadByte:
         in      PORTA
+        ret
+
+; Read block from page 0, address 0
+; 
+BLOCK_LEN       equ     512
+DEST_ADDR       equ     100h
+ReadLoader:
+        call    InitUserPort
+        xra     a
+        call    SetPage
+        lxi     de, DEST_ADDR
+        lxi     bc, BLOCK_LEN
+
+ReadBlockLoop:
+        call    SetAddress
+        call    ReadByte        ; TODO join with SetAddress
+        stax    d
+        inx     de
+        dcx     bc
+        mov     a, b
+        ora     c
+        jnz     ReadBlockLoop
         ret
