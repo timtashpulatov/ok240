@@ -21,17 +21,38 @@
 ; 
 BLOCK_LEN       equ     512
 DEST_ADDR       equ     8000h
-ReadLoader:
-        call    InitUserPort
+
+
+InitUserPort:
+        mvi     a, 0ffh  ; port A input (data). ports B and C output (address and paging)
+        out     PORT_CTRL
+
         xra     a
-        call    SetPage
-        
-        lxi     hl, 0
+; Set ROM page (page number in A)
+SetPage:        
+        ; ani     0fh             ; pages 0..15
+        out     PORTC
+        ori     0b10000000      ; strobe high
+        out     PORTC
+        ani     0b01111111      ; strobe low
+        out     PORTC
+
+ReadLoader:        
+        mov     l, a
+        mov     h, a
+        ; lxi     hl, 0
         lxi     de, DEST_ADDR
         lxi     bc, BLOCK_LEN
 
 ReadBlockLoop:
-        call    ReadByte
+        mov     a, l
+        out     PORTB           ; address bits A7..A0
+        mov     a, h
+        ani     7fh
+        out     PORTC           ; address bits A14..A8
+        in      PORTA
+
+        ; call    ReadByte
         stax    d
         inx     de
         inx     hl
@@ -40,30 +61,15 @@ ReadBlockLoop:
         ora     c
         jnz     ReadBlockLoop
         ret
-        
-InitUserPort:
-        mvi     a, 0ffh  ; port A input (data). ports B and C output (address and paging)
-        out     PORT_CTRL
-        ret
-
-; Set ROM page (page number in A)
-SetPage:        
-        ani     0fh             ; pages 0..15
-        out     PORTC
-        ori     0b10000000      ; strobe high
-        out     PORTC
-        ani     0b01111111      ; strobe low
-        out     PORTC
-        ret
 
 ; Address in HL, return result in A
-ReadByte:
-        mov     a, l
-        out     PORTB           ; address bits A7..A0
-        mov     a, h
-        ani     7fh
-        out     PORTC           ; address bits A14..A8
-        in      PORTA
-        ret
+; ReadByte:
+;         mov     a, l
+;         out     PORTB           ; address bits A7..A0
+;         mov     a, h
+;         ani     7fh
+;         out     PORTC           ; address bits A14..A8
+;         in      PORTA
+;         ret
 
         
