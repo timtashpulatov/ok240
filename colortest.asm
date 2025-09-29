@@ -1,5 +1,5 @@
 	.project okeah
-	.org 8000h
+	
 VSCROLL equ     0c0h            ; vertical scroll
 BANKING	equ	0c1h		; регистр управления банками ОЗУ и ПЗУ
 VHSCROLL equ    0c2h            ; vertical and horisontal scroll
@@ -8,19 +8,20 @@ VIDEO	equ	0e1h		; регистр управления цветом и режим
 CI      equ     0e009h
 CO      equ     0e00ch          ; print character from A
 
+        .org 8000h
 
 ; Reset scroll
         xra     a
         out     VSCROLL
         out     VHSCROLL
 
-        ; lxi     hl, MODE_60
-        ; call    PrintString
+        lxi     hl, MODE_60
+        call    PrintString
 
 
 ; Set palette 0, color mode
-        mvi     a, 0b01000000
-        out     VIDEO
+        ; mvi     a, 0b01000000
+        ; out     VIDEO
 
 
 	mvi	a, 01
@@ -39,10 +40,10 @@ Loop:	mvi	m, 0
 
 
 ; Color bars
-        lxi     h, 4000h        ;4410h
+        lxi     h, 4410h
         call    DrawTestBars
 
-        lxi     h, 4030h
+        lxi     h, 4430h
         call    DrawTestBars
 
         lxi     h, 4450h
@@ -71,27 +72,27 @@ Loop:	mvi	m, 0
 
 ; Video interrupts fun
 
-WaitVR:
-        in      41h
-        ani     2
-        jnz WaitVR
+; WaitVR:
+;         in      41h
+;         ani     2
+;         jnz WaitVR
         
         
-        call    WaitHR
-        call    WaitHR
-        call    WaitHR
-        call    WaitHR
+;         call    WaitHR
+;         call    WaitHR
+;         call    WaitHR
+;         call    WaitHR
         
-        mvi     a, 0
-        out     VIDEO
+;         mvi     a, 0
+;         out     VIDEO
         
-        call    WaitHR
-        call    WaitHR
-        call    WaitHR
-        call    WaitHR
+;         call    WaitHR
+;         call    WaitHR
+;         call    WaitHR
+;         call    WaitHR
         
-        mvi     a, 1
-        out     VIDEO
+        ; mvi     a, 1
+        ; out     VIDEO
 
 
 
@@ -191,4 +192,7 @@ LABEL:  ; db      ESC, '60'       ; Color mode (61 = mono)
         db      '02 '
         db      ESC, '43'
         db      '03 '
-        db      0
+        db      0        ;
+        
+        
+        
