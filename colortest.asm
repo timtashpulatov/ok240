@@ -40,8 +40,9 @@ CO      equ     0e00ch          ; print character from A
 	
 COUNT:   db      0
 ; Palette list
-PLIST:  db      0, 1, 2, 3, 4, 5, 6, 7   
+PLIST:  
         db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
+        db      48h, 50h, 58h, 60h, 68h, 70h, 78h, 0
 
         .org 8000h
 
@@ -78,6 +79,10 @@ Loop:	mvi	m, 0
         lxi     h, 4410h
         call    DrawTestBars
 
+        lxi     h, 4c10h
+        call    DrawTestBars
+
+
         lxi     h, 4430h
         call    DrawTestBars
 
@@ -107,6 +112,11 @@ Loop:	mvi	m, 0
 
 ; Video interrupts fun
 
+; Init timer
+        lxi     h, 01e0h  * 4      ; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
+        
+        mvi     a, 36h
+        out     63h
 
 ; Дождемся кадрового ретрейса
 WaitForVR
@@ -127,12 +137,11 @@ WaitForHR
         in      41h
         ani     1
         jz      WaitForHR
-        
-        mvi     a, 36h
-        out     63h
-        mvi     a, 0e0h
+
+; Finish timer init        
+        mov     a, l
         out     60h
-        mvi     a, 01h		; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
+        mov     a, h		
         out     60h
 
 ; OCW1
