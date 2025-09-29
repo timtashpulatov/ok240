@@ -42,7 +42,7 @@ COUNT:   db      0
 ; Palette list
 PLIST:  
         db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
-        db      48h, 50h, 58h, 60h, 68h, 70h, 78h, 0
+        db      40h, 48h, 50h, 58h, 60h, 68h, 70h, 78h
 
         .org 8000h
 
@@ -113,7 +113,7 @@ Loop:	mvi	m, 0
 ; Video interrupts fun
 
 ; Init timer
-        lxi     h, 01e0h  * 4      ; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
+        lxi     h, 01e0h  * 2      ; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor). делитель на 96 = 1 строка будто бы
         
         mvi     a, 36h
         out     63h
@@ -179,19 +179,19 @@ PrintString:
 DrawTestBars:
 
         lxi     bc, 0000h       ; B = color bits 1, C = color bits 0
-        mvi     d, 24
+        mvi     d, 31
         call    Strip2
         
         lxi     bc, 0ff00h      ; color 01 (RED in journal palette 0)
-        mvi     d, 24
+        mvi     d, 31
         call    Strip2
 
         lxi     bc, 00ffh       ; color 02 (GREEN)
-        mvi     d, 24
+        mvi     d, 31
         call    Strip2
 
         lxi     bc, 0ffffh      ; color 03 (BLUE)
-        mvi     d, 24
+        mvi     d, 31
         call    Strip2
 
         ret
