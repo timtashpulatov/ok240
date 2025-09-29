@@ -8,6 +8,41 @@ VIDEO	equ	0e1h		; регистр управления цветом и режим
 CI      equ     0e009h
 CO      equ     0e00ch          ; print character from A
 
+
+; Обработчик прерывания от Таймера 0	
+	.org 20h
+	
+        push    hl
+        push    bc
+     
+        lxi     hl, PLIST
+        mvi     b, 0
+        lda     COUNT
+        mov     c, a
+        dad     b
+        mov     a, m
+        out     VIDEO
+        
+        inr     c
+        mov     a, c
+        ani     15
+        
+        sta     COUNT
+        
+	mvi     a, 20h
+	out     80h
+	
+	pop     bc
+	pop     hl
+	
+        ei
+	ret
+	
+COUNT:   db      0
+; Palette list
+PLIST:  db      0, 1, 2, 3, 4, 5, 6, 7   
+        db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
+
         .org 8000h
 
 ; Reset scroll
@@ -72,29 +107,41 @@ Loop:	mvi	m, 0
 
 ; Video interrupts fun
 
-; WaitVR:
-;         in      41h
-;         ani     2
-;         jnz WaitVR
-        
-        
-;         call    WaitHR
-;         call    WaitHR
-;         call    WaitHR
-;         call    WaitHR
-        
-;         mvi     a, 0
-;         out     VIDEO
-        
-;         call    WaitHR
-;         call    WaitHR
-;         call    WaitHR
-;         call    WaitHR
-        
-        ; mvi     a, 1
-        ; out     VIDEO
 
+; Дождемся кадрового ретрейса
+WaitForVR
+        in      41h
+        ani     2
+        jz     WaitForVR
+; Переждем его
+WaitForVRDone
+        in      41h
+        ani     2
+        jnz     WaitForVRDone
+WaitForVR1
+        in      41h
+        ani     2
+        jz     WaitForVR1
 
+WaitForHR
+        in      41h
+        ani     1
+        jz      WaitForHR
+        
+        mvi     a, 36h
+        out     63h
+        mvi     a, 0e0h
+        out     60h
+        mvi     a, 01h		; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
+        out     60h
+
+; OCW1
+        mvi     a, 0b11101111   ; разрешить прерывания от Таймера 0 (RST4)
+        out     81h
+
+        ei
+        
+        jmp     .
 
 
 
@@ -110,19 +157,6 @@ Key:
 	jnz	Key		; продолжим интерактивную раскраску
 
 	jmp	0e003h		; теплый старт "Монитора"
-
-
-WaitHR:
-        in      41h
-        ani     1
-        jz     WaitHR
-        
-WaitHRFall:
-        in      41h
-        ani     1
-        rz
-        jmp     WaitHRFall
-
 
 PrintString:
         mov     a, m
