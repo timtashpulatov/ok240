@@ -14,6 +14,10 @@ CO      equ     0e00ch          ; print character from A
         out     VSCROLL
         out     VHSCROLL
 
+        ; lxi     hl, MODE_60
+        ; call    PrintString
+
+
 ; Set palette 0, color mode
         mvi     a, 0b01000000
         out     VIDEO
@@ -35,25 +39,25 @@ Loop:	mvi	m, 0
 
 
 ; Color bars
-        lxi     h, 4810h
+        lxi     h, 4000h        ;4410h
         call    DrawTestBars
 
-        lxi     h, 4830h
+        lxi     h, 4030h
         call    DrawTestBars
 
-        lxi     h, 4850h
+        lxi     h, 4450h
         call    DrawTestBars
 
-        lxi     h, 4870h
+        lxi     h, 4470h
         call    DrawTestBars
 
-        lxi     h, 4890h
+        lxi     h, 4490h
         call    DrawTestBars
 
-        lxi     h, 48b0h
+        lxi     h, 44b0h
         call    DrawTestBars
 
-        lxi     h, 48d0h
+        lxi     h, 44d0h
         call    DrawTestBars
 
 	xra	a		; экран размалеван
@@ -63,6 +67,33 @@ Loop:	mvi	m, 0
 ; Print labels
         lxi     h, LABEL
         call    PrintString
+
+
+; Video interrupts fun
+
+WaitVR:
+        in      41h
+        ani     2
+        jnz WaitVR
+        
+        
+        call    WaitHR
+        call    WaitHR
+        call    WaitHR
+        call    WaitHR
+        
+        mvi     a, 0
+        out     VIDEO
+        
+        call    WaitHR
+        call    WaitHR
+        call    WaitHR
+        call    WaitHR
+        
+        mvi     a, 1
+        out     VIDEO
+
+
 
 
 
@@ -78,6 +109,18 @@ Key:
 	jnz	Key		; продолжим интерактивную раскраску
 
 	jmp	0e003h		; теплый старт "Монитора"
+
+
+WaitHR:
+        in      41h
+        ani     1
+        jz     WaitHR
+        
+WaitHRFall:
+        in      41h
+        ani     1
+        rz
+        jmp     WaitHRFall
 
 
 PrintString:
@@ -134,6 +177,10 @@ COLOR_0 db      ESC, '40', 0
 COLOR_1 db      ESC, '41', 0
 COLOR_2 db      ESC, '42', 0
 COLOR_3 db      ESC, '43', 0
+
+MODE_60 db      ESC, '60', 0
+MODE_61 db      ESC, '61', 0
+MODE_62 db      ESC, '62', 0
 
 LABEL:  ; db      ESC, '60'       ; Color mode (61 = mono)
         db      ESC, '40'
