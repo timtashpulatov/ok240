@@ -1,6 +1,8 @@
         .project rom.com
         .org    100h
 
+#define bdos            5
+
 #define BDOS(fn) mvi c, fn \ call bdos
 #define WRITESTR(str) lxi d, str \ BDOS(9)
 
@@ -10,6 +12,16 @@
 #define PORT_CTRL       03h
 
 #define PC7             0b10000000
+
+#define WBOOT           0e003h
+
+
+; Internal CP/M calls
+SELDSK          equ     0d61bh
+SETTRK          equ     0d61eh
+SETSEC          equ     0d621h
+SETDMA          equ     0d624h  ; bc = DMA address
+READ            equ     0d627h
 
         ; db      'AB'
         ; mov     b, c
@@ -57,5 +69,31 @@ ReadBlockLoop:
         mov     a, b
         ora     c
         jnz     ReadBlockLoop
-        ret
+        
+        jmp     WBOOT
+        
+        
+        .org    200h
+
+        ; mvi     e, 0    ; drive A:
+        ; BDOS(14)        ; reset disk
+        
+        mvi     c, 0
+        call    SELDSK  ; returns DPH in HL, or 0
+        
+        mvi     c, 0
+        call    SETTRK
+        
+        mvi     c, 0
+        call    SETSEC
+        
+        ; lxi     bc, 8000h
+        ; call    SETDMA
+        
+        call    READ
+        
+        
+        
+        rst     7       ; return to DOS
+
 
