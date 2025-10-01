@@ -87,13 +87,13 @@ ReadBlockLoop:
         mvi     c, 0
         call    SETSEC
         
-        ; lxi     bc, 8000h
-        ; call    SETDMA
+        lxi     bc, 8000h
+        call    SETDMA
         
         call    READ
         
         
         
-        rst     7       ; return to DOS
+        jmp     0e003h  ; warm boot
 
 
