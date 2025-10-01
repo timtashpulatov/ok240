@@ -24,6 +24,14 @@ SETSEC          equ     0d621h
 SETDMA          equ     0d624h  ; bc = DMA address
 READ            equ     0d627h
 
+; CCP vars
+v_arg_0         equ     0bfe1h
+v_arg_1         equ     0bfe2h
+v_arg_2         equ     0bfe3h
+v_arg_3         equ     0bfe4h
+v_arg_4         equ     0bfe5h
+
+
         ; db      'AB'
         ; mov     b, c
         ; mov     b, d
@@ -111,8 +119,15 @@ Loop
         
 Done        
         
+; Graffffffun
+        lxi     hl, LINE
+        mvi     b, 10
+        call    PrintNChars
         
         jmp     0e003h  ; warm boot
+
+LINE    db      27, '2', '0010', 'ff10' 
+
 
 PrintFN
         push    bc
