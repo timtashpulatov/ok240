@@ -93,19 +93,20 @@ ReadBlockLoop:
         
         call    READ
         
-        
 ; Scan sector for filenames
 
-
         lxi     hl, 8000h
-        mvi     c, 4
-        
 Loop
         mov     a, m
         cpi     0e5h
         jz      Done
     
         call    PrintFN
+        call    CRLF
+        
+        lxi     bc, 32  ; dir entry size
+        dad     bc
+        jmp     Loop
         
         
 Done        
@@ -119,7 +120,7 @@ PrintFN
         
         inx     hl
         mvi     b, 8
-PrintN
+
         call    PrintNChars
         mvi     c, '.'
         call    CONOUT
@@ -129,7 +130,6 @@ PrintN
         
         pop     hl
         pop     bc
-        
         ret
 
 PrintNChars
@@ -140,4 +140,8 @@ PrintNChars
         rz
         jmp     PrintNChars
 
-
+CRLF    
+        mvi     c, 10
+        call    CONOUT
+        mvi     c, 13
+        jmp     CONOUT
