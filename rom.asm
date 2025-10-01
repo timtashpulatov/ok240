@@ -120,14 +120,21 @@ Loop
 Done        
         
 ; Graffffffun
+
+        lxi     hl, COLOR
+        mvi     b, 3
+        call    PrintNChars
+
         lxi     hl, LINE
         mvi     b, 10
         call    PrintNChars
         
         jmp     0e003h  ; warm boot
 
-LINE    db      27, '2', '0010', 'ff10' 
+LINE    db      27, '2', '0010', 'ff10'
 
+
+COLOR   db      27, '4', '1'
 
 PrintFN
         push    bc
