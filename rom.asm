@@ -1,8 +1,6 @@
         .project rom.com
         .org    100h
 
-#define WITH_DELAY
-#define USE_DB64 ; see resource.inc (Alt+2)
 #define BDOS(fn) mvi c, fn \ call bdos
 #define WRITESTR(str) lxi d, str \ BDOS(9)
 
@@ -19,7 +17,7 @@
         
 ; Read block from page 0, address 0
 ; 
-BLOCK_LEN       equ     512
+NBYTES          equ     512
 DEST_ADDR       equ     8000h
 
 
@@ -28,21 +26,21 @@ InitUserPort:
         out     PORT_CTRL
 
         xra     a
+        mov     h, a
+        mov     l, a
+        lxi     bc, 807fh       ; b = strobe high, c = strobe low
 ; Set ROM page (page number in A)
 SetPage:        
         ; ani     0fh             ; pages 0..15
         out     PORTC
-        ori     0b10000000      ; strobe high
+        ora     b               ; strobe high
         out     PORTC
-        ani     0b01111111      ; strobe low
+        ana     c               ; strobe low
         out     PORTC
 
 ReadLoader:        
-        mov     l, a
-        mov     h, a
-        ; lxi     hl, 0
         lxi     de, DEST_ADDR
-        lxi     bc, BLOCK_LEN
+        lxi     bc, NBYTES
 
 ReadBlockLoop:
         mov     a, l
@@ -52,7 +50,6 @@ ReadBlockLoop:
         out     PORTC           ; address bits A14..A8
         in      PORTA
 
-        ; call    ReadByte
         stax    d
         inx     de
         inx     hl
@@ -62,14 +59,3 @@ ReadBlockLoop:
         jnz     ReadBlockLoop
         ret
 
-; Address in HL, return result in A
-; ReadByte:
-;         mov     a, l
-;         out     PORTB           ; address bits A7..A0
-;         mov     a, h
-;         ani     7fh
-;         out     PORTC           ; address bits A14..A8
-;         in      PORTA
-;         ret
-
-        
