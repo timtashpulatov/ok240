@@ -17,6 +17,7 @@
 
 
 ; Internal CP/M calls
+CONOUT          equ     0d60ch
 SELDSK          equ     0d61bh
 SETTRK          equ     0d61eh
 SETSEC          equ     0d621h
@@ -84,7 +85,7 @@ ReadBlockLoop:
         mvi     c, 0
         call    SETTRK
         
-        mvi     c, 0
+        mvi     c, 1    ; on RAM disk, directory starts here
         call    SETSEC
         
         lxi     bc, 8000h
@@ -93,7 +94,50 @@ ReadBlockLoop:
         call    READ
         
         
+; Scan sector for filenames
+
+
+        lxi     hl, 8000h
+        mvi     c, 4
+        
+Loop
+        mov     a, m
+        cpi     0e5h
+        jz      Done
+    
+        call    PrintFN
+        
+        
+Done        
+        
         
         jmp     0e003h  ; warm boot
+
+PrintFN
+        push    bc
+        push    hl       
+        
+        inx     hl
+        mvi     b, 8
+PrintN
+        call    PrintNChars
+        mvi     c, '.'
+        call    CONOUT
+
+        mvi     b, 3
+        call    PrintNChars
+        
+        pop     hl
+        pop     bc
+        
+        ret
+
+PrintNChars
+        mov     c, m
+        call    CONOUT
+        inx     hl
+        dcr     b
+        rz
+        jmp     PrintNChars
 
 
