@@ -84,6 +84,24 @@ ReadBlockLoop:
         
         .org    200h
 
+; Graffffffun
+
+; Clear screen
+        mvi     c, 1fh
+        call    CONOUT
+        
+; Set color
+        lxi     hl, COLOR
+        mvi     b, 3
+        call    PrintNChars
+
+; Draw line
+        lxi     hl, LINE
+        mvi     b, 10
+        call    PrintNChars
+
+
+
         ; mvi     e, 0    ; drive A:
         ; BDOS(14)        ; reset disk
         
@@ -116,25 +134,9 @@ Loop
         dad     bc
         jmp     Loop
         
-        
 Done        
-        
-; Graffffffun
-
-        lxi     hl, COLOR
-        mvi     b, 3
-        call    PrintNChars
-
-        lxi     hl, LINE
-        mvi     b, 10
-        call    PrintNChars
-        
         jmp     0e003h  ; warm boot
 
-LINE    db      27, '2', '0010', 'ff10'
-
-
-COLOR   db      27, '4', '1'
 
 PrintFN
         push    bc
@@ -167,3 +169,8 @@ CRLF
         call    CONOUT
         mvi     c, 13
         jmp     CONOUT
+        
+LINE    db      27, '2', '0010', 'ff10'
+
+COLOR   db      27, '4', '1'
+        
