@@ -43,7 +43,7 @@ DEST_ADDR       equ     8000h
 
 
 InitUserPort:
-        mvi     a, 0ffh  ; port A input (data). ports B and C output (address and paging)
+        mvi     a, 90h  ; port A input (data). ports B and C output (address and paging)
         out     PORT_CTRL
 
         xra     a
