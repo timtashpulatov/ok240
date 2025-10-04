@@ -71,6 +71,9 @@ ReadBlockLoop:
         out     PORTC           ; address bits A14..A8
         in      PORTA
 
+; for 4-bit EPROM mask out unused bits
+        ani     0fh
+
         stax    d
         inx     de
         inx     hl
