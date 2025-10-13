@@ -1,3 +1,4 @@
+
         .project graf.bin
 
 SCROLL_V        equ     0C0h
@@ -64,6 +65,12 @@ Begin
 ;        cpi     0x1b            ; ESC?
 ;        jnz     Space
 ;        jmp     WARMBOOT        ; возврат в Монитор
+
+; Большие или малые буквы, это все равно
+        cpi     0x5f
+        jc      Next0
+        sui     0x20
+Next0
 
         mov     c, a
         lxi     d, KeyFunctions
@@ -649,8 +656,8 @@ WorkBitmapPreview
  
         lxi     b, (PREVIEW_X+1)*512+PREVIEW_Y*8
         pop     hl
-        mvi     a, 3
         push    hl
+        mvi     a, 3
         call    PaintBitmap
 
         lxi     b, (PREVIEW_X+2)*512+PREVIEW_Y*8
@@ -680,10 +687,38 @@ WorkBitmapPreview
 
         lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
         pop     hl
+        push    hl
         lxi     d, 256+16
         dad     d
         mvi     a, 3
         call    PaintBitmap
+
+
+
+        lxi     b, PREVIEW_X*512+(PREVIEW_Y+2)*8
+        pop     hl
+        push    h
+        lxi     d, 512-16
+        dad     d
+        mvi     a, 3
+        call    PaintBitmap
+ 
+        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+2)*8
+        pop     hl
+        push    hl
+        lxi     d, 512
+        dad     d
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+2)*8
+        pop     hl
+        lxi     d, 512+16
+        dad     d
+        mvi     a, 3
+        call    PaintBitmap
+
+
 
 
 
@@ -707,19 +742,19 @@ WorkBitmapPreview
         call    PaintBitmap        
 
 ; И снизу        
-        lxi     b, PREVIEW_X*512+(PREVIEW_Y+2)*8
+        lxi     b, PREVIEW_X*512+(PREVIEW_Y+3)*8
         lxi     h, TOPLINE
         mvi     a, 3
         push    hl
         call    PaintBitmap        
 
-        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+2)*8
+        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+3)*8
         mvi     a, 3
         pop     hl
         push    hl
         call    PaintBitmap        
         
-        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+2)*8
+        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+3)*8
         mvi     a, 3
         pop     hl
         call    PaintBitmap        
