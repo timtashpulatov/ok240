@@ -135,6 +135,10 @@ KeyFunctions
         
         db      1bh
         dw      WARMBOOT
+
+        db      0dh
+        dw      CenterBitmap
+
         db      0
         dw      0
 
@@ -152,6 +156,12 @@ Space   cpi     ' '
 
 ; *************************************************
 ; *************************************************
+CenterBitmap
+        lxi     h, WORKBMP
+        shld    BmpPtr
+        jmp     RedrawWorkBitmap
+
+
 Copy
         lhld    BmpPtr
         lxi     d, CLIPBOARD
