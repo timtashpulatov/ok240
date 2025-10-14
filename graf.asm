@@ -38,7 +38,7 @@ F_OPEN    	EQU	15	;0FFH=NOT FOUND
 F_CLOSE   	EQU	16	;   "	"
 F_SFIRST        EQU	17	;   "	"
 SRCHN	        EQU	18	;   "	"
-ERASE	        EQU	19	        ;NO RET CODE
+F_DELETE        EQU	19	        ;NO RET CODE
 F_READ	        EQU	20	        ;0=OK, 1=EOF
 F_WRITE	        EQU	21	        ;0=OK, 1=ERR, 2=?, 0FFH=NO DIR SPC
 F_MAKE	        EQU	22	        ;0FFH=BAD
@@ -990,7 +990,7 @@ EraseOldFile
         rz
 
         LXI	D,FCB
-	MVI	C,ERASE
+	MVI	C,F_DELETE
 	CALL	BDOS
 	RET
 
@@ -1035,7 +1035,7 @@ SetDMA1
 ; Load file
 ; *************************************************
 FileLoad
-        call    ResetDMA
+        ;call    ResetDMA
 
         ; call    FileFind
         ; rz
@@ -1059,10 +1059,14 @@ FileLoad
 ; Save file
 ; *************************************************
 FileSave
-        call    ResetDMA
+        ; call    ResetDMA
 
         call    EraseOldFile
         
+; for some reason, we need to clean FCB after deletion
+        call    ClearFCB
+        
+; create new file
         lxi     d, FCB
         mvi     c, F_MAKE
         call    BDOS            ; Returns A=0FFh if the directory is full
@@ -1083,6 +1087,22 @@ FileSave
         call    FileClose
         
         ret
+
+
+; *************************************************
+; Clear FCB after deletion
+; *************************************************
+ClearFCB
+        lxi     d, FCB+0ch      ; EXTENT
+        mvi     c, 23
+        xra     a
+ClearFCBLoop
+        stax    d
+        inx     d
+        dcr     c
+        jnz     ClearFCBLoop
+        ret
+
 
 ; *************************************************
 ; Различные константы
