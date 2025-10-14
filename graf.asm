@@ -49,6 +49,7 @@ REIPL   	EQU	0
 FCB     	EQU	5CH	        ;DEFAULT FCB
 PARAM1  	EQU	FCB+1	        ;COMMAND LINE PARAMETER 1 IN FCB
 PARAM2  	EQU	PARAM1+16	;COMMAND LINE PARAMETER 2
+DMA             equ     80h
 COMTAIL         EQU     80h
 
         org     100h
@@ -1014,10 +1015,18 @@ FileClose
         ret
 
 ; *************************************************
+; Reset DMA address
+; *************************************************
+ResetDMA
+        lxi     d, DMA
+        jmp SetDMA1
+
+; *************************************************
 ; Set DMA address
 ; *************************************************
 SetDMA
         lxi     d, WORKBMP
+SetDMA1
         mvi     c, F_DMAOFF
         call    BDOS
         ret        
@@ -1026,8 +1035,10 @@ SetDMA
 ; Load file
 ; *************************************************
 FileLoad
-        call    FileFind
-        rz
+        call    ResetDMA
+
+        ; call    FileFind
+        ; rz
         
         call    FileOpen
         rz
@@ -1038,6 +1049,8 @@ FileLoad
         mvi     c, F_READ
         call    BDOS
 
+        call    ResetDMA
+
         call    FileClose
         
         ret
@@ -1046,6 +1059,8 @@ FileLoad
 ; Save file
 ; *************************************************
 FileSave
+        call    ResetDMA
+
         call    EraseOldFile
         
         lxi     d, FCB
@@ -1054,11 +1069,16 @@ FileSave
         inr     a
         rz
 
+        call    FileOpen
+        rz
+
         call    SetDMA
         
         lxi     d, FCB
         mvi     c, F_WRITE
         call    BDOS
+
+        call    ResetDMA
 
         call    FileClose
         
