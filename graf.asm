@@ -87,17 +87,24 @@ DiskDone
         call    ResetScroll
         call    ClearScreen
         call    BuildTheWall
-        call    DrawPalette
+        ; call    DrawPalette
         call    UnpackWorkBitmap
 ;        call    GoFigure
 
 ; чепядть
+        ; lxi     hl, 0505h
+        ; call    PositionCursor
+
+        mvi     c, 0ch          ; Home
+        call    CHAROUT
+
         lxi     de, Hello
         call    Print
 
 ; Эксперименты с выводом символа без курсора
         ; mvi     a, 4
         ; sta     0bfech  ; скажем НЕТ курсору
+
 ; Вывести справку по командам
         call    Help
 
@@ -904,19 +911,22 @@ Quit
         call    Print
 
 QuitLoop
-        call    C_READ
+        call    KBDREAD
         cpi     1bh
         jz      Begin
         
-        ori     20h
-        cpi     'n'
+        ani     ~00100000b
+        cpi     'N'
         jz      QuitQuit
-        cpi     'y'
+        cpi     'Y'
         jnz     QuitLoop
         
         call    FileSave
 QuitQuit        
         rst     0
+
+
+
 
 ; *************************************************
 ; Вывести символ С по адресу HL
@@ -926,6 +936,14 @@ MYCHAROUT
         call    CHAROUT
         ret
 
+; *************************************************
+; Позиционировать курсор
+; HL - координаты курсора (H= , L= )
+; *************************************************
+PositionCursor
+        shld    SetCursorPosRow
+        lxi     d, SetCursorPosition
+        jmp     Print
 
 ; *************************************************
 ; Напечатать ASCIIZ строчку
@@ -1053,15 +1071,20 @@ DefaultFN
         db      0,'SCRATCH PAD'
 
 ColorMode
-        db      1bh, '60', 1bh, '83'            ; set color mode
+        db      1bh, '64', 1bh, '83'            ; set color mode, hide cursor
+        db      '$'
+
+SetCursorPosition
+        db      1bh, '5'
+SetCursorPosRow
+        db      0, 0
         db      '$'
 
 Hello
-        db      1bh, '5', '0'+5, '0'+10        ; position cursor
         db      'Hello', '$'
 
 SaveYN
-        db      'Save [Y/N]?$'
+        db      'Save [Y/N]?', '$'
 
 String  ;  db      1bh, 35h, 10, 10
         db      '1 2 3 4 5 6 7 8 9 0', 0
