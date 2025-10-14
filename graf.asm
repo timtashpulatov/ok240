@@ -1111,14 +1111,16 @@ DefaultFN
         db      0,'SCRATCH PAD'
 
 ColorMode
-        db      1bh, '64', 1bh, '83'            ; set color mode, hide cursor
+        db      1bh, '64', 
+        db      1bh, '8c'    ; hide cursor, черный фон
+        db      1bh, '42'    ; желтый передний план
         db      '$'
 
-SetCursorPosition
-        db      1bh, '5'
-SetCursorPosRow
-        db      0, 0
-        db      '$'
+; SetCursorPosition
+;         db      1bh, '5'
+; SetCursorPosRow
+;         db      0, 0
+;         db      '$'
 
 Hello
         db      'Hello', '$'
@@ -1126,8 +1128,8 @@ Hello
 SaveYN
         db      'Save [Y/N]?', '$'
 
-String  ;  db      1bh, 35h, 10, 10
-        db      '1 2 3 4 5 6 7 8 9 0', 0
+; String  ;  db      1bh, 35h, 10, 10
+;         db      '1 2 3 4 5 6 7 8 9 0', 0
 
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
