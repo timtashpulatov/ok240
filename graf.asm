@@ -30,9 +30,9 @@ CURSYS          equ     0bfedh
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;CP/M 2 BDOS Equates
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RDCON   	EQU	1
-WRCON   	EQU	2
-PRINT   	EQU	9
+C_READ   	EQU	1
+C_WRITE   	EQU	2
+C_WRITESTR   	EQU	9
 CONST   	EQU	11	;CONSOLE STAT
 F_OPEN    	EQU	15	;0FFH=NOT FOUND
 F_CLOSE   	EQU	16	;   "	"
@@ -59,10 +59,14 @@ COMTAIL         EQU     80h
         lxi     h, WORKBMP
         shld    BmpPtr
 
+; Режим экрана
+        lxi     d, ColorMode
+        call    Print
+
 ; Дисковые дела
         lda     COMTAIL
         ora     a
-        jz      NoParam
+        jz      NoParam         ; если запуск без параметров, используем дефолтное имя SCRATCH.PAD
         call    FileLoad
         jmp     DiskDone
 NoParam
@@ -87,9 +91,13 @@ DiskDone
         call    UnpackWorkBitmap
 ;        call    GoFigure
 
+; чепядть
+        lxi     de, Hello
+        call    Print
+
 ; Эксперименты с выводом символа без курсора
-        mvi     a, 4
-        sta     0bfech  ; скажем НЕТ курсору
+        ; mvi     a, 4
+        ; sta     0bfech  ; скажем НЕТ курсору
 ; Вывести справку по командам
         call    Help
 
@@ -628,24 +636,29 @@ PBLoop  ldax    d
 ; ClearScreen
 ; *************************************************
 ClearScreen
-        di
-        mvi     a, ENROM
-        out     BANKING
+;         di
+;         mvi     a, ENROM
+;         out     BANKING
         
-        lxi     h, SCREEN
-        lxi     b, 256*64
+;         lxi     h, SCREEN
+;         lxi     b, 256*64
         
-Cls     mvi     m, 0
-        inx     h
-        dcx     b
-        mov     a, b
-        ora     c
-        jnz     Cls
+; Cls     mvi     m, 0
+;         inx     h
+;         dcx     b
+;         mov     a, b
+;         ora     c
+;         jnz     Cls
         
-        xra     a
-        out     BANKING
-        ei
-        ret
+;         xra     a
+;         out     BANKING
+;         ei
+;       ret
+
+        mvi     a, 1fh
+        mvi     c, C_WRITE
+        jmp    BDOS
+
 ; *************************************************
 ; BuildTheWall
 ; *************************************************
@@ -887,7 +900,22 @@ Help
 ; Закончить работу
 ; *************************************************
 Quit
+        lxi     de, SaveYN
+        call    Print
+
+QuitLoop
+        call    C_READ
+        cpi     1bh
+        jz      Begin
+        
+        ori     20h
+        cpi     'n'
+        jz      QuitQuit
+        cpi     'y'
+        jnz     QuitLoop
+        
         call    FileSave
+QuitQuit        
         rst     0
 
 ; *************************************************
@@ -914,6 +942,15 @@ PrintString
 PrtStrDone        
         ret
 
+; *************************************************
+; Вывести строку в формате BDOS
+; DE - адрес строки с $ в конце
+; *************************************************
+
+Print
+        mvi     c, C_WRITESTR
+        jmp    BDOS
+
 
 ; *************************************************
 ; Find file
@@ -939,6 +976,17 @@ EraseOldFile
 	RET
 
 ; *************************************************
+; Open file
+; *************************************************
+FileOpen
+        lxi     d, FCB
+        mvi     c, F_OPEN
+        call    BDOS            ; On return, A is 0FFh for error, or 0-3 for success
+        inr     a
+        ret
+
+
+; *************************************************
 ; Close file
 ; *************************************************
 FileClose
@@ -961,6 +1009,9 @@ SetDMA
 ; *************************************************
 FileLoad
         call    FileFind
+        rz
+        
+        call    FileOpen
         rz
         
         call    SetDMA
@@ -1001,6 +1052,16 @@ FileSave
 DefaultFN
         db      0,'SCRATCH PAD'
 
+ColorMode
+        db      1bh, '60', 1bh, '83'            ; set color mode
+        db      '$'
+
+Hello
+        db      1bh, '5', '0'+5, '0'+10        ; position cursor
+        db      'Hello', '$'
+
+SaveYN
+        db      'Save [Y/N]?$'
 
 String  ;  db      1bh, 35h, 10, 10
         db      '1 2 3 4 5 6 7 8 9 0', 0
