@@ -27,6 +27,30 @@ Col             equ     CurPos+1
 WORKBMP         equ     4000h
 CURSYS          equ     0bfedh
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;CP/M 2 BDOS Equates
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RDCON   	EQU	1
+WRCON   	EQU	2
+PRINT   	EQU	9
+CONST   	EQU	11	;CONSOLE STAT
+F_OPEN    	EQU	15	;0FFH=NOT FOUND
+F_CLOSE   	EQU	16	;   "	"
+F_SFIRST        EQU	17	;   "	"
+SRCHN	        EQU	18	;   "	"
+ERASE	        EQU	19	        ;NO RET CODE
+F_READ	        EQU	20	        ;0=OK, 1=EOF
+F_WRITE	        EQU	21	        ;0=OK, 1=ERR, 2=?, 0FFH=NO DIR SPC
+F_MAKE	        EQU	22	        ;0FFH=BAD
+REN	        EQU	23	        ;0FFH=BAD
+F_DMAOFF        EQU	26
+BDOS	        EQU	5
+REIPL   	EQU	0
+FCB     	EQU	5CH	        ;DEFAULT FCB
+PARAM1  	EQU	FCB+1	        ;COMMAND LINE PARAMETER 1 IN FCB
+PARAM2  	EQU	PARAM1+16	;COMMAND LINE PARAMETER 2
+COMTAIL         EQU     80h
+
         org     100h
 
 ; Инициализация важных и нужных переменных
@@ -34,6 +58,26 @@ CURSYS          equ     0bfedh
         shld    CurPos
         lxi     h, WORKBMP
         shld    BmpPtr
+
+; Дисковые дела
+        lda     COMTAIL
+        ora     a
+        jz      NoParam
+        call    FileLoad
+        jmp     DiskDone
+NoParam
+        lxi     h, DefaultFN        
+        lxi     d, FCB
+        mvi     c, 12
+NPLoop
+        mov     a, m
+        stax    d
+        inx     h
+        inx     d
+        dcr     c
+        jnz     NPLoop
+        
+DiskDone
 
 ; Чистим экран и рисуем нетленку
         call    ResetScroll
@@ -134,7 +178,7 @@ KeyFunctions
         dw      JumpMinus256
         
         db      1bh
-        dw      WARMBOOT
+        dw      Quit
 
         db      0dh
         dw      CenterBitmap
@@ -177,7 +221,7 @@ CopyLoop
         
         ; Нарисовать клипборд
         lxi     h, CLIPBOARD
-        lxi     b, 1800h + 3*8
+        lxi     b, 1800h + 5*8  ; TODO use defines
         mvi     a, 3
         call    PaintBitmap
         
@@ -839,6 +883,12 @@ Help
 
         ret
 
+; *************************************************
+; Закончить работу
+; *************************************************
+Quit
+        call    FileSave
+        rst     0
 
 ; *************************************************
 ; Вывести символ С по адресу HL
@@ -863,6 +913,94 @@ PrintString
         jmp     PrintString
 PrtStrDone        
         ret
+
+
+; *************************************************
+; Find file
+; Z if not found
+; *************************************************
+FileFind
+        lxi     d, FCB
+        mvi     c, F_SFIRST
+        call    BDOS
+        inr     a
+        ret
+
+; *************************************************
+; Delete existing file
+; *************************************************
+EraseOldFile
+        call    FileFind
+        rz
+
+        LXI	D,FCB
+	MVI	C,ERASE
+	CALL	BDOS
+	RET
+
+; *************************************************
+; Close file
+; *************************************************
+FileClose
+        lxi     d, FCB
+        mvi     c, F_CLOSE
+        call    BDOS
+        ret
+
+; *************************************************
+; Set DMA address
+; *************************************************
+SetDMA
+        lxi     d, WORKBMP
+        mvi     c, F_DMAOFF
+        call    BDOS
+        ret        
+
+; *************************************************
+; Load file
+; *************************************************
+FileLoad
+        call    FileFind
+        rz
+        
+        call    SetDMA
+
+        lxi     d, FCB
+        mvi     c, F_READ
+        call    BDOS
+
+        call    FileClose
+        
+        ret
+
+; *************************************************
+; Save file
+; *************************************************
+FileSave
+        call    EraseOldFile
+        
+        lxi     d, FCB
+        mvi     c, F_MAKE
+        call    BDOS            ; Returns A=0FFh if the directory is full
+        inr     a
+        rz
+
+        call    SetDMA
+        
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
+
+        call    FileClose
+        
+        ret
+
+; *************************************************
+; Различные константы
+; *************************************************
+DefaultFN
+        db      0,'SCRATCH PAD'
+
 
 String  ;  db      1bh, 35h, 10, 10
         db      '1 2 3 4 5 6 7 8 9 0', 0
