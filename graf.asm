@@ -10,7 +10,18 @@ VIDEO           equ     0E1h
 MAP32K          equ     0x01
 ENROM           equ     0x10
 
-XY              equ     0208h
+
+
+WALL_OFFSET_HORIZ       equ     4       ; in bytes
+WALL_OFFSET_VERT        equ     4*8       ; in pixels
+
+XY              equ     0628h   ; WALL_OFFSET_HORIZ + 256*WALL_OFFSET_VERT        ;0208h
+
+MARGIN_BOT      equ     8*8 + WALL_OFFSET_VERT
+MARGIN_LEFT     equ     WALL_OFFSET_HORIZ + 2
+MARGIN_RIGHT    equ     WALL_OFFSET_HORIZ + 2 + 8
+MARGIN_TOP      equ     8 + WALL_OFFSET_VERT
+
 SCREEN          equ     0c000h
 
 WARMBOOT        equ     0e003h
@@ -20,9 +31,6 @@ CHAROUT         equ     0e00ch  ; вывести символ из регист�
 
 OFFSET_X        equ    2
 OFFSET_Y        equ    2
-
-WALL_OFFSET_HORIZ       equ     4       ; in bytes
-WALL_OFFSET_VERT        equ     4*8       ; in pixels
 
 Row             equ     CurPos
 Col             equ     CurPos+1
@@ -400,10 +408,7 @@ GBCDone
 ; *************************************************
 ; * Правим координаты курсора
 ; *************************************************
-MARGIN_BOT      equ     8*8 + WALL_OFFSET_VERT
-MARGIN_LEFT     equ     2 + WALL_OFFSET_HORIZ
-MARGIN_RIGHT    equ     16 + WALL_OFFSET_HORIZ
-MARGIN_TOP      equ     8 + WALL_OFFSET_VERT
+
         
 CurDown lda     Row
         cpi     MARGIN_BOT
@@ -462,7 +467,7 @@ EraseCursor
 
         lda     Row             ; строка (координата Y)
         ; sui     8               ; отнять смещение
-        sui     8+WALL_OFFSET_VERT               ; отнять смещение
+        sui     WALL_OFFSET_VERT               ; отнять смещение
         rar
         rar
         rar                     ; и поделить на 8
@@ -475,7 +480,7 @@ EraseCursor
 ; Адрес нужного байта добыли, займемся номером бита        
         lda     Col             ; координата X
         ; sui     2               ; минус смещение
-        sui     2+WALL_OFFSET_HORIZ
+        sui     WALL_OFFSET_HORIZ
         rar                     ; и поделить на 2 для цветного режима
         
         cma
@@ -544,7 +549,7 @@ Wow0
         
         lda     Col
         adi     2
-        cpi     MARGIN_RIGHT+2
+        cpi     MARGIN_RIGHT + 8        ; why 4 ???
         jz      Wow1
         sta     Col
         jmp     Wow0
