@@ -465,7 +465,7 @@ EraseCursor
         mvi     a, 0
         call    PlaceDot
 
-        lda     Row             ; строка (координата Y)
+        lda     Row             ; строка (координата Y)          28h = 40 (5 blocks)
         ; sui     8               ; отнять смещение
         sui     WALL_OFFSET_VERT+8               ; отнять смещение
         rar
@@ -478,7 +478,7 @@ EraseCursor
         dad     d               ; hl = WORKBMP + строка
 
 ; Адрес нужного байта добыли, займемся номером бита        
-        lda     Col             ; координата X
+        lda     Col             ; координата X                  06
         ; sui     2               ; минус смещение
         sui     WALL_OFFSET_HORIZ+2
         rar                     ; и поделить на 2 для цветного режима
