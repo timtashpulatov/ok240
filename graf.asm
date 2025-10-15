@@ -425,7 +425,7 @@ CurLeft
         jmp     Paint
 CurRight
         lda     Col
-        cpi     MARGIN_RIGHT
+        cpi     MARGIN_RIGHT + 6        ; why 6 ???
         jz      Paint
         adi     2
         sta     Col
@@ -467,7 +467,7 @@ EraseCursor
 
         lda     Row             ; строка (координата Y)
         ; sui     8               ; отнять смещение
-        sui     WALL_OFFSET_VERT               ; отнять смещение
+        sui     WALL_OFFSET_VERT+8               ; отнять смещение
         rar
         rar
         rar                     ; и поделить на 8
@@ -480,7 +480,7 @@ EraseCursor
 ; Адрес нужного байта добыли, займемся номером бита        
         lda     Col             ; координата X
         ; sui     2               ; минус смещение
-        sui     WALL_OFFSET_HORIZ
+        sui     WALL_OFFSET_HORIZ+2
         rar                     ; и поделить на 2 для цветного режима
         
         cma
@@ -560,7 +560,7 @@ Wow1
         sta     Col
         lda     Row
         adi     8
-        cpi     MARGIN_BOT+8
+        cpi     MARGIN_BOT + 8
         jz      Wow2
         sta     Row
         jmp     Wow0
