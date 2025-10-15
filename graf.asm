@@ -370,8 +370,9 @@ USPDone
 GetBitmapRowPtr
         push    a
         lxi     b, 0
-        lda     Row
-        sui     8       ; опять оффсеты
+        lda     Row                                             // 28h = 40
+;        sui     8       ; опять оффсеты
+        sui     WALL_OFFSET_VERT+8
         rar             ; поделить на 8, см. скачки курсора
         rar
         rar
@@ -387,7 +388,8 @@ GetBitmapRowPtr
 GetBitmapColBitMask
         push    a
         lda     Col
-        sui     2               ; отнять смещение (TODO: оформить все эти оффсеты как-то официально)
+;        sui     2               ; отнять смещение (TODO: оформить все эти оффсеты как-то официально)
+        sui WALL_OFFSET_HORIZ+2
         rar                     ; поделить на два, т.к. курсор перемещается скачками по 2 (TODO: переделать)
         cma
         ani     7
