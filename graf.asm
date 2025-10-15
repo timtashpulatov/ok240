@@ -21,6 +21,9 @@ CHAROUT         equ     0e00ch  ; вывести символ из регист�
 OFFSET_X        equ    2
 OFFSET_Y        equ    2
 
+WALL_OFFSET_HORIZ       equ     4       ; in bytes
+WALL_OFFSET_VERT        equ     4*8       ; in pixels
+
 Row             equ     CurPos
 Col             equ     CurPos+1
 
@@ -90,6 +93,7 @@ DiskDone
         call    BuildTheWall
         ; call    DrawPalette
         call    UnpackWorkBitmap
+        
 ;        call    GoFigure
 
 ; чепядть
@@ -264,8 +268,9 @@ SelectNextBitmap
 SNB        
         lhld    BmpPtr
         dad     d
-
         shld    BmpPtr
+
+        
 RedrawWorkBitmap        
         lxi     h, XY
         shld    CurPos
@@ -273,6 +278,9 @@ RedrawWorkBitmap
         
         jmp     Begin
 
+; ***********************************
+; Zap current block
+; ***********************************
 Zap     lhld    BmpPtr
         mvi     c, 16
 Loo     mvi     m, 0
@@ -392,10 +400,10 @@ GBCDone
 ; *************************************************
 ; * Правим координаты курсора
 ; *************************************************
-MARGIN_BOT      equ     8*8
-MARGIN_LEFT     equ     2
-MARGIN_RIGHT    equ     16
-MARGIN_TOP      equ     8
+MARGIN_BOT      equ     8*8 + WALL_OFFSET_VERT
+MARGIN_LEFT     equ     2 + WALL_OFFSET_HORIZ
+MARGIN_RIGHT    equ     16 + WALL_OFFSET_HORIZ
+MARGIN_TOP      equ     8 + WALL_OFFSET_VERT
         
 CurDown lda     Row
         cpi     MARGIN_BOT
@@ -453,7 +461,8 @@ EraseCursor
         call    PlaceDot
 
         lda     Row             ; строка (координата Y)
-        sui     8               ; отнять смещение
+        ; sui     8               ; отнять смещение
+        sui     8+WALL_OFFSET_VERT               ; отнять смещение
         rar
         rar
         rar                     ; и поделить на 8
@@ -465,7 +474,8 @@ EraseCursor
 
 ; Адрес нужного байта добыли, займемся номером бита        
         lda     Col             ; координата X
-        sui     2               ; минус смещение
+        ; sui     2               ; минус смещение
+        sui     2+WALL_OFFSET_HORIZ
         rar                     ; и поделить на 2 для цветного режима
         
         cma
@@ -681,12 +691,21 @@ BTW
         ral
         ral
         ral
+        
+; add vertical offset
+        adi     WALL_OFFSET_VERT
         mov     c, a
+        
         inx     h
         mov     a, m
         ral
+        
+; add horizontal offset
+        adi     WALL_OFFSET_HORIZ
+        
         mov     b, a
         inx     h
+        
         call    LayBrick
         jmp     BTW
 WallDone        
@@ -710,8 +729,8 @@ ResetScroll
 ; *************************************************
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
-PREVIEW_X       equ     11
-PREVIEW_Y       equ     1
+PREVIEW_X       equ     13
+PREVIEW_Y       equ     5
 WorkBitmapPreview
 
         ; lxi     h, (PREVIEW_X-1)*512+PREVIEW_Y*8
@@ -941,10 +960,10 @@ MYCHAROUT
 ; Позиционировать курсор
 ; HL - координаты курсора (H= , L= )
 ; *************************************************
-PositionCursor
-        shld    SetCursorPosRow
-        lxi     d, SetCursorPosition
-        jmp     Print
+; PositionCursor
+;         shld    SetCursorPosRow
+;         lxi     d, SetCursorPosition
+;         jmp     Print
 
 ; *************************************************
 ; Напечатать ASCIIZ строчку
@@ -1144,6 +1163,10 @@ BITMAP55
 BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
         db      0, 1, 0, 1, 0, 1, 0, 0x55
 
+; BMPDOT  db      0, 0, 0, 1, 0, 0, 0, 0x11
+;         db      0, 0, 0, 1, 0, 0, 0, 0x11
+
+
 MAZOK   db      255, 255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
         
@@ -1180,8 +1203,8 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      0, 9, 1, 9, 2, 9, 3, 9, 4, 9, 5, 9, 6, 9, 7, 9, 8, 9
         db      0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8
         db      0ffh, 0ffh
-        
-        
+
+
 ; Зажечь/погасить квадратик
 INV     db      0
 
