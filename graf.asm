@@ -237,6 +237,13 @@ CenterBitmap
         jmp     RedrawWorkBitmap
 
 
+; *************************************************
+; Клипборд
+; *************************************************
+CLIP_X  equ     12      ; координата X положения клипборда по горизонтали
+CLIP_Y  equ     5       ; координата Y по вертикали
+CLIP_XY equ     ((CLIP_X * 2) << 8) + CLIP_Y * 8
+
 Copy
         lhld    BmpPtr
         lxi     d, CLIPBOARD
@@ -252,7 +259,7 @@ CopyLoop
         
         ; Нарисовать клипборд
         lxi     h, CLIPBOARD
-        lxi     b, 1800h + 5*8  ; TODO use defines
+        lxi     b, CLIP_XY      ;1800h + 5*8  ; TODO use defines
         mvi     a, 3
         call    PaintBitmap
         
@@ -737,6 +744,17 @@ ResetScroll
         ret
 
 ; *************************************************
+; Нарисовать блок 8х8 пикселей в полноцвете
+; HL - адрес битмапа (?)
+; DE - смещение относительно центрального блока (??)
+; *************************************************
+PaintBlock
+        dad     d
+        mvi     a, 3
+        jmp     PaintBitmap
+
+
+; *************************************************
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
 PREVIEW_X       equ     13
@@ -754,74 +772,55 @@ WorkBitmapPreview
         lhld    BmpPtr
         push    h
         lxi     d, -16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
+        call    PaintBlock
  
         lxi     b, (PREVIEW_X+1)*512+PREVIEW_Y*8
         pop     hl
         push    hl
-        mvi     a, 3
-        call    PaintBitmap
-
+        lxi     d, 0
+        call    PaintBlock
+        
         lxi     b, (PREVIEW_X+2)*512+PREVIEW_Y*8
         pop     hl
         push    hl
         lxi     d, 16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
-
+        call    PaintBlock
 
         lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
         pop     hl
         push    h
         lxi     d, 256-16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
- 
+        call    PaintBlock
+
         lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
         pop     hl
         push    hl
         lxi     d, 256
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
+        call    PaintBlock
 
         lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
         pop     hl
         push    hl
         lxi     d, 256+16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
-
+        call    PaintBlock
 
 
         lxi     b, PREVIEW_X*512+(PREVIEW_Y+2)*8
         pop     hl
         push    h
         lxi     d, 512-16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
- 
+        call    PaintBlock
+        
         lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+2)*8
         pop     hl
         push    hl
         lxi     d, 512
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
+        call    PaintBlock
 
         lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+2)*8
         pop     hl
         lxi     d, 512+16
-        dad     d
-        mvi     a, 3
-        call    PaintBitmap
-
+        call    PaintBlock
 
 
 
@@ -1152,7 +1151,7 @@ ColorMode
 ;         db      '$'
 
 Hello
-        db      ESC, '5', 32 + 3, 32 + 3        ; position cursor
+        db      ESC, '5', 32 + 2, 32 + 2        ; position cursor
 
         db      ESC, '4', 3                     ; select color
 
