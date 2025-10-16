@@ -749,82 +749,67 @@ ResetScroll
 ; DE - смещение относительно центрального блока (??)
 ; *************************************************
 PaintBlock
+        push    h
+        push    d
+        lhld    BmpPtr
         dad     d
         mvi     a, 3
-        jmp     PaintBitmap
+        call    PaintBitmap
+        pop     d
+        pop     h
+        ret
 
+; *************************************************
+; Визуализировать ряд из N битмапов
+; BC = начальные координаты
+; *************************************************
+PaintNBlocks
+        mvi     l, 8    ; положим N=8
+        ; lxi     d, 0
+PNBLoop
 
+        call    PaintBlock
+
+; движемся вправо по памяти
+        mov     a, e
+        adi     16
+        mov     e, a
+        mov     a, d
+        aci     0
+        mov     d, a
+
+; движемся вправо по экрану
+        inr     b
+        inr     b
+
+; счетчик цикла
+        dcr     l
+        jnz     PNBLoop
+        
+        ret
+        
 ; *************************************************
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
 PREVIEW_X       equ     13
 PREVIEW_Y       equ     5
+
 WorkBitmapPreview
-
-        ; lxi     h, (PREVIEW_X-1)*512+PREVIEW_Y*8
-        ; mvi     c, '<'
-        ; call    MYCHAROUT
-        ; lxi     h, (PREVIEW_X+3)*512+PREVIEW_Y*8
-        ; mvi     c, '>'
-        ; call    MYCHAROUT
-
         lxi     b, PREVIEW_X*512+PREVIEW_Y*8
-        lhld    BmpPtr
-        push    h
-        lxi     d, -16
-        call    PaintBlock
- 
-        lxi     b, (PREVIEW_X+1)*512+PREVIEW_Y*8
-        pop     hl
-        push    hl
         lxi     d, 0
-        call    PaintBlock
-        
-        lxi     b, (PREVIEW_X+2)*512+PREVIEW_Y*8
-        pop     hl
-        push    hl
-        lxi     d, 16
-        call    PaintBlock
+        call    PaintNBlocks
+
+; Второй ряд
 
         lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
-        pop     hl
-        push    h
-        lxi     d, 256-16
-        call    PaintBlock
-
-        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+1)*8
-        pop     hl
-        push    hl
         lxi     d, 256
-        call    PaintBlock
+        call    PaintNBlocks
 
-        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+1)*8
-        pop     hl
-        push    hl
-        lxi     d, 256+16
-        call    PaintBlock
-
+; Третий ряд
 
         lxi     b, PREVIEW_X*512+(PREVIEW_Y+2)*8
-        pop     hl
-        push    h
-        lxi     d, 512-16
-        call    PaintBlock
-        
-        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+2)*8
-        pop     hl
-        push    hl
         lxi     d, 512
-        call    PaintBlock
-
-        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+2)*8
-        pop     hl
-        lxi     d, 512+16
-        call    PaintBlock
-
-
-
-
+        call    PaintNBlocks
 
 ; Нарисуем красивую полосочку сверху        
         lxi     b, PREVIEW_X*512
