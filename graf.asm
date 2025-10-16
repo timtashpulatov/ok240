@@ -10,6 +10,7 @@ VIDEO           equ     0E1h
 MAP32K          equ     0x01
 ENROM           equ     0x10
 
+ESC             equ     27
 
 
 WALL_OFFSET_HORIZ       equ     4       ; in bytes
@@ -62,6 +63,8 @@ PARAM1  	EQU	FCB+1	        ;COMMAND LINE PARAMETER 1 IN FCB
 PARAM2  	EQU	PARAM1+16	;COMMAND LINE PARAMETER 2
 DMA             equ     80h
 COMTAIL         EQU     80h
+
+
 
         org     100h
 
@@ -1137,8 +1140,8 @@ DefaultFN
         db      0,'SCRATCH PAD'
 
 ColorMode
-        db      1bh, '64', 
-        db      1bh, '8c'    ; hide cursor, черный фон
+        db      1bh, '64',      ; hide cursor
+        db      1bh, '8c'    ; черный фон
         db      1bh, '42'    ; желтый передний план
         db      '$'
 
@@ -1149,6 +1152,12 @@ ColorMode
 ;         db      '$'
 
 Hello
+        db      ESC, '5', 32 + 3, 32 + 3        ; position cursor
+
+        db      ESC, '4', 3                     ; select color
+
+        db      ESC, '2', 10, 10, 50, 50        ; draw line
+
         db      'Hello', '$'
 
 SaveYN
