@@ -16,6 +16,7 @@ ESC             equ     27
 WALL_OFFSET_HORIZ       equ     4       ; in bytes
 WALL_OFFSET_VERT        equ     4*8       ; in pixels
 
+
 XY              equ     0628h   ; WALL_OFFSET_HORIZ + 256*WALL_OFFSET_VERT        ;0208h
 
 MARGIN_BOT      equ     8*8 + WALL_OFFSET_VERT
@@ -695,6 +696,26 @@ ClearScreen
         jmp    BDOS
 
 ; *************************************************
+; Графические функцыи
+;
+; DrawLine - нарисовать линию
+; HL = координаты начала, DE = координаты, напротив, конца
+; *************************************************
+DrawLine
+        shld    ESC_LINE_X1
+        xchg
+        shld    ESC_LINE_X2
+        lxi     d, ESC_LINE
+        jmp     Print
+
+ESC_LINE        db      ESC, '2'
+ESC_LINE_X1     db      0
+ESC_LINE_Y1     db      0
+ESC_LINE_X2     db      0
+ESC_LINE_Y2     db      0
+                db      '$'
+
+; *************************************************
 ; BuildTheWall
 ; *************************************************
 BuildTheWall
@@ -812,22 +833,30 @@ WorkBitmapPreview
         call    PaintNBlocks
 
 ; Нарисуем красивую полосочку сверху        
-        lxi     b, PREVIEW_X*512
-        lxi     h, BOTLINE
-        mvi     a, 3
-        push    hl
-        call    PaintBitmap
+        ; lxi     b, PREVIEW_X*512
+        ; lxi     h, BOTLINE
+        ; mvi     a, 3
+        ; push    hl
+        ; call    PaintBitmap
         
-        lxi     b, (PREVIEW_X+1)*512
-        mvi     a, 3
-        pop     hl
-        push    hl
-        call    PaintBitmap        
+        ; lxi     b, (PREVIEW_X+1)*512
+        ; mvi     a, 3
+        ; pop     hl
+        ; push    hl
+        ; call    PaintBitmap        
 
-        lxi     b, (PREVIEW_X+2)*512
-        mvi     a, 3
-        pop     hl
-        call    PaintBitmap        
+        ; lxi     b, (PREVIEW_X+2)*512
+        ; mvi     a, 3
+        ; pop     hl
+        ; call    PaintBitmap        
+
+PREVIEW_HORIZ           equ     16      ; bytes
+PREVIEW_VERT            equ     4       ; pixels
+
+
+        lxi     hl, (PREVIEW_HORIZ << 8) + PREVIEW_VERT
+        lxi     de, (PREVIEW_HORIZ << 8) + PREVIEW_VERT + 64
+        call    DrawLine
 
 ; И снизу        
         lxi     b, PREVIEW_X*512+(PREVIEW_Y+3)*8
@@ -1140,7 +1169,7 @@ Hello
 
         db      ESC, '4', 3                     ; select color
 
-        db      ESC, '2', 10, 10, 50, 50        ; draw line
+        ; db      ESC, '2', 10, 10, 50, 50        ; draw line
 
         db      'Hello', '$'
 
