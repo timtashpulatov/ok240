@@ -127,7 +127,7 @@ DiskDone
         call    Help
 
 ; Забавные прерывания!
-;        call    SetupTimerInterrupt
+        call    SetupTimerInterrupt
 
 Begin
         call    WorkBitmapPreview
@@ -1229,7 +1229,7 @@ TimerHandler
 
         lda     Fun
         inr     a
-        ani     7fh
+        ani     3fh
         ori     40h
         sta     Fun
 
