@@ -309,11 +309,26 @@ Switch
         ani     7
         sta     Tab
 
-        
-        lxi     hl,0000h
-        lxi     de,0ffffh
-        call    DrawRectangle
-        
+        lxi     hl, 0
+        lxi     de, 2020h
+        call    DrawLine
+
+        lxi     hl, 2020h
+        lxi     de, 2040h
+        call    DrawLine
+
+        lxi     hl, 2040h
+        lxi     de, 4040h
+        call    DrawLine
+
+        lxi     hl, 4040h
+        lxi     de, 4020h
+        call    DrawLine
+
+        lxi     hl, 4020h
+        lxi     de, 2020h
+        call    DrawLine
+
         jmp     Begin
 
 ; ***********************************
@@ -740,12 +755,39 @@ ESC_PARAM4      db      0
                 db      '$'
 
 ; *************************************************
-; Rect - нарисовать прямоугольник
+; DrawFilledRectangle - нарисовать прямоугольник с заливкой
+; HL = координаты начала Y1X1, DE = координаты конца Y2X2
+; *************************************************
+DrawFilledRectangle
+        mvi     a, '1'
+        jmp     DrawCommon
+
+; *************************************************
+; DrawRectangle - нарисовать прямоугольник
 ; HL = координаты начала Y1X1, DE = координаты конца Y2X2
 ; *************************************************
 DrawRectangle
-        mvi     a, '1'
-        jmp     DrawCommon
+        ; push    de
+        ; mov     d, h
+        ; call    DrawLine
+        ; pop     de
+        
+        ; push    de
+        ; mov     e, l
+        ; call    DrawLine
+        ; pop     de
+        
+        ; push    hl
+        ; mov     h, d
+        ; call    DrawLine
+        ; pop     hl
+
+        ; push    hl
+        ; mov     l, e
+        ; call    DrawLine
+        ; pop     hl
+        
+        ret
 
 
 ; *************************************************
