@@ -241,7 +241,7 @@ CenterBitmap
 ; *************************************************
 ; Клипборд
 ; *************************************************
-CLIP_X  equ     12      ; координата X положения клипборда по горизонтали
+CLIP_X  equ     13      ; координата X положения клипборда по горизонтали
 CLIP_Y  equ     5       ; координата Y по вертикали
 CLIP_XY equ     ((CLIP_X * 2) << 8) + CLIP_Y * 8
 
@@ -699,7 +699,7 @@ ClearScreen
 ; Графические функцыи
 ;
 ; DrawLine - нарисовать линию
-; HL = координаты начала, DE = координаты, напротив, конца
+; HL = координаты начала Y1X1, DE = координаты конца Y2X2
 ; *************************************************
 DrawLine
         shld    ESC_LINE_X1
@@ -785,6 +785,8 @@ PaintBlock
 ; BC = начальные координаты
 ; *************************************************
 PaintNBlocks
+        push    hl
+        push    bc
         mvi     l, 8    ; положим N=8
         ; lxi     d, 0
 PNBLoop
@@ -807,74 +809,53 @@ PNBLoop
         dcr     l
         jnz     PNBLoop
         
+        pop     bc
+        pop     hl
         ret
         
 ; *************************************************
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
-PREVIEW_X       equ     13
+PREVIEW_X       equ     16
 PREVIEW_Y       equ     5
+PREVIEW_XY      equ     PREVIEW_X*512 + PREVIEW_Y*8
 
 WorkBitmapPreview
-        lxi     b, PREVIEW_X*512+PREVIEW_Y*8
+        lxi     b, PREVIEW_XY
         lxi     d, 0
+        mvi     l, 8
+WBPLoop
         call    PaintNBlocks
+        
+        mov     a, c
+        adi     8
+        mov     c, a
 
-; Второй ряд
-
-        lxi     b, PREVIEW_X*512+(PREVIEW_Y+1)*8
-        lxi     d, 256
-        call    PaintNBlocks
-
-; Третий ряд
-
-        lxi     b, PREVIEW_X*512+(PREVIEW_Y+2)*8
-        lxi     d, 512
-        call    PaintNBlocks
+        inr     d
+        dcr     l
+        jnz     WBPLoop
 
 ; Нарисуем красивую полосочку сверху        
-        ; lxi     b, PREVIEW_X*512
-        ; lxi     h, BOTLINE
-        ; mvi     a, 3
-        ; push    hl
-        ; call    PaintBitmap
-        
-        ; lxi     b, (PREVIEW_X+1)*512
-        ; mvi     a, 3
-        ; pop     hl
-        ; push    hl
-        ; call    PaintBitmap        
 
-        ; lxi     b, (PREVIEW_X+2)*512
-        ; mvi     a, 3
-        ; pop     hl
-        ; call    PaintBitmap        
+PREVIEW_HORIZ           equ     16      ; in 8x8 pixel blocks
+PREVIEW_VERT            equ     4       ; in 8x8 pixel blocks
+PREVIEW_HORIZ_PIXELS    equ     PREVIEW_HORIZ * 8
+PREVIEW_VERT_PIXELS     equ     255-(PREVIEW_VERT * 8)  // 0.0 is in left bottom corner
+PREVIEW_LINE_LEN        equ     8
+PREVIEW_LINE_LEN_PIXELS equ     PREVIEW_LINE_LEN * 8
 
-PREVIEW_HORIZ           equ     16      ; bytes
-PREVIEW_VERT            equ     4       ; pixels
+PREVIEW_BOT_LINE_Y      equ     PREVIEW_VERT_PIXELS-(10*8)
 
-
-        lxi     hl, (PREVIEW_HORIZ << 8) + PREVIEW_VERT
-        lxi     de, (PREVIEW_HORIZ << 8) + PREVIEW_VERT + 64
+        lxi     hl, (PREVIEW_VERT_PIXELS << 8) + (PREVIEW_HORIZ_PIXELS)
+        lxi     de, (PREVIEW_VERT_PIXELS << 8) + (PREVIEW_HORIZ_PIXELS + PREVIEW_LINE_LEN_PIXELS)
         call    DrawLine
 
 ; И снизу        
-        lxi     b, PREVIEW_X*512+(PREVIEW_Y+3)*8
-        lxi     h, TOPLINE
-        mvi     a, 3
-        push    hl
-        call    PaintBitmap        
 
-        lxi     b, (PREVIEW_X+1)*512+(PREVIEW_Y+3)*8
-        mvi     a, 3
-        pop     hl
-        push    hl
-        call    PaintBitmap        
-        
-        lxi     b, (PREVIEW_X+2)*512+(PREVIEW_Y+3)*8
-        mvi     a, 3
-        pop     hl
-        call    PaintBitmap        
+        lxi     hl, (PREVIEW_BOT_LINE_Y << 8) + PREVIEW_HORIZ_PIXELS
+        lxi     de, (PREVIEW_BOT_LINE_Y << 8) + (PREVIEW_HORIZ_PIXELS + PREVIEW_LINE_LEN_PIXELS)
+        call    DrawLine
+
         ret
 
 
@@ -928,18 +909,25 @@ GoFigure
 
         ret
 
+; *************************************************
+; HELP
+; *************************************************
+HelpX   equ     1ah
+HelpY   equ     16
+HelpXY  equ     (HelpX<<8) + HelpY*8
+
 Help
-        lxi     b, 1a00h + 11*8
+        lxi     b, HelpXY
         lxi     h, ONE
         mvi     a, 3
         call    PaintBitmap
 
-        lxi     b, 1a00h + 12*8+2
+        lxi     b, HelpXY + 8 + 2
         lxi     h, TWO
         mvi     a, 3
         call    PaintBitmap
 
-        lxi     b, 1a00h + 13*8+4
+        lxi     b, HelpXY + 16 + 2
         lxi     h, THREE
         mvi     a, 3
         call    PaintBitmap
