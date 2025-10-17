@@ -180,6 +180,9 @@ KeyFunctions
         dw      CurUp
         db      1ah
         dw      CurDown
+       
+        db      09h
+        dw      Switch
         
         db      31h
         dw      ColorOne
@@ -294,6 +297,22 @@ RedrawWorkBitmap
         lxi     h, XY
         shld    CurPos
         call    UnpackWorkBitmap
+        
+        jmp     Begin
+
+; ***********************************
+; Switch between ??? with Tab key
+; ***********************************
+Switch
+        lda     Tab
+        inr     a
+        ani     7
+        sta     Tab
+
+        
+        lxi     hl,0000h
+        lxi     de,0ffffh
+        call    DrawRectangle
         
         jmp     Begin
 
@@ -702,18 +721,32 @@ ClearScreen
 ; HL = координаты начала Y1X1, DE = координаты конца Y2X2
 ; *************************************************
 DrawLine
-        shld    ESC_LINE_X1
+        mvi     a, '2'
+DrawCommon
+        sta     ESC_COMMAND
+        shld    ESC_PARAM1
         xchg
-        shld    ESC_LINE_X2
-        lxi     d, ESC_LINE
+        shld    ESC_PARAM3
+        lxi     d, ESC_SEQUENCE
         jmp     Print
 
-ESC_LINE        db      ESC, '2'
-ESC_LINE_X1     db      0
-ESC_LINE_Y1     db      0
-ESC_LINE_X2     db      0
-ESC_LINE_Y2     db      0
+; TODO move working RAM area to the end of program
+ESC_SEQUENCE    db      ESC
+ESC_COMMAND     db      '2'
+ESC_PARAM1      db      0
+ESC_PARAM2      db      0
+ESC_PARAM3      db      0
+ESC_PARAM4      db      0
                 db      '$'
+
+; *************************************************
+; Rect - нарисовать прямоугольник
+; HL = координаты начала Y1X1, DE = координаты конца Y2X2
+; *************************************************
+DrawRectangle
+        mvi     a, '1'
+        jmp     DrawCommon
+
 
 ; *************************************************
 ; BuildTheWall
@@ -1232,6 +1265,9 @@ BmpPtr dw      0
 
 FORECOLOR       db      0
 BACKCOLOR       db      0
+
+; Переключатель Tab
+Tab     db      0
 
 ; Клипборд
 CLIPBOARD       equ     .
