@@ -45,8 +45,9 @@ CURSYS          equ     0bfedh
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 C_READ   	EQU	1
 C_WRITE   	EQU	2
+C_RAWIO         EQU     6       ; Entered with C=6, E=FF. Returned values (in A) vary.
 C_WRITESTR   	EQU	9
-CONST   	EQU	11	;CONSOLE STAT
+C_STAT   	EQU	11	;CONSOLE STAT
 F_OPEN    	EQU	15	;0FFH=NOT FOUND
 F_CLOSE   	EQU	16	;   "	"
 F_SFIRST        EQU	17	;   "	"
@@ -124,6 +125,9 @@ DiskDone
 
 ; Вывести справку по командам
         call    Help
+
+; Забавные прерывания!
+;        call    SetupTimerInterrupt
 
 Begin
         call    WorkBitmapPreview
@@ -309,25 +313,25 @@ Switch
         ani     7
         sta     Tab
 
-        lxi     hl, 0
-        lxi     de, 2020h
-        call    DrawLine
+        ; lxi     hl, 0
+        ; lxi     de, 2020h
+        ; call    DrawLine
 
-        lxi     hl, 2020h
-        lxi     de, 2040h
-        call    DrawLine
+        ; lxi     hl, 2020h
+        ; lxi     de, 2040h
+        ; call    DrawLine
 
-        lxi     hl, 2040h
-        lxi     de, 4040h
-        call    DrawLine
+        ; lxi     hl, 2040h
+        ; lxi     de, 4040h
+        ; call    DrawLine
 
-        lxi     hl, 4040h
-        lxi     de, 4020h
-        call    DrawLine
+        ; lxi     hl, 4040h
+        ; lxi     de, 4020h
+        ; call    DrawLine
 
-        lxi     hl, 4020h
-        lxi     de, 2020h
-        call    DrawLine
+        ; lxi     hl, 4020h
+        ; lxi     de, 2020h
+        ; call    DrawLine
 
         jmp     Begin
 
@@ -861,6 +865,7 @@ PaintBlock
 ; *************************************************
 PaintNBlocks
         push    hl
+        push    de
         push    bc
         mvi     l, 8    ; положим N=8
         ; lxi     d, 0
@@ -885,6 +890,7 @@ PNBLoop
         jnz     PNBLoop
         
         pop     bc
+        pop     de
         pop     hl
         ret
         
@@ -1208,6 +1214,64 @@ ClearFCBLoop
         jnz     ClearFCBLoop
         ret
 
+; *************************************************
+; Timer 0 interrupt handler
+; *************************************************
+TimerHandler
+        push    a
+        lda     TimCount
+        inr     a
+        cpi     50
+        jnz     THAck
+        
+        xra     a
+        sta     TimCount
+
+        lda     Fun
+        inr     a
+        ani     7fh
+        ori     40h
+        sta     Fun
+
+        ; mvi     a, 4ah
+
+        out     VIDEO
+        
+; Acknowledge interrupt
+THAck
+	mvi     a, 20h
+	out     80h
+; Enable interrupts and return
+        pop     a
+        ei
+        ret
+
+; *************************************************
+; Настроить таймер, контроллер прерываний, обработчик
+; *************************************************
+TIM0_DIV        equ     30000
+SetupTimerInterrupt
+; Init timer
+        lxi     h, TIM0_DIV      ; тактовая частота таймера 1.5МГц. настроим прерывания 50 раз в секунду
+        mvi     a, 36h
+        out     63h
+        mov     a, l
+        out     60h
+        mov     a, h		
+        out     60h
+; Interrupt controller
+        mvi     a, 0b11101111   ; разрешить прерывания от Таймера 0 (RST4)
+        out     81h
+; Plant interrupt handler
+        mvi     a, 0c3h
+        sta     20h
+        lxi     h, TimerHandler
+        shld    21h
+; GO11!!
+        ei
+        ret
+
+
 
 ; *************************************************
 ; Различные константы
@@ -1310,6 +1374,11 @@ BACKCOLOR       db      0
 
 ; Переключатель Tab
 Tab     db      0
+
+; Переменная для развлекухи
+Fun     db      40h
+TimCount
+        db      0
 
 ; Клипборд
 CLIPBOARD       equ     .
