@@ -116,8 +116,8 @@ DiskDone
         ; mvi     c, 0ch          ; Home
         ; call    CHAROUT
 
-        lxi     de, Hello
-        call    Print
+        ; lxi     de, Hello
+        ; call    Print
 
 ; Вывести справку по командам
         call    Help
@@ -157,8 +157,8 @@ CheckKeyboard
         jz      Nothing
 
 ; Key pressed
-        call    WorkBitmapPreview
-        call    EraseCursor
+        ; call    WorkBitmapPreview
+        ; call    EraseCursor
 
         mvi     e, 255
         mvi     c, C_RAWIO
@@ -327,6 +327,9 @@ RedrawWorkBitmap
         shld    CurPos
         call    UnpackWorkBitmap
         
+        call    WorkBitmapPreview
+        call    EraseCursor
+        
         jmp     Begin
 
 ; ***********************************
@@ -405,6 +408,10 @@ BothColors
         ani     3
         call    PlaceDot
         call    UpdateWorkBitmap        
+
+        call    WorkBitmapPreview
+        call    EraseCursor
+
         jmp     Begin
 
 ; *************************************************
@@ -1115,7 +1122,7 @@ PrtStrDone
 ; *************************************************
 
 Print
-        mvi     c, C_WRITESTR
+        mvi    c, C_WRITESTR
         jmp    BDOS
 
 
@@ -1374,11 +1381,9 @@ ColorMode
 ;         db      '$'
 
 Hello
-        db      ESC, '5', 32 + 2, 32 + 2        ; position cursor
+      ;  db      ESC, '5', 32 + 2, 32 + 2        ; position cursor
 
-        db      ESC, '4', 3                     ; select color
-
-        ; db      ESC, '2', 10, 10, 50, 50        ; draw line
+        ; db      ESC, '4', 3                     ; select color
 
         db      'Hello', '$'
 
