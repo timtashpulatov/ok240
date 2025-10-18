@@ -342,21 +342,21 @@ Switch
         ; lxi     de, 2020h
         ; call    DrawLine
 
-        ; lxi     hl, 2020h
-        ; lxi     de, 2040h
-        ; call    DrawLine
+        lxi     hl, 2020h
+        lxi     de, 2040h
+        call    DrawLine
 
-        ; lxi     hl, 2040h
-        ; lxi     de, 4040h
-        ; call    DrawLine
+        lxi     hl, 2040h
+        lxi     de, 4040h
+        call    DrawLine
 
-        ; lxi     hl, 4040h
-        ; lxi     de, 4020h
-        ; call    DrawLine
+        lxi     hl, 4040h
+        lxi     de, 4020h
+        call    DrawLine
 
-        ; lxi     hl, 4020h
-        ; lxi     de, 2020h
-        ; call    DrawLine
+        lxi     hl, 4020h
+        lxi     de, 2020h
+        call    DrawLine
 
         jmp     Begin
 
@@ -375,7 +375,7 @@ Loo     mvi     m, 0
         
         call    UnpackWorkBitmap 
         
-        jmp     Begin
+        jmp     Paint
 
 CycleForeColor
         lda     FORECOLOR
@@ -759,28 +759,28 @@ PBLoop  ldax    d
 ; ClearScreen
 ; *************************************************
 ClearScreen
-;         di
-;         mvi     a, ENROM
-;         out     BANKING
+        di
+        mvi     a, ENROM
+        out     BANKING
         
-;         lxi     h, SCREEN
-;         lxi     b, 256*64
+        lxi     h, SCREEN
+        lxi     b, 256*64
         
-; Cls     mvi     m, 0
-;         inx     h
-;         dcx     b
-;         mov     a, b
-;         ora     c
-;         jnz     Cls
+Cls     mvi     m, 0
+        inx     h
+        dcx     b
+        mov     a, b
+        ora     c
+        jnz     Cls
         
-;         xra     a
-;         out     BANKING
-;         ei
-;       ret
+        xra     a
+        out     BANKING
+        ei
+        ret
 
-        mvi     a, 1fh
-        mvi     c, C_WRITE
-        jmp    BDOS
+        ; mvi     a, 1fh
+        ; mvi     c, C_WRITE
+        ; jmp    BDOS
 
 ; *************************************************
 ; Графические функцыи
@@ -1374,8 +1374,8 @@ DefaultFN
         db      0,'SCRATCH PAD'
 
 ColorMode
-        db      1bh, '64',      ; hide cursor
-        db      1bh, '8c'    ; черный фон
+        db      ESC, '64',      ; hide cursor
+        db      ESC, '8c'    ; черный фон
         db      1bh, '42'    ; желтый передний план
         db      '$'
 
