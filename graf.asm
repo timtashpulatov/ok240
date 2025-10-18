@@ -129,22 +129,51 @@ DiskDone
 ; Забавные прерывания!
         call    SetupTimerInterrupt
 
+
 Begin
         call    WorkBitmapPreview
         call    PaintCursor
 
+        call    ReadHourGlass
+        
+        ani     64
+        jnz     CheckKeyboard
 
-        ; Ввод с клавиатуры
-        call    KBDREAD
+; Restart timer        
+        xra     a
+        out     60h
+; Increment ticks        
+        lda     Ticks
+        inr     a
+        sta     Ticks
 
+
+; Ввод с клавиатуры
+CheckKeyboard
+        mvi     c, C_STAT
+        call    BDOS
+        ora     a
+        jz      Cont
+        
+        ; call    KBDREAD
+        mvi     e, 255
+        mvi     c, C_RAWIO
+        call    BDOS
         push    a
+
+Cont
+        lda     Ticks
+        ani     0b00001000
+        jnz     Cont1
+        
+        call    PaintHourGlass
+        xra     a
+        sta     Ticks
+
+Cont1
         call    EraseCursor
         pop     a
 
-
-;        cpi     0x1b            ; ESC?
-;        jnz     Space
-;        jmp     WARMBOOT        ; возврат в Монитор
 
 ; Большие или малые буквы, это все равно
         cpi     0x5f
@@ -1252,25 +1281,60 @@ THAck
 TIM0_DIV        equ     30000
 SetupTimerInterrupt
 ; Init timer
-        lxi     h, TIM0_DIV      ; тактовая частота таймера 1.5МГц. настроим прерывания 50 раз в секунду
-        mvi     a, 36h
+
+        ; lxi     h, TIM0_DIV      ; тактовая частота таймера 1.5МГц. настроим прерывания 50 раз в секунду
+        ; mvi     a, 36h
+        ; out     63h
+        ; mov     a, l
+        ; out     60h
+        ; mov     a, h		
+        ; out     60h
+
+
+; Mode 4 - Software triggered strobe, MSB only
+
+        ; mvi     a, 0b00101000
+        mvi     a, 26h
         out     63h
-        mov     a, l
+        
+        mvi     a, 0    ; max count value (2^16)
         out     60h
-        mov     a, h		
-        out     60h
-; Interrupt controller
-        mvi     a, 0b11101111   ; разрешить прерывания от Таймера 0 (RST4)
-        out     81h
-; Plant interrupt handler
-        mvi     a, 0c3h
-        sta     20h
-        lxi     h, TimerHandler
-        shld    21h
-; GO11!!
-        ei
+  
+
+; ; Interrupt controller
+;         mvi     a, 0b11101111   ; разрешить прерывания от Таймера 0 (RST4)
+;         out     81h
+; ; Plant interrupt handler
+;         mvi     a, 0c3h
+;         sta     20h
+;         lxi     h, TimerHandler
+;         shld    21h
+; ; GO11!!
+;         ei
         ret
 
+; *************************************************
+; Игры с таймером
+; *************************************************
+; Чтение таймера 0 (который free running с частотой 22, что ли, Герц)
+ReadHourGlass
+        mvi     a, 0
+        out     63h     ; latch counter value for reading
+
+        in      60h     ; read MSB
+        sta     HourGlass
+        sta     HourGlass+8
+        ret
+
+; *************************************************
+; Отобразить счетчик песчинок
+; *************************************************
+PaintHourGlass
+        lxi     h, HourGlass
+        lxi     b, 0
+        mvi     a, 3
+        call    PaintBitmap
+        ret
 
 
 ; *************************************************
@@ -1379,6 +1443,11 @@ Tab     db      0
 Fun     db      40h
 TimCount
         db      0
+
+Ticks   db      0
+
+HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
+                db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
 
 ; Клипборд
 CLIPBOARD       equ     .
