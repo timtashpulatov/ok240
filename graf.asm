@@ -119,10 +119,6 @@ DiskDone
         lxi     de, Hello
         call    Print
 
-; Эксперименты с выводом символа без курсора
-        ; mvi     a, 4
-        ; sta     0bfech  ; скажем НЕТ курсору
-
 ; Вывести справку по командам
         call    Help
 
@@ -131,6 +127,7 @@ DiskDone
 
         call    WorkBitmapPreview
         call    PaintCursor
+
 ; ********************************************************************
 ; Main loop
 ; ********************************************************************
@@ -169,7 +166,7 @@ CheckKeyboard
         jmp     Cont
         
 Nothing
-        call    BlinkCursor
+;        call    BlinkCursor
 Cont
 
         
