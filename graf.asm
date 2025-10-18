@@ -132,16 +132,19 @@ DiskDone
 
 Begin
         call    WorkBitmapPreview
-        call    PaintCursor
+        ; call    PaintCursor
+        call    BlinkCursor
 
         call    ReadHourGlass
         
-        ani     64
+        ani     80h              ; restart timer every 21 milliseconds
         jnz     CheckKeyboard
 
 ; Restart timer        
         xra     a
         out     60h
+; Do periodic tasks just before incrementing Ticks counter
+        call    OnEveryTick
 ; Increment ticks        
         lda     Ticks
         inr     a
@@ -155,23 +158,25 @@ CheckKeyboard
         ora     a
         jz      Cont
         
+        call    EraseCursor
+        
         ; call    KBDREAD
         mvi     e, 255
         mvi     c, C_RAWIO
         call    BDOS
+        
+Cont
         push    a
 
-Cont
         lda     Ticks
-        ani     0b00001000
+        ani     0b00100000
         jnz     Cont1
         
-        call    PaintHourGlass
-        xra     a
-        sta     Ticks
+        ; call    PaintHourGlass
+        ; xra     a
+        ; sta     Ticks
 
 Cont1
-        call    EraseCursor
         pop     a
 
 
@@ -523,6 +528,18 @@ CurUp
 Paint
 ;        call    PaintCursor
         jmp     Begin
+
+; *************************************************
+; BlinkCursor
+; *************************************************
+BlinkCursor
+        lda     Blink
+        ora     a
+        jnz     Show
+        call    EraseCursor
+        ret
+Show    call    PaintCursor
+        ret
 
 ; *************************************************
 ; PaintCursor
@@ -1336,6 +1353,20 @@ PaintHourGlass
         call    PaintBitmap
         ret
 
+; *************************************************
+; 
+; *************************************************
+OnEveryTick
+
+        lda     Ticks
+        ani     16
+        jnz     ONET1
+
+        lda     Blink
+        cma
+        sta     Blink
+ONET1
+        ret
 
 ; *************************************************
 ; Различные константы
@@ -1445,6 +1476,8 @@ TimCount
         db      0
 
 Ticks   db      0
+
+Blink   db      0
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
