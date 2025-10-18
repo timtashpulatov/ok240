@@ -101,8 +101,8 @@ NPLoop
 DiskDone
 
 ; Чистим экран и рисуем нетленку
-        call    ResetScroll
         call    ClearScreen
+        call    ResetScroll
         call    BuildTheWall
         ; call    DrawPalette
         call    UnpackWorkBitmap
@@ -1376,7 +1376,7 @@ DefaultFN
 ColorMode
         db      ESC, '64',      ; hide cursor
         db      ESC, '8c'    ; черный фон
-        db      1bh, '42'    ; желтый передний план
+        db      ESC, '42'    ; желтый передний план
         db      '$'
 
 ; SetCursorPosition
@@ -1386,7 +1386,7 @@ ColorMode
 ;         db      '$'
 
 Hello
-      ;  db      ESC, '5', 32 + 2, 32 + 2        ; position cursor
+        db      ESC, '5', 32 + 2, 32 + 2        ; position cursor
 
         ; db      ESC, '4', 3                     ; select color
 
