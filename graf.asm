@@ -113,8 +113,8 @@ DiskDone
         ; lxi     hl, 0505h
         ; call    PositionCursor
 
-        mvi     c, 0ch          ; Home
-        call    CHAROUT
+        ; mvi     c, 0ch          ; Home
+        ; call    CHAROUT
 
         lxi     de, Hello
         call    Print
@@ -129,14 +129,15 @@ DiskDone
 ; Забавные прерывания!
         call    SetupTimerInterrupt
 
-
-Begin
         call    WorkBitmapPreview
-        ; call    PaintCursor
+        call    PaintCursor
+; ********************************************************************
+; Main loop
+; ********************************************************************
+Begin
         call    BlinkCursor
 
         call    ReadHourGlass
-        
         ani     80h              ; restart timer every 21 milliseconds
         jnz     CheckKeyboard
 
@@ -156,29 +157,22 @@ CheckKeyboard
         mvi     c, C_STAT
         call    BDOS
         ora     a
-        jz      Cont
-        
+        jz      Nothing
+
+; Key pressed
+        call    WorkBitmapPreview
         call    EraseCursor
-        
-        ; call    KBDREAD
+
         mvi     e, 255
         mvi     c, C_RAWIO
         call    BDOS
+        jmp     Cont
         
+Nothing
+        call    BlinkCursor
 Cont
-        push    a
 
-        lda     Ticks
-        ani     0b00100000
-        jnz     Cont1
         
-        ; call    PaintHourGlass
-        ; xra     a
-        ; sta     Ticks
-
-Cont1
-        pop     a
-
 
 ; Большие или малые буквы, это все равно
         cpi     0x5f
@@ -1358,14 +1352,10 @@ PaintHourGlass
 ; *************************************************
 OnEveryTick
 
+; Частота моргания курсора
         lda     Ticks
-        ani     16
-        jnz     ONET1
-
-        lda     Blink
-        cma
+        ani     04h
         sta     Blink
-ONET1
         ret
 
 ; *************************************************
