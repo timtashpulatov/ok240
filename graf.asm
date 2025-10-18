@@ -326,11 +326,8 @@ RedrawWorkBitmap
         lxi     h, XY
         shld    CurPos
         call    UnpackWorkBitmap
-        
-        call    WorkBitmapPreview
-        call    EraseCursor
-        
-        jmp     Begin
+
+        jmp     Paint
 
 ; ***********************************
 ; Switch between ??? with Tab key
@@ -409,10 +406,7 @@ BothColors
         call    PlaceDot
         call    UpdateWorkBitmap        
 
-        call    WorkBitmapPreview
-        call    EraseCursor
-
-        jmp     Begin
+        jmp     Paint
 
 ; *************************************************
 ; * Проапдейтить рабочий битмап точкой
@@ -493,13 +487,18 @@ GBCDone
 ; *************************************************
 
         
-CurDown lda     Row
+CurDown 
+        call    EraseCursor
+
+        lda     Row
         cpi     MARGIN_BOT
         jz      Paint
         adi     8
         sta     Row
         jmp     Paint
 CurLeft
+        call    EraseCursor
+
         lda     Col
         cpi     MARGIN_LEFT
         jz      Paint
@@ -507,6 +506,8 @@ CurLeft
         sta     Col
         jmp     Paint
 CurRight
+        call    EraseCursor
+
         lda     Col
         cpi     MARGIN_RIGHT + 6        ; why 6 ???
         jz      Paint
@@ -514,6 +515,8 @@ CurRight
         sta     Col
         jmp     Paint
 CurUp
+        call    EraseCursor
+
         lda     Row
         cpi     MARGIN_TOP
         jz      Paint
@@ -525,6 +528,8 @@ CurUp
 ; Рисуем
 Paint
 ;        call    PaintCursor
+        call    WorkBitmapPreview
+
         jmp     Begin
 
 ; *************************************************
@@ -1358,7 +1363,7 @@ OnEveryTick
 
 ; Частота моргания курсора
         lda     Ticks
-        ani     04h
+        ani     40h
         sta     Blink
         ret
 
