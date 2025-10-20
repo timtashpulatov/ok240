@@ -536,6 +536,16 @@ Paint
 ; BlinkCursor
 ; *************************************************
 BlinkCursor
+
+        lxi     h, Blink
+        mov     b, m            ; Blink
+        inx     h
+        mov     a, m            ; prev Blink
+        xra     b               ; are they the same?
+        rz                      ; yes
+
+        mov     m, b            ; save Blink to prev Blink
+        
         lda     Blink
         ora     a
         jnz     Show
@@ -1361,10 +1371,11 @@ PaintHourGlass
 ; *************************************************
 OnEveryTick
 
-; Частота моргания курсора
+; моргание курсора
         lda     Ticks
-        ani     40h
+        ani     80h
         sta     Blink
+
         ret
 
 ; *************************************************
@@ -1474,7 +1485,8 @@ TimCount
 
 Ticks   db      0
 
-Blink   db      0
+Blink           db      0
+BlinkPrev       db      0
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
