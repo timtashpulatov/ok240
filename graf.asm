@@ -641,12 +641,25 @@ EC3
 
 
 
+
 ; *************************************************
 ; Точку рисуем
 ; В аккумуляторе номер плоскости 00, 01, 10 или 11
 ; *************************************************
 PlaceDot
         push    a
+
+
+        lhld    CurPos
+        mov     c, l
+        mov     b, h
+        lxi     h, GRID_NONE
+        mvi     a, 3
+        call    PaintBitmap
+        
+        pop     a
+        push    a
+
         lhld    CurPos
         mov     c, l
         mov     b, h
