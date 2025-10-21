@@ -1,6 +1,10 @@
 
         .project graf.bin
 
+
+#define DBG_START(color)      mvi a, color \ out VIDEO
+#define DBG_STOP              mvi a, 40h \ out VIDEO
+
 SCROLL_V        equ     0C0h
 BANKING         equ     0C1h
 SCROLL_VH       equ     0C2h
@@ -135,6 +139,9 @@ DiskDone
 ; Main loop
 ; ********************************************************************
 Begin
+; Sync to retrace
+        ; call    SyncToRetrace
+
         call    BlinkCursor
 
         call    ReadHourGlass
@@ -572,12 +579,18 @@ Show    call    PaintCursor
 ; PaintCursor
 ; *************************************************
 PaintCursor
+
+        DBG_START(41h)
+
         lhld    CurPos
         mov     c, l
         mov     b, h
         lxi     h, CURSOR_BITMAP
         mvi     a, 3
         call    PaintBitmap
+
+        DBG_STOP
+
         ret
 
 ; *************************************************
@@ -585,6 +598,8 @@ PaintCursor
 ; точке из рабочего битмапа
 ; *************************************************
 EraseCursor
+
+        DBG_START(46)
 
         mvi     a, 0
         call    PlaceDot
@@ -637,10 +652,10 @@ EC2
         ori     2
 EC3
         call    PlaceDot
+
+        DBG_STOP
+
         ret
-
-
-
 
 ; *************************************************
 ; Точку рисуем
@@ -648,8 +663,7 @@ EC3
 ; *************************************************
 PlaceDot
         push    a
-
-
+; Wipe first
         lhld    CurPos
         mov     c, l
         mov     b, h
@@ -668,12 +682,6 @@ PlaceDot
         jnz     PDT
 
 ; Особый случай - 00 для очистки обоих планов
-; ; Wipe first
-;         push    a
-;         lxi     d, GRID_NONE
-;         mvi     a, 3
-;         call    PaintBitmap
-;         pop     a
 ; Apply grid type
         lda     GridType
 
@@ -689,7 +697,6 @@ PlaceDot
         cpi     3
         jz      PDT0
 
-        
         lxi     h, GRID_NONE
 PDT0
         mvi     a, 3
@@ -1428,6 +1435,17 @@ OnEveryTick
         sta     Blink
 
         ret
+
+; *************************************************
+; подождем наступления ретрейса
+; *************************************************
+SyncToRetrace
+        in      41h
+        ani     2
+        rnz
+        jmp     SyncToRetrace
+
+
 
 ; *************************************************
 ; Различные константы
