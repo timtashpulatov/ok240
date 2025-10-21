@@ -77,8 +77,11 @@ COMTAIL         EQU     80h
         shld    BmpPtr
 
 ; Режим экрана
-        lxi     d, ColorMode
-        call    Print
+        ; lxi     d, ColorMode
+        ; call    Print
+
+        mvi     a, 40h
+        out     VIDEO
 
 ; Дисковые дела
         lda     COMTAIL
@@ -221,6 +224,8 @@ KeyFunctions
         dw      BothColors
         db      30h
         dw      NoColors
+        db      'G'
+        dw      Grid
         db      'F'
         dw      CycleForeColor  ; Перебор цветов переднего плана и фона
         db      'B'
@@ -261,6 +266,15 @@ Space   cpi     ' '
 ;        call    WorkBitmapPreview
         jmp     Begin
 
+; *************************************************
+; Управление сеткой
+; *************************************************
+Grid
+        lda     GridType
+        inr     a
+        ani     3
+        sta     GridType
+        jmp     RedrawWorkBitmap
 
 ; *************************************************
 ; *************************************************
@@ -561,7 +575,7 @@ PaintCursor
         lhld    CurPos
         mov     c, l
         mov     b, h
-        lxi     h, BITMAP55
+        lxi     h, CURSOR_BITMAP
         mvi     a, 3
         call    PaintBitmap
         ret
@@ -636,12 +650,30 @@ PlaceDot
         lhld    CurPos
         mov     c, l
         mov     b, h
-        lxi     h, BITMAP1
-; Особый случай - для очистки обоих планов
+        lxi     h, FILLEDBLOCK
         ora     a
         jnz     PDT
-        lxi     h, BMPDOT
-        cma
+
+; Особый случай - для очистки обоих планов
+; Apply grid type
+        lda     GridType
+
+        lxi     h, GRID_DOTS
+        cpi     1
+        jz      PDT0
+        
+        lxi     h, GRID_LINES
+        cpi     2
+        jz      PDT0
+
+        lxi     h, GRID_GRID
+        cpi     3
+        jz      PDT0
+
+        
+        lxi     h, GRID_NONE
+PDT0
+        mvi     a, 3
 PDT        
         call    PaintBitmap
         pop     a
@@ -1412,18 +1444,28 @@ SaveYN
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
-BITMAP1
+FILLEDBLOCK
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
         db      255, 255, 255, 255, 255, 255, 255, 255, 255
 BITMAP55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
         db      0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55        
 
-BMPDOT  db      0, 1, 0, 1, 0, 1, 0, 0x55
+BMPGRID db      0, 1, 0, 1, 0, 1, 0, 0x55
         db      0, 1, 0, 1, 0, 1, 0, 0x55
+        
+BMPGRID1
+        db      0, 0, 0, 0, 8, 0, 0, 0
+        db      0, 0, 0, 0, 8, 0, 0, 0
 
-; BMPDOT  db      0, 0, 0, 1, 0, 0, 0, 0x11
-;         db      0, 0, 0, 1, 0, 0, 0, 0x11
+BMPDOT  db      0, 0, 0, 1, 0, 0, 0, 0x11
+        db      0, 0, 0, 1, 0, 0, 0, 0x11
+
+CURSOR_BITMAP   equ     BITMAP55
+GRID_NONE       equ     BITMAP0
+GRID_LINES      equ     BMPGRID
+GRID_DOTS       equ     BMPDOT
+GRID_GRID       equ     BMPGRID1
 
 
 MAZOK   db      255, 255, 255, 255, 255, 255, 255, 255, 255
@@ -1487,6 +1529,8 @@ Ticks   db      0
 
 Blink           db      0
 BlinkPrev       db      0
+
+GridType        db      1
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
