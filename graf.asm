@@ -654,7 +654,13 @@ PlaceDot
         ora     a
         jnz     PDT
 
-; Особый случай - для очистки обоих планов
+; Особый случай - 00 для очистки обоих планов
+; ; Wipe first
+;         push    a
+;         lxi     d, GRID_NONE
+;         mvi     a, 3
+;         call    PaintBitmap
+;         pop     a
 ; Apply grid type
         lda     GridType
 
