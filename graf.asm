@@ -580,7 +580,7 @@ Show    call    PaintCursor
 ; *************************************************
 PaintCursor
 
-        DBG_START(41h)
+                ; DBG_START(41h)
 
         lhld    CurPos
         mov     c, l
@@ -589,7 +589,7 @@ PaintCursor
         mvi     a, 3
         call    PaintBitmap
 
-        DBG_STOP
+                ; DBG_STOP
 
         ret
 
@@ -599,7 +599,7 @@ PaintCursor
 ; *************************************************
 EraseCursor
 
-        DBG_START(46)
+                ; DBG_START(46)
 
         mvi     a, 0
         call    PlaceDot
@@ -653,7 +653,7 @@ EC2
 EC3
         call    PlaceDot
 
-        DBG_STOP
+                ; DBG_STOP
 
         ret
 
