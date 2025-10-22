@@ -126,6 +126,21 @@ DiskDone
         ; lxi     de, Hello
         ; call    Print
 
+; Своя графониевая печать
+        mvi     a, 'H'
+        lxi     b, 0000
+        call    _PrintChar
+
+        mvi     a, 'e'
+        call    _PrintChar
+
+        mvi     a, 'l'
+        call    _PrintChar
+
+        mvi     a, 'P'
+        call    _PrintChar
+
+
 ; Вывести справку по командам
         call    Help
 
@@ -804,18 +819,25 @@ PlaneDone
         ei
         ret
 
+; *************************************************
+; Copy 8 bytes from DE to HL
+; *************************************************
 Copy8
         push    h
         push    d
+        push    b
         push    a
+     
         mvi     c, 8
-PBLoop  ldax    d
+C8Loop  ldax    d
         mov     m, a
         inx     d
         inx     h
         dcr     c
-        jnz     PBLoop
+        jnz     C8Loop
+     
         pop     a
+        pop     b
         pop     d
         pop     h
         ret
@@ -1442,6 +1464,53 @@ SyncToRetrace
         rnz
         jmp     SyncToRetrace
 
+; *************************************************
+; Задолбался, пытаясь понять, как работает печать в графическом режиме
+; Будем юзать свое, посконное (цельнотянутое из вселенной ZX)
+; *************************************************
+; *************************************************
+; _PrintChar
+; A = char [32h..7fh]
+; BC = XY
+; *************************************************
+_PrintChar
+        ; cpi     32h
+        ; rm
+        ; cpi     7fh
+        ; rp
+
+        sui     ' '
+        mov     l, a
+        xra     a
+        mov     h, a
+        
+        ; multiply by 8
+        
+        dad     h
+        dad     h
+        dad     h
+        
+        lxi     d, FONT
+        dad     d
+        xchg
+        
+; DE = битмап нужной буквы        
+; перегрузим во времянку
+        lxi     h, TempChar
+        call    Copy8
+        lxi     h, TempChar+8
+        call    Copy8
+        
+        lxi     h, TempChar
+        
+        mvi     a, 3
+        call    PaintBitmap
+        
+        ; move 'cursor' to the right
+        inr     b
+        inr     b
+        ret
+
 
 
 ; *************************************************
@@ -1540,6 +1609,25 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      0ffh, 0ffh
 
 
+FONT        
+        db64    AAAAAAAAAAA4ODg4OAA4AGxsJEgAAAAARP5ERET+RAAQfEB8BHwQAOKk6BAuSo4A
+        db64    MEhAIFBIdAA4OAgwAAAAABgwYGBgMBgAYDAYGBgwYAAgqHAgcKggAAAQEHwYGAAA
+        db64    AAAAADg4CDAAAAB8fAAAAAAAAAA4ODgAAgQIECBAgAD4iJioyMj4AOAgICAgIPgA
+        db64    /AQE/MDA/AB4CAh4GBj4AIiIiIj8GBgA+ICA+BiY+AD4iID4yMj4APiIECBgYGAA
+        db64    +IiI+MjI+AD4iIj4GJj4AAA4OAA4OAAAADg4ADg4CDAIECDAIBAIAAB8fAB8fAAA
+        db64    gEAgGCBAgAB+QgIeEAAQADwkPAAAAAAA+Ij8hMTExAD4iPyExMT8APyEgMDAxPwA
+        db64    +ISExMTE+AD8gPCAwMD8APyA+IDAwMAA/ISAnMTE/ACEhPyExMTEACAgIDAwMDAA
+        db64    BAQEDAyMeACEiJDwyMTEAICAgMDAwPwA/JKSktLS0gDklJSU1NTMAPyEhITExPwA
+        db64    /ISE/MDAwAD8hISU1Mj0APyEhPzIxMQA/ICA/AwM/AD8ICAgMDAwAISEhMTExPwA
+        db64    hITExEQoEACCgpKS0tL+AIRIMDBIhIQAhISE/CAwMAD8CBAgQMD8AHhAQEBAQHgA
+        db64    gEAgEAgEAgA8BAQEBAQ8AAAQOGzGAAAAAAAAAAAAAAAAAAAAAAAAAAAAfAR8RHwA
+        db64    QEB8REREfAAAAHxAQEB8AAQEfERERHwAAAB8RHxAfAA8IHggICAgAAAAfEREfAR8
+        db64    QEB8RERERAAYABgYGBgYAAAIAAgICEh4QEBIUGBQSAAYGBgYGBgYAAAA/pKSkpIA
+        db64    AAB8RERERAAAAHxERER8AAAAfEREfEBAAAB8RER8BAQAAHxEQEBAAAAAfEB8BHwA
+        db64    ACB8ICAgPAAAACQkJCQ8AAAAREREKBAAAACCkpKS/gAAAEQoEChEAAAAREREfAR8
+        db64    AAB8CBAgfAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+
 ; Зажечь/погасить квадратик
 INV     db      0
 
@@ -1568,6 +1656,9 @@ GridType        db      1
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
+
+; Внутренний клипборд для символа из шрифта
+TempChar        db      16
 
 ; Клипборд
 CLIPBOARD       equ     .
