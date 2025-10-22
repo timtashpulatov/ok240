@@ -141,6 +141,11 @@ DiskDone
         call    _PrintChar
 
 
+; test
+        lxi     d, 0c000h
+        call    MirrorDtoE
+
+
 ; Вывести справку по командам
         call    Help
 
@@ -1506,9 +1511,28 @@ _PrintChar
         mvi     a, 3
         call    PaintBitmap
         
-        ; move 'cursor' to the right
+; move 'cursor' to the right
         inr     b
         inr     b
+        ret
+
+; Спектрумовские шрифты на "Океане" отображаются зеркально :-(
+;
+;       00000001 ---> 10000000
+MirrorDtoE
+        ; D = src, E = dst
+        mvi     c, 8
+MirrorLoop
+        mov     a, d
+        rar     a
+        mov     d, a
+        
+        mov     a, e
+        ral     a
+        mov     e, a
+
+        dcr     c
+        jnz     MirrorLoop
         ret
 
 
@@ -1626,6 +1650,9 @@ FONT
         db64    AAB8RERERAAAAHxERER8AAAAfEREfEBAAAB8RER8BAQAAHxEQEBAAAAAfEB8BHwA
         db64    ACB8ICAgPAAAACQkJCQ8AAAAREREKBAAAACCkpKS/gAAAEQoEChEAAAAREREfAR8
         db64    AAB8CBAgfAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+
+        
 
 
 ; Зажечь/погасить квадратик
