@@ -127,23 +127,22 @@ DiskDone
         ; call    Print
 
 ; Своя графониевая печать
-        mvi     a, 'H'
-        lxi     b, 0000
-        call    _PrintChar
 
-        mvi     a, 'e'
-        call    _PrintChar
+        call    MirrorFont      ; вот что лень-матушка делает
 
-        mvi     a, 'l'
-        call    _PrintChar
+        lxi     h, QuickBrownFox
+        lxi     b, 0008h
+        call    _PrintStr
 
-        mvi     a, 'P'
-        call    _PrintChar
+        lxi     h, OnceUponATime
+        lxi     b, 0010h
+        call    _PrintStr
 
 
-; test
-        lxi     d, 0c000h
-        call    MirrorDtoE
+        jmp     asdasd
+QuickBrownFox   db      'Quick Brown Fox Jumped Over', 0
+OnceUponATime   db      'ONCE UPON A TIME OKEAH-240', 0
+asdasd
 
 
 ; Вывести справку по командам
@@ -1474,6 +1473,20 @@ SyncToRetrace
 ; Будем юзать свое, посконное (цельнотянутое из вселенной ZX)
 ; *************************************************
 ; *************************************************
+; _PrintStr
+; HL = null-terminated string
+; BC = XY
+; *************************************************
+_PrintStr
+        mov     a, m
+        ora     a
+        rz
+        call    _PrintChar
+        inx     h
+        jmp     _PrintStr
+
+
+; *************************************************
 ; _PrintChar
 ; A = char [32h..7fh]
 ; BC = XY
@@ -1483,6 +1496,8 @@ _PrintChar
         ; rm
         ; cpi     7fh
         ; rp
+
+        push    h
 
         sui     ' '
         mov     l, a
@@ -1514,6 +1529,8 @@ _PrintChar
 ; move 'cursor' to the right
         inr     b
         inr     b
+        
+        pop     h
         ret
 
 ; Спектрумовские шрифты на "Океане" отображаются зеркально :-(
@@ -1521,6 +1538,7 @@ _PrintChar
 ;       00000001 ---> 10000000
 MirrorDtoE
         ; D = src, E = dst
+        push    b
         mvi     c, 8
 MirrorLoop
         mov     a, d
@@ -1533,8 +1551,27 @@ MirrorLoop
 
         dcr     c
         jnz     MirrorLoop
+        pop     b
         ret
 
+MirrorFont
+        lxi     h, FONT
+        lxi     b, 768
+MFLoop
+        mov     d, m
+        mvi     e, 0
+        
+        call    MirrorDtoE
+        
+        mov     m, e
+        
+        inx     h
+        dcx     b
+        mov     a, b
+        ora     c
+        jnz     MFLoop
+
+        ret
 
 
 ; *************************************************
@@ -1633,6 +1670,7 @@ WALL    db      0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0
         db      0ffh, 0ffh
 
 
+; Шрифт(ы) слямзен(ы) со странички https://www.jimblimey.com/blog/24-zx-spectrum-fonts/
 FONT        
         db64    AAAAAAAAAAA4ODg4OAA4AGxsJEgAAAAARP5ERET+RAAQfEB8BHwQAOKk6BAuSo4A
         db64    MEhAIFBIdAA4OAgwAAAAABgwYGBgMBgAYDAYGBgwYAAgqHAgcKggAAAQEHwYGAAA
