@@ -3,7 +3,7 @@
 
 
 #define DBG_START(color)      mvi a, color \ out VIDEO
-#define DBG_STOP              mvi a, 40h \ out VIDEO
+#define DBG_STOP              mvi a, 40h \ out VIDEOee
 
 SCROLL_V        equ     0C0h
 BANKING         equ     0C1h
