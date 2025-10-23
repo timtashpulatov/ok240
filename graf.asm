@@ -15,7 +15,7 @@ MAP32K          equ     0x01
 ENROM           equ     0x10
 
 ESC             equ     27
-
+CR              equ     13
 
 WALL_OFFSET_HORIZ       equ     4       ; in bytes
 WALL_OFFSET_VERT        equ     4*8       ; in pixels
@@ -134,9 +134,9 @@ DiskDone
         mvi     a, 3
         sta     PrintColor
         
-; выведем имя файла в левый верхний угол
+; выведем имя файла
         lxi     h, FCB+1 
-        lxi     b, 0000h
+        lxi     b, 2018h
         mvi     e, 8
         call    _PrintStrN
 
@@ -151,22 +151,22 @@ DiskDone
         mvi     a, 1
         sta     PrintColor
 
-        lxi     h, QuickBrownFox
-        lxi     b, 0008h
-        call    _PrintStr
+        ; lxi     h, QuickBrownFox
+        ; lxi     b, 0008h
+        ; call    _PrintStr
 
-        mvi     a, 2
-        sta     PrintColor
+        ; mvi     a, 2
+        ; sta     PrintColor
 
-        lxi     h, OnceUponATime
-        lxi     b, 0010h
-        call    _PrintStr
+        ; lxi     h, OnceUponATime
+        ; lxi     b, 0010h
+        ; call    _PrintStr
 
 
-        jmp     asdasd
-QuickBrownFox   db      'Quick Brown Fox Jumped Over', 0
-OnceUponATime   db      'ONCE UPON A TIME OKEAH-240', 0
-asdasd
+;         jmp     asdasd
+; QuickBrownFox   db      'Quick Brown Fox Jumped Over', 0
+; OnceUponATime   db      'ONCE UPON A TIME OKEAH-240', 0
+; asdasd
 
 
 ; Вывести справку по командам
@@ -1091,15 +1091,15 @@ PREVIEW_LINE_LEN_PIXELS equ     PREVIEW_LINE_LEN * 8
 
 PREVIEW_BOT_LINE_Y      equ     PREVIEW_VERT_PIXELS-(10*8)
 
-        lxi     hl, (PREVIEW_VERT_PIXELS << 8) + (PREVIEW_HORIZ_PIXELS)
-        lxi     de, (PREVIEW_VERT_PIXELS << 8) + (PREVIEW_HORIZ_PIXELS + PREVIEW_LINE_LEN_PIXELS)
-        call    DrawLine
+;         lxi     hl, (PREVIEW_VERT_PIXELS << 8) + (PREVIEW_HORIZ_PIXELS)
+;         lxi     de, (PREVIEW_VERT_PIXELS << 8) + (PREVIEW_HORIZ_PIXELS + PREVIEW_LINE_LEN_PIXELS)
+;         call    DrawLine
 
-; И снизу        
+; ; И снизу        
 
-        lxi     hl, (PREVIEW_BOT_LINE_Y << 8) + PREVIEW_HORIZ_PIXELS
-        lxi     de, (PREVIEW_BOT_LINE_Y << 8) + (PREVIEW_HORIZ_PIXELS + PREVIEW_LINE_LEN_PIXELS)
-        call    DrawLine
+;         lxi     hl, (PREVIEW_BOT_LINE_Y << 8) + PREVIEW_HORIZ_PIXELS
+;         lxi     de, (PREVIEW_BOT_LINE_Y << 8) + (PREVIEW_HORIZ_PIXELS + PREVIEW_LINE_LEN_PIXELS)
+;         call    DrawLine
 
         ret
 
@@ -1157,27 +1157,57 @@ GoFigure
 ; *************************************************
 ; HELP
 ; *************************************************
-HelpX   equ     1ah
+HelpX   equ     0       ; 1ah
 HelpY   equ     16
 HelpXY  equ     (HelpX<<8) + HelpY*8
 
 Help
+        ; lxi     b, HelpXY
+        ; lxi     h, ONE
+        ; mvi     a, 3
+        ; call    PaintBitmap
+
+        ; lxi     b, HelpXY + 8 + 2
+        ; lxi     h, TWO
+        ; mvi     a, 3
+        ; call    PaintBitmap
+
+        ; lxi     b, HelpXY + 16 + 2
+        ; lxi     h, THREE
+        ; mvi     a, 3
+        ; call    PaintBitmap
+
+
+        mvi     a, 3
+        sta     PrintColor
+        
         lxi     b, HelpXY
-        lxi     h, ONE
+        lxi     h, HelpText
+        call    _PrintStr        
+
+; нарисуем иконки
+        lxi     h, BMP_ESC
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 8)*8
         mvi     a, 3
         call    PaintBitmap
 
-        lxi     b, HelpXY + 8 + 2
-        lxi     h, TWO
+        lxi     h, BMP_G
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 3)*8
         mvi     a, 3
         call    PaintBitmap
 
-        lxi     b, HelpXY + 16 + 2
-        lxi     h, THREE
-        mvi     a, 3
-        call    PaintBitmap
+
 
         ret
+
+HelpText
+        db      'KEYS', CR, '------------', CR
+        db      'SELECT COLOR', CR
+        db      'GRID', CR
+        db      'COPY', CR, 'PASTE', CR
+        db      'ZAP', CR, CR
+        db      'EXIT'
+        db      0
 
 ; *************************************************
 ; Закончить работу
@@ -1534,6 +1564,18 @@ _PrintChar
         ; cpi     7fh
         ; rp
 
+        cpi     CR
+        jnz     PC0
+; Next line        
+        mov     a, c
+        adi     8
+        mov     c, a
+; Reset col
+        xra     a
+        mov     b, a
+        
+        ret
+PC0
         push    h
         push    d
 
@@ -1728,8 +1770,12 @@ FONT
         db64    ACB8ICAgPAAAACQkJCQ8AAAAREREKBAAAACCkpKS/gAAAEQoEChEAAAAREREfAR8
         db64    AAB8CBAgfAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
+; Pictograms
+BMP_ESC db      0fch, 80h, 80h, 0, 80h, 81h, 81h, 3fh
+        db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
 
-        
+BMP_G   db      0ffh, 081h, 081h, 081h, 081h, 081h, 081h, 0ffh
+        db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
 
 
 ; Зажечь/погасить квадратик
@@ -1756,7 +1802,7 @@ Ticks   db      0
 Blink           db      0
 BlinkPrev       db      0
 
-GridType        db      2
+GridType        db      1
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
