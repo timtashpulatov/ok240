@@ -1203,6 +1203,11 @@ Help
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_Z
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 6)*8
+        mvi     a, 3
+        call    PaintBitmap
+
 
 
         ret
@@ -1356,10 +1361,35 @@ FileLoad
         rz
         
         call    SetDMA
+LoadSectorLoop
+        lxi     d, FCB
+        mvi     c, F_READ
+        call    BDOS
+
+        lxi     d, WORKBMP+128
+        mvi     c, F_DMAOFF
+        call    BDOS
 
         lxi     d, FCB
         mvi     c, F_READ
         call    BDOS
+
+        lxi     d, WORKBMP+256
+        mvi     c, F_DMAOFF
+        call    BDOS
+
+        lxi     d, FCB
+        mvi     c, F_READ
+        call    BDOS
+
+        lxi     d, WORKBMP+384
+        mvi     c, F_DMAOFF
+        call    BDOS
+
+        lxi     d, FCB
+        mvi     c, F_READ
+        call    BDOS
+
 
         call    ResetDMA
 
@@ -1389,7 +1419,7 @@ FileSave
         rz
 
         call    SetDMA
-FileSaveLoop        
+SaveSectorLoop        
         lxi     d, FCB
         mvi     c, F_WRITE
         call    BDOS
@@ -1811,10 +1841,10 @@ FONT
 ; Pictograms
 BMP_ESC db      0fch, 80h, 80h, 0, 80h, 81h, 81h, 3fh
         db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
-
 BMP_G   db      0ffh, 081h, 081h, 081h, 081h, 081h, 081h, 0ffh
         db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
-
+BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
 
 ; Зажечь/погасить квадратик
 INV     db      0
