@@ -1382,10 +1382,41 @@ FileSave
         rz
 
         call    SetDMA
+FileSaveLoop        
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
+
+        lxi     d, WORKBMP+128
+        mvi     c, F_DMAOFF
+        call    BDOS
         
         lxi     d, FCB
         mvi     c, F_WRITE
         call    BDOS
+
+
+
+        lxi     d, WORKBMP+256
+        mvi     c, F_DMAOFF
+        call    BDOS
+        
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
+
+
+
+        lxi     d, WORKBMP+384
+        mvi     c, F_DMAOFF
+        call    BDOS
+        
+        lxi     d, FCB
+        mvi     c, F_WRITE
+        call    BDOS
+
+
+
 
         call    ResetDMA
 
