@@ -1756,7 +1756,7 @@ Ticks   db      0
 Blink           db      0
 BlinkPrev       db      0
 
-GridType        db      1
+GridType        db      2
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
