@@ -256,6 +256,10 @@ Gotcha
 KeyFunctions
         db      8
         dw      CurLeft
+
+        db      0ch
+        dw      CenterBitmap
+
         db      18h
         dw      CurRight
         db      19h
@@ -299,7 +303,7 @@ KeyFunctions
         db      1bh
         dw      Quit
 
-        db      0dh
+        db      CR
         dw      CenterBitmap
 
         db      0
