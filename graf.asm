@@ -130,9 +130,33 @@ DiskDone
 
         call    MirrorFont      ; вот что лень-матушка делает
 
+
+        mvi     a, 3
+        sta     PrintColor
+        
+; выведем имя файла в левый верхний угол
+        lxi     h, FCB+1 
+        lxi     b, 0000h
+        mvi     e, 8
+        call    _PrintStrN
+
+        mvi     a, '.'
+        call    _PrintChar
+
+        lxi     h, FCB+9
+        ; lxi     b, 0000h
+        mvi     e, 3
+        call    _PrintStrN
+
+        mvi     a, 1
+        sta     PrintColor
+
         lxi     h, QuickBrownFox
         lxi     b, 0008h
         call    _PrintStr
+
+        mvi     a, 2
+        sta     PrintColor
 
         lxi     h, OnceUponATime
         lxi     b, 0010h
@@ -1485,6 +1509,19 @@ _PrintStr
         inx     h
         jmp     _PrintStr
 
+; *************************************************
+; _PrintStrN
+; HL = string
+; BC = XY
+; E = length
+; *************************************************
+_PrintStrN
+        mov     a, m
+        call    _PrintChar
+        inx     h
+        dcr     e
+        jnz     _PrintStrN
+        ret
 
 ; *************************************************
 ; _PrintChar
@@ -1498,6 +1535,7 @@ _PrintChar
         ; rp
 
         push    h
+        push    d
 
         sui     ' '
         mov     l, a
@@ -1523,13 +1561,14 @@ _PrintChar
         
         lxi     h, TempChar
         
-        mvi     a, 3
+        lda     PrintColor
         call    PaintBitmap
         
 ; move 'cursor' to the right
         inr     b
         inr     b
         
+        pop     d
         pop     h
         ret
 
@@ -1721,6 +1760,9 @@ GridType        db      1
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
+
+; Цвет выводимых символов
+PrintColor      db      3
 
 ; Внутренний клипборд для символа из шрифта
 TempChar        db      16
