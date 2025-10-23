@@ -368,11 +368,11 @@ Paste
         jmp     CL0
 
 JumpPlus256
-        lxi     d, 256
+        lxi     d, 128  ; 256
         jmp     SNB
         
 JumpMinus256
-        lxi     d, -256
+        lxi     d, -128 ; -256
         jmp     SNB
 
 SelectPrevBitmap
@@ -1076,7 +1076,14 @@ WBPLoop
         adi     8
         mov     c, a
 
-        inr     d
+;        inr     d
+; скачем секторами по 128 байт
+        push    hl
+        lxi     hl, 128
+        dad     d
+        xchg
+        pop     hl
+
         dcr     l
         jnz     WBPLoop
 
