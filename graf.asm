@@ -1173,21 +1173,6 @@ HelpY   equ     16
 HelpXY  equ     (HelpX<<8) + HelpY*8
 
 Help
-        ; lxi     b, HelpXY
-        ; lxi     h, ONE
-        ; mvi     a, 3
-        ; call    PaintBitmap
-
-        ; lxi     b, HelpXY + 8 + 2
-        ; lxi     h, TWO
-        ; mvi     a, 3
-        ; call    PaintBitmap
-
-        ; lxi     b, HelpXY + 16 + 2
-        ; lxi     h, THREE
-        ; mvi     a, 3
-        ; call    PaintBitmap
-
 
         mvi     a, 3
         sta     PrintColor
@@ -1197,13 +1182,53 @@ Help
         call    _PrintStr        
 
 ; нарисуем иконки
-        lxi     h, BMP_ESC
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 8)*8
+
+        lxi     h, BMP_1
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 2)*8
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_BLOB
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 1)*8
+        mvi     a, 1
+        call    PaintBitmap
+
+
+        lxi     h, BMP_2
+        lxi     b, ((HelpX + 36) << 8) + (HelpY + 2)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_BLOB
+        lxi     b, ((HelpX + 36) << 8) + (HelpY + 1)*8
+        mvi     a, 2
+        call    PaintBitmap
+
+
+        lxi     h, BMP_3
+        lxi     b, ((HelpX + 40) << 8) + (HelpY + 2)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_BLOB
+        lxi     b, ((HelpX + 40) << 8) + (HelpY + 1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+
+
         lxi     h, BMP_G
         lxi     b, ((HelpX + 32) << 8) + (HelpY + 3)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_C
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 4)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_P
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 5)*8
         mvi     a, 3
         call    PaintBitmap
 
@@ -1212,6 +1237,10 @@ Help
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_ESC
+        lxi     b, ((HelpX + 32) << 8) + (HelpY + 8)*8
+        mvi     a, 3
+        call    PaintBitmap
 
 
         ret
@@ -1843,12 +1872,25 @@ FONT
         db64    AAB8CBAgfAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 ; Pictograms
-BMP_ESC db      0fch, 80h, 80h, 0, 80h, 81h, 81h, 3fh
+BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
         db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
-BMP_G   db      0ffh, 081h, 081h, 081h, 081h, 081h, 081h, 0ffh
-        db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
 BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
+BMP_1   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 8, 0ch, 8, 8, 1ch, 0, 0
+BMP_2   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 0ch, 10h, 0ch, 4, 1ch, 0, 0
+BMP_3   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 0ch, 10h, 0ch, 10h, 0ch, 0, 0
+BMP_G   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
+BMP_C   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 4, 4, 4, 1ch, 0, 0
+BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 14h, 1ch, 4, 4, 0, 0
+        
+BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+                db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
 
 ; Зажечь/погасить квадратик
 INV     db      0
