@@ -116,20 +116,9 @@ DiskDone
         
 ;        call    GoFigure
 
-; чепядть
-        ; lxi     hl, 0505h
-        ; call    PositionCursor
-
-        ; mvi     c, 0ch          ; Home
-        ; call    CHAROUT
-
-        ; lxi     de, Hello
-        ; call    Print
-
 ; Своя графониевая печать
 
         call    MirrorFont      ; вот что лень-матушка делает
-
 
         mvi     a, 3
         sta     PrintColor
@@ -151,22 +140,20 @@ DiskDone
         mvi     a, 1
         sta     PrintColor
 
-        ; lxi     h, QuickBrownFox
-        ; lxi     b, 0008h
-        ; call    _PrintStr
+        lxi     h, Version
+        lxi     b, 0000h
+        call    _PrintStr
 
-        ; mvi     a, 2
-        ; sta     PrintColor
+        lxi     h, Copyright
+        lxi     b, 2800h
+        call    _PrintStr
+        
+        lxi     h, Mannekin
+        lxi     b, 3000h
+        mvi     a, 3
+        call    PaintBitmap
 
-        ; lxi     h, OnceUponATime
-        ; lxi     b, 0010h
-        ; call    _PrintStr
 
-
-;         jmp     asdasd
-; QuickBrownFox   db      'Quick Brown Fox Jumped Over', 0
-; OnceUponATime   db      'ONCE UPON A TIME OKEAH-240', 0
-; asdasd
 
 
 ; Вывести справку по командам
@@ -1787,6 +1774,9 @@ SaveYN
 ; String  ;  db      1bh, 35h, 10, 10
 ;         db      '1 2 3 4 5 6 7 8 9 0', 0
 
+Version         db      'GRAF v0.1', 0
+Copyright       db      '2025 TNT23', 0
+
 
 BITMAP0 db      0, 0, 0, 0, 0, 0, 0, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
@@ -1891,6 +1881,9 @@ BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         
 BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
                 db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+
+MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
+                db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
 
 ; Зажечь/погасить квадратик
 INV     db      0
