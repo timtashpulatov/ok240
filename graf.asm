@@ -1399,7 +1399,7 @@ FileLoad
         
         call    SetDMA
         
-        mvi     b, 8            ; sector count
+        mvi     c, 8            ; sector count
         lxi     d, WORKBMP
 LoadSectorLoop
         push    bc
@@ -1450,41 +1450,29 @@ FileSave
         rz
 
         call    SetDMA
+        
+        mvi     c, 8            ; sector count
+        lxi     d, WORKBMP
 SaveSectorLoop        
-        lxi     d, FCB
-        mvi     c, F_WRITE
-        call    BDOS
+        push    bc
+        push    de
 
-        lxi     d, WORKBMP+128
         mvi     c, F_DMAOFF
         call    BDOS
-        
+
         lxi     d, FCB
         mvi     c, F_WRITE
         call    BDOS
 
+; следующие 128 байт
+        pop     hl
+        lxi     b, 128
+        dad     b
+        xchg
 
-
-        lxi     d, WORKBMP+256
-        mvi     c, F_DMAOFF
-        call    BDOS
-        
-        lxi     d, FCB
-        mvi     c, F_WRITE
-        call    BDOS
-
-
-
-        lxi     d, WORKBMP+384
-        mvi     c, F_DMAOFF
-        call    BDOS
-        
-        lxi     d, FCB
-        mvi     c, F_WRITE
-        call    BDOS
-
-
-
+        pop     bc
+        dcr     c
+        jnz     SaveSectorLoop
 
         call    ResetDMA
 
