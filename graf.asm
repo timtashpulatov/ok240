@@ -148,10 +148,10 @@ DiskDone
         lxi     b, 2800h
         call    _PrintStr
         
-        lxi     h, Mannekin
-        lxi     b, 3000h
-        mvi     a, 3
-        call    PaintBitmap
+        ; lxi     h, Mannekin
+        ; lxi     b, 3000h
+        ; mvi     a, 3
+        ; call    PaintBitmap
 
 
 
@@ -791,6 +791,7 @@ PaintBitmap
         di
         push    bc
         push    de
+        push    hl
         
         push    a
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
@@ -833,6 +834,7 @@ PlaneDone
         xra     a
         out     BANKING
         
+        pop     hl
         pop     de
         pop     bc
         ei
@@ -1170,67 +1172,55 @@ Help
 
 ; нарисуем иконки
 
-        lxi     h, BMP_1
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 2)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_BLOB
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 1)*8
-        mvi     a, 1
-        call    PaintBitmap
-
-
-        lxi     h, BMP_2
-        lxi     b, ((HelpX + 36) << 8) + (HelpY + 2)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_BLOB
-        lxi     b, ((HelpX + 36) << 8) + (HelpY + 1)*8
-        mvi     a, 2
-        call    PaintBitmap
-
-
-        lxi     h, BMP_3
-        lxi     b, ((HelpX + 40) << 8) + (HelpY + 2)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_BLOB
-        lxi     b, ((HelpX + 40) << 8) + (HelpY + 1)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-
-
-        lxi     h, BMP_G
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 3)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_C
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 4)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_P
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 5)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_Z
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 6)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_ESC
-        lxi     b, ((HelpX + 32) << 8) + (HelpY + 8)*8
-        mvi     a, 3
-        call    PaintBitmap
-
+        call    PaintIconsFromList
 
         ret
+
+; ************************************************
+; Нарисуем битмапчики из списка
+; Формат списка: битмапчик1, координаты1, color1, ..., 0
+; ************************************************
+PaintIconsFromList
+        lxi     h, IconList
+PIFLoop
+        mov     e, m    ; адрес битмапчика
+        inx     h
+        mov     d, m
+        inx     h
+        
+        mov     c, m    ; координаты битмапчика
+        inx     h
+        mov     b, m
+        inx     h
+        
+        mov     a, d    ; если конец списка,
+        ora     e       ; закончим работу
+        rz
+        
+        mov     a, m    ; цвет
+        inx     h
+        
+        xchg
+        call    PaintBitmap
+        xchg
+        jmp     PIFLoop
+
+IconList
+        dw Mannekin     \ db 0, 30h, 3
+        dw BMP_1        \ db (HelpY + 2)*8, HelpX + 32, 3
+        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 32, 1
+        dw BMP_2        \ db (HelpY + 2)*8, HelpX + 36, 3
+        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 36, 1
+        dw BMP_3        \ db (HelpY + 2)*8, HelpX + 40, 3
+        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 40, 1
+        dw BMP_G        \ db (HelpY + 3)*8, HelpX + 32, 3
+        dw BMP_C        \ db (HelpY + 4)*8, HelpX + 32, 3
+        dw BMP_P        \ db (HelpY + 5)*8, HelpX + 32, 3
+        dw BMP_Z        \ db (HelpY + 6)*8, HelpX + 32, 3
+        dw BMP_ESC      \ db (HelpY + 8)*8, HelpX + 32, 3
+
+        dw 0
+
 
 HelpText
         db      'KEYS', CR, '------------', CR
