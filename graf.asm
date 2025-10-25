@@ -84,6 +84,8 @@ BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
         db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
 BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
+BMP_0   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 8, 14h, 14h, 14h, 8, 0, 0
 BMP_1   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         db      0, 8, 0ch, 8, 8, 1ch, 0, 0
 BMP_2   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
@@ -99,6 +101,9 @@ BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         
 BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
                 db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+
+BMP_BLOB_INV    db      0ffh, 0c3h, 8dh, 85h, 81h, 81h, 0c3h, 0ffh
+                db      0, 0, 0, 0, 0, 0, 0, 0
 
 MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
                 db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
@@ -1248,6 +1253,8 @@ IconList
         dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 36, 2
         dw BMP_3        \ db (HelpY + 2)*8, HelpX + 40, 3
         dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 40, 3
+        dw BMP_0        \ db (HelpY + 2)*8, HelpX + 44, 3
+        dw BMP_BLOB_INV \ db (HelpY + 1)*8, HelpX + 44, 3
         dw BMP_G        \ db (HelpY + 3)*8, HelpX + 32, 3
         dw BMP_C        \ db (HelpY + 4)*8, HelpX + 32, 3
         dw BMP_P        \ db (HelpY + 5)*8, HelpX + 32, 3
