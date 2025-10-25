@@ -469,14 +469,22 @@ CycleForeColor
         inr     a
         ani     7
         sta     FORECOLOR
-        ori     40h
-        out     VIDEO
-        jmp     Begin   ; неэкономно. C9 наше всё
+
 CycleBackColor
         lda     BACKCOLOR
         adi     8
-        ani     3fh
+        ani     38h
         sta     BACKCOLOR
+
+WriteToVideoPort
+        lda     FORECOLOR
+        ani     7
+        mov     b, a
+        
+        lda     BACKCOLOR
+        ani     38h
+        ora     b
+        
         ori     40h
         out     VIDEO
         jmp     Begin
