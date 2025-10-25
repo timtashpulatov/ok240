@@ -74,6 +74,38 @@ COMTAIL         EQU     80h
 
         org     100h
 
+; Демонстративно разместим битмапчики в начале файла
+
+        jmp     Start
+        ds      13      ; выравняем до 16 байт
+
+; Pictograms
+BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
+        db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
+BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
+BMP_1   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 8, 0ch, 8, 8, 1ch, 0, 0
+BMP_2   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 0ch, 10h, 0ch, 4, 1ch, 0, 0
+BMP_3   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 0ch, 10h, 0ch, 10h, 0ch, 0, 0
+BMP_G   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
+BMP_C   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 4, 4, 4, 1ch, 0, 0
+BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 1ch, 14h, 1ch, 4, 4, 0, 0
+        
+BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+                db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+
+MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
+                db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
+
+
+
+Start
 ; Инициализация важных и нужных переменных
         lxi     h, XY
         shld    CurPos
@@ -1124,35 +1156,30 @@ DrawPalette
         lxi     h, 0d00h + 11*8
         call    MYCHAROUT
 
-; Подписать
-;        mvi     a, 4
-;        sta     0xbfec
-;        lxi     h, String
-;        call    PrintString
         ret
 
-GoFigure
-        lxi     b, 1600h + 11*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
+; GoFigure
+;         lxi     b, 1600h + 11*8
+;         lxi     h, BALL
+;         mvi     a, 3
+;         call    PaintBitmap
 
-        lxi     b, 1800h + 11*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     b, 1800h + 11*8
+;         lxi     h, BALL
+;         mvi     a, 3
+;         call    PaintBitmap
         
-        lxi     b, 1800h + 10*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     b, 1800h + 10*8
+;         lxi     h, BALL
+;         mvi     a, 3
+;         call    PaintBitmap
 
-        lxi     b, 1a00h + 11*8
-        lxi     h, BALL
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     b, 1a00h + 11*8
+;         lxi     h, BALL
+;         mvi     a, 3
+;         call    PaintBitmap
 
-        ret
+;         ret
 
 ; *************************************************
 ; HELP
@@ -1210,9 +1237,9 @@ IconList
         dw BMP_1        \ db (HelpY + 2)*8, HelpX + 32, 3
         dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 32, 1
         dw BMP_2        \ db (HelpY + 2)*8, HelpX + 36, 3
-        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 36, 1
+        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 36, 2
         dw BMP_3        \ db (HelpY + 2)*8, HelpX + 40, 3
-        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 40, 1
+        dw BMP_BLOB     \ db (HelpY + 1)*8, HelpX + 40, 3
         dw BMP_G        \ db (HelpY + 3)*8, HelpX + 32, 3
         dw BMP_C        \ db (HelpY + 4)*8, HelpX + 32, 3
         dw BMP_P        \ db (HelpY + 5)*8, HelpX + 32, 3
@@ -1371,12 +1398,13 @@ FileLoad
         rz
         
         call    SetDMA
+        
+        mvi     b, 8            ; sector count
+        lxi     d, WORKBMP
 LoadSectorLoop
-        lxi     d, FCB
-        mvi     c, F_READ
-        call    BDOS
-
-        lxi     d, WORKBMP+128
+        push    bc
+        push    de
+        
         mvi     c, F_DMAOFF
         call    BDOS
 
@@ -1384,22 +1412,15 @@ LoadSectorLoop
         mvi     c, F_READ
         call    BDOS
 
-        lxi     d, WORKBMP+256
-        mvi     c, F_DMAOFF
-        call    BDOS
+; следующие 128 байт
+        pop     hl
+        lxi     b, 128
+        dad     b
+        xchg
 
-        lxi     d, FCB
-        mvi     c, F_READ
-        call    BDOS
-
-        lxi     d, WORKBMP+384
-        mvi     c, F_DMAOFF
-        call    BDOS
-
-        lxi     d, FCB
-        mvi     c, F_READ
-        call    BDOS
-
+        pop     bc
+        dcr     c
+        jnz     LoadSectorLoop
 
         call    ResetDMA
 
@@ -1851,29 +1872,29 @@ FONT
         db64    ACB8ICAgPAAAACQkJCQ8AAAAREREKBAAAACCkpKS/gAAAEQoEChEAAAAREREfAR8
         db64    AAB8CBAgfAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-; Pictograms
-BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
-        db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
-BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
-BMP_1   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 8, 0ch, 8, 8, 1ch, 0, 0
-BMP_2   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 0ch, 10h, 0ch, 4, 1ch, 0, 0
-BMP_3   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 0ch, 10h, 0ch, 10h, 0ch, 0, 0
-BMP_G   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
-BMP_C   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 1ch, 4, 4, 4, 1ch, 0, 0
-BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-        db      0, 1ch, 14h, 1ch, 4, 4, 0, 0
+; ; Pictograms
+; BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
+;         db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
+; BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
+; BMP_1   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 8, 0ch, 8, 8, 1ch, 0, 0
+; BMP_2   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 0ch, 10h, 0ch, 4, 1ch, 0, 0
+; BMP_3   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 0ch, 10h, 0ch, 10h, 0ch, 0, 0
+; BMP_G   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
+; BMP_C   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 1ch, 4, 4, 4, 1ch, 0, 0
+; BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+;         db      0, 1ch, 14h, 1ch, 4, 4, 0, 0
         
-BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
-                db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+; BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
+;                 db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
 
-MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
-                db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
+; MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
+;                 db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
 
 ; Зажечь/погасить квадратик
 INV     db      0
