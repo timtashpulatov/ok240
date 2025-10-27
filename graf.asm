@@ -474,6 +474,7 @@ CycleForeColor
         inr     a
         ani     7
         sta     FORECOLOR
+        jmp     WriteToVideoPort
 
 CycleBackColor
         lda     BACKCOLOR
