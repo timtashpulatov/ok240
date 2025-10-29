@@ -191,6 +191,13 @@ DiskDone
         ; call    PaintBitmap
 
 
+        mvi     a, 2
+        sta     PrintColor
+
+
+        lxi     b, 00008h
+        mvi     a, 21h
+        call    _PrintHex
 
 
 ; Вывести справку по командам
@@ -1697,17 +1704,9 @@ PC0
         dad     d
         xchg
         
-; DE = битмап нужной буквы        
-; перегрузим во времянку
-        lxi     h, TempChar
-        call    Copy8
-        lxi     h, TempChar+8
-        call    Copy8
-        
-        lxi     h, TempChar
-        
-        lda     PrintColor
-        call    PaintBitmap
+        call    FillTempChar
+
+        call    PrintTempChar
         
 ; move 'cursor' to the right
         inr     b
@@ -1715,6 +1714,24 @@ PC0
         
         pop     d
         pop     h
+        ret
+
+
+FillTempChar
+; DE = битмап нужной буквы        
+; перегрузим во времянку
+        lxi     h, TempChar
+        call    Copy8
+        lxi     h, TempChar+8
+        call    Copy8
+        ret
+
+PrintTempChar
+        lxi     h, TempChar
+        
+        lda     PrintColor
+        call    PaintBitmap
+
         ret
 
 ; Спектрумовские шрифты на "Океане" отображаются зеркально :-(
@@ -1757,6 +1774,53 @@ MFLoop
 
         ret
 
+
+; *************************************************
+; _PrintHex
+; *************************************************
+_PrintHex
+        push    a
+        rar
+        rar
+        rar
+        rar
+        call    _PrintHexNibble
+        pop     a
+        call    _PrintHexNibble
+        ret
+
+
+; *************************************************
+; _PrintHexNibble
+; *************************************************
+_PrintHexNibble
+        push    hl
+        push    de
+        
+        lxi     h, 0
+        ani     3
+        mov     l, a
+
+        ; multiply by 8
+        
+        dad     h
+        dad     h
+        dad     h        
+
+        lxi     d, HEXFONT
+        dad     d
+        xchg
+
+        call    FillTempChar
+        
+        call    PrintTempChar
+        
+        inr     b
+        inr     b
+        
+        pop     de
+        pop     hl
+        ret
 
 ; *************************************************
 ; Различные константы
@@ -1875,6 +1939,16 @@ FONT
         db64    AAB8RERERAAAAHxERER8AAAAfEREfEBAAAB8RER8BAQAAHxEQEBAAAAAfEB8BHwA
         db64    ACB8ICAgPAAAACQkJCQ8AAAAREREKBAAAACCkpKS/gAAAEQoEChEAAAAREREfAR8
         db64    AAB8CBAgfAAAAAAAAAAAAAAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+HEXFONT 
+        db      38h, 44h, 44h, 0, 44h, 44h, 38h, 0      // 0
+        db      0, 40h, 40h, 0, 0, 40h, 40h, 0          // 1
+        db      38h, 40h, 40h, 38h, 4, 4, 38h, 0        // 2 
+        db      38h, 40h, 40h, 38h, 40h, 40h, 38h, 0    // 3
+        db      0, 44h, 44h, 38h, 40h, 40h, 0, 0        // 4
+        db      38h, 4, 4, 38h, 40h, 40h, 38h, 0        // 5
+        db      38h, 4, 4, 38h, 44h, 44h, 38h, 0        // 6
+        db      38h, 40h, 40h, 0, 40h, 40h, 0, 0        // 7
 
 ; ; Pictograms
 ; BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
