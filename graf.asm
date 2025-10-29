@@ -1747,7 +1747,7 @@ PC0
 
 
 FillTempChar
-; DE = битмап нужной буквы        
+; DE = битмап нужной буквы
 ; перегрузим во времянку
         lxi     h, TempChar
         call    Copy8
