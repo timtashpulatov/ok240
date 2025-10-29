@@ -196,7 +196,7 @@ DiskDone
 
 
         lxi     b, 00008h
-        mvi     a, 21h
+        mvi     a, 0abh
         call    _PrintHex
 
 
@@ -1798,7 +1798,7 @@ _PrintHexNibble
         push    de
         
         lxi     h, 0
-        ani     3
+        ani     0fh
         mov     l, a
 
         ; multiply by 8
@@ -1949,6 +1949,14 @@ HEXFONT
         db      38h, 4, 4, 38h, 40h, 40h, 38h, 0        // 5
         db      38h, 4, 4, 38h, 44h, 44h, 38h, 0        // 6
         db      38h, 40h, 40h, 0, 40h, 40h, 0, 0        // 7
+        db      38h, 44h, 44h, 38h, 44h, 44h, 38h, 0        // 8
+        db      38h, 44h, 44h, 38h, 40h, 40h, 38h, 0        // 9
+        db      38h, 44h, 44h, 38h, 44h, 44h, 0, 0      // a
+        db      0, 4, 4, 38h, 44h, 44h, 38h, 0          // b
+        db      38h, 4, 4, 0, 4, 4, 38h, 0              // c
+        db      0, 40h, 40h, 38h, 44h, 44h, 38h, 0      // d
+        db      38h, 4, 4, 38h, 4, 4, 38h, 0            // e
+        db      38h, 4, 4, 38h, 4, 4, 0, 0              // f
 
 ; ; Pictograms
 ; BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
