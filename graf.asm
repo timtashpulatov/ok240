@@ -191,13 +191,13 @@ DiskDone
         ; call    PaintBitmap
 
 
-        mvi     a, 2
-        sta     PrintColor
+        ; mvi     a, 2
+        ; sta     PrintColor
 
 
-        lxi     b, 00008h
-        mvi     a, 0abh
-        call    _PrintHex
+        ; lxi     b, 00008h
+        ; mvi     a, 0abh
+        ; call    _PrintHex
 
 
 ; Вывести справку по командам
@@ -426,7 +426,36 @@ RedrawWorkBitmap
         shld    CurPos
         call    UnpackWorkBitmap
 
+; тут вроде бы уместно вывести hex dump
+
+        call    HexDump
+
         jmp     Paint
+
+; ***********************************
+; Hex Dump
+; 
+; ***********************************
+HexDump
+        push    a
+        push    bc
+        push    de
+        push    hl
+
+        mvi     a, 2
+        sta     PrintColor
+
+        lxi     b, 00008h
+        lhld    BmpPtr
+        mov     a, m
+        call    _PrintHex
+
+        pop     hl
+        pop     de
+        pop     bc
+        pop     a
+
+        ret
 
 ; ***********************************
 ; Switch between ??? with Tab key
