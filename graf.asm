@@ -207,6 +207,7 @@ DiskDone
         call    SetupTimerInterrupt
 
         call    WorkBitmapPreview
+
         call    PaintCursor
 
 ; ********************************************************************
@@ -428,14 +429,17 @@ RedrawWorkBitmap
 
 ; тут вроде бы уместно вывести hex dump
 
-        call    HexDump
+        ; call    HexDump
 
         jmp     Paint
 
 ; ***********************************
 ; Hex Dump
-; 
+; Вывести содержимое редактируемого спрайта
+; в два столбика
 ; ***********************************
+HEXDUMP_LINE    equ     5
+HEXDUMP_COL     equ     13
 HexDump
         push    a
         push    bc
@@ -445,10 +449,14 @@ HexDump
         mvi     a, 2
         sta     PrintColor
 
-        lxi     b, (13*2 << 8) + (5*8)
         lhld    BmpPtr
-        mov     a, m
-        call    _PrintHex
+        lxi     b, (HEXDUMP_COL*2 << 8) + (HEXDUMP_LINE*8)
+        call    PrintHexColumn
+        
+        ; lhld    BmpPtr+8
+        ; HL естественным путем увеличится на 8 к этому моменту
+        lxi     b, ((HEXDUMP_COL+3)*2 << 8) + (HEXDUMP_LINE*8)
+        call    PrintHexColumn
 
         pop     hl
         pop     de
@@ -456,6 +464,29 @@ HexDump
         pop     a
 
         ret
+
+PrintHexColumn
+        mvi     e, 8
+PHC
+        mov     a, m
+        push    b
+        call    _PrintHex
+        pop     b
+
+        mov     a, c
+        adi     8
+        mov     c, a
+        
+        ; mvi     a, HEXDUMP_COL*2
+        mov     a, b
+        aci     0
+        mov     b, a
+
+        inx     h
+        dcr     e
+        jnz     PHC
+        ret
+
 
 ; ***********************************
 ; Switch between ??? with Tab key
@@ -542,7 +573,6 @@ BothColors
         ani     3
         call    PlaceDot
         call    UpdateWorkBitmap        
-
         jmp     Paint
 
 ; *************************************************
@@ -1141,6 +1171,10 @@ PREVIEW_Y       equ     5
 PREVIEW_XY      equ     PREVIEW_X*512 + PREVIEW_Y*8
 
 WorkBitmapPreview
+
+        call    HexDump
+
+
         lxi     b, PREVIEW_XY
         lxi     d, 0
         mvi     l, 8
@@ -1882,7 +1916,7 @@ SaveYN
 ; String  ;  db      1bh, 35h, 10, 10
 ;         db      '1 2 3 4 5 6 7 8 9 0', 0
 
-Version         db      'GRAF v0.1', 0
+Version         db      'GRAF v0.2', 0
 Copyright       db      '2025 TNT23', 0
 
 
