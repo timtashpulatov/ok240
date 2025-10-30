@@ -373,7 +373,7 @@ CenterBitmap
 ; Клипборд
 ; *************************************************
 CLIP_X  equ     13      ; координата X положения клипборда по горизонтали
-CLIP_Y  equ     5       ; координата Y по вертикали
+CLIP_Y  equ     3       ; координата Y по вертикали
 CLIP_XY equ     ((CLIP_X * 2) << 8) + CLIP_Y * 8
 
 Copy
@@ -445,7 +445,7 @@ HexDump
         mvi     a, 2
         sta     PrintColor
 
-        lxi     b, 00008h
+        lxi     b, (13*2 << 8) + (5*8)
         lhld    BmpPtr
         mov     a, m
         call    _PrintHex
@@ -1136,7 +1136,7 @@ PNBLoop
 ; *************************************************
 ; Показать рабочий битмап в натуральную величину
 ; *************************************************
-PREVIEW_X       equ     16
+PREVIEW_X       equ     20
 PREVIEW_Y       equ     5
 PREVIEW_XY      equ     PREVIEW_X*512 + PREVIEW_Y*8
 
