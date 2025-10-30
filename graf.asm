@@ -434,24 +434,35 @@ PrintClipboard
 ; *************************************************
 
 JumpPlus256
+        mvi     a, MARGIN_TOP
+        sta     ROW
+        
         lxi     d, 128  ; 256
         jmp     SNB
         
 JumpMinus256
+        mvi     a, MARGIN_BOT
+        sta     ROW
+        
         lxi     d, -128 ; -256
         jmp     SNB
 
 SelectPrevBitmap
+        mvi     a, MARGIN_RIGHT+6
+        sta     COL
+        
         lxi     d, -16
         jmp     SNB
 
 SelectNextBitmap
+        mvi     a, MARGIN_LEFT
+        sta     COL
+        
         lxi     d, 16
 SNB        
         lhld    BmpPtr
         dad     d
         shld    BmpPtr
-
         
 RedrawWorkBitmap        
         ; lxi     h, XY
@@ -702,7 +713,7 @@ CurRight
 
         lda     Col
         cpi     MARGIN_RIGHT + 6        ; why 6 ???
-;        jz      Paint
+
         jz      SelectNextBitmap
         adi     2
         sta     Col
