@@ -98,6 +98,9 @@ BMP_C   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         db      0, 1ch, 4, 4, 4, 1ch, 0, 0
 BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
         db      0, 1ch, 14h, 1ch, 4, 4, 0, 0
+
+BMP_H   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
+        db      0, 14h, 14h, 1ch, 14h, 14h, 0, 0
         
 BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
                 db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
@@ -338,6 +341,9 @@ KeyFunctions
         db      CR
         dw      CenterBitmap
 
+        db      'H'
+        dw      ToggleHexDump
+
         db      0
         dw      0
 
@@ -360,6 +366,15 @@ Grid
         inr     a
         ani     3
         sta     GridType
+        jmp     RedrawWorkBitmap
+
+; *************************************************
+; Вкл-выкл хекс дампа
+; *************************************************
+ToggleHexDump
+        lda     ShowHexDump
+        cma     
+        sta     ShowHexDump
         jmp     RedrawWorkBitmap
 
 ; *************************************************
@@ -1339,7 +1354,8 @@ IconList
         dw BMP_C        \ db (HelpY + 4)*8, HelpX + 32, 3
         dw BMP_P        \ db (HelpY + 5)*8, HelpX + 32, 3
         dw BMP_Z        \ db (HelpY + 6)*8, HelpX + 32, 3
-        dw BMP_ESC      \ db (HelpY + 8)*8, HelpX + 32, 3
+        dw BMP_H        \ db (HelpY + 7)*8, HelpX + 32, 3
+        dw BMP_ESC      \ db (HelpY + 9)*8, HelpX + 32, 3
 
         dw 0
 
@@ -1349,7 +1365,8 @@ HelpText
         db      'SELECT COLOR', CR
         db      'GRID', CR
         db      'COPY', CR, 'PASTE', CR
-        db      'ZAP', CR, CR
+        db      'ZAP', CR
+        db      'HEX DUMP', CR, CR
         db      'EXIT'
         db      0
 
@@ -2031,30 +2048,6 @@ HEXFONT
         db      38h, 4, 4, 38h, 4, 4, 38h, 0            // e
         db      38h, 4, 4, 38h, 4, 4, 0, 0              // f
 
-; ; Pictograms
-; BMP_ESC db      07ch, 80h, 80h, 0, 80h, 81h, 81h, 3eh
-;         db      3, 1, 1bh, 0c9h, 5bh, 50h, 58h, 0c0h
-; BMP_Z   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 1ch, 10h, 8, 4, 1ch, 0, 0
-; BMP_1   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 8, 0ch, 8, 8, 1ch, 0, 0
-; BMP_2   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 0ch, 10h, 0ch, 4, 1ch, 0, 0
-; BMP_3   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 0ch, 10h, 0ch, 10h, 0ch, 0, 0
-; BMP_G   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 1ch, 4, 14h, 14h, 1ch, 0, 0
-; BMP_C   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 1ch, 4, 4, 4, 1ch, 0, 0
-; BMP_P   db      0, 0, 40h, 81h, 81h, 81h, 81h, 7eh
-;         db      0, 1ch, 14h, 1ch, 4, 4, 0, 0
-        
-; BMP_BLOB        db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
-;                 db      0, 03ch, 72h, 7ah, 7eh, 7eh, 3ch, 0
-
-; MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
-;                 db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
-
 ; Зажечь/погасить квадратик
 INV     db      0
 
@@ -2080,6 +2073,7 @@ Blink           db      0
 BlinkPrev       db      0
 
 GridType        db      2
+ShowHexDump     db      0
 
 HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
                 db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
