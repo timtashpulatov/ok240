@@ -444,6 +444,7 @@ JumpMinus256
 SelectPrevBitmap
         lxi     d, -16
         jmp     SNB
+
 SelectNextBitmap
         lxi     d, 16
 SNB        
@@ -681,7 +682,7 @@ CurDown
 
         lda     Row
         cpi     MARGIN_BOT
-        jz      Paint
+        jz      JumpPlus256
         adi     8
         sta     Row
         jmp     Paint
@@ -691,7 +692,7 @@ CurLeft
 
         lda     Col
         cpi     MARGIN_LEFT
-        jz      Paint
+        jz      SelectPrevBitmap
         sbi     2
         sta     Col
         jmp     Paint
@@ -701,7 +702,8 @@ CurRight
 
         lda     Col
         cpi     MARGIN_RIGHT + 6        ; why 6 ???
-        jz      Paint
+;        jz      Paint
+        jz      SelectNextBitmap
         adi     2
         sta     Col
         jmp     Paint
@@ -711,7 +713,7 @@ CurUp
 
         lda     Row
         cpi     MARGIN_TOP
-        jz      Paint
+        jz      JumpMinus256
         sbi     8
         sta     Row
         jmp     Paint
