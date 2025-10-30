@@ -3,28 +3,7 @@
 BANKING	equ	0c1h		; регистр управления банками ОЗУ и ПЗУ
 VIDEO	equ	0e1h		; регистр управления цветом и режимами видео
 
-	
-; Обработчик прерывания от Таймера 0	
-	.org 20h
-	
-        lda     COLOR
-        out     VIDEO
-        inr     a
-        ani     3fh
-        ori     40h
-        sta     COLOR
-        
-	mvi     a, 20h
-	out     80h
-        ei
-	ret
-	
-COUNT   dw      0
-COLOR   db      41h
-	
-;	.org 8000h
-
-
+	.org 100h
 
 ; Дождемся кадрового ретрейса
 WaitForVR
@@ -46,14 +25,18 @@ WaitForHR
         ani      1
         jz      WaitForHR
 
-
-        
         mvi     a, 36h
         out     63h
         mvi     a, 0e0h
         out     60h
         mvi     a, 01h		; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
         out     60h
+
+; Plant interrupt handler
+        mvi     a, 0xc3
+        sta     0x20
+        lxi     h, TimerInterruptHandler
+        shld    0x21
 
 ; OCW1
         mvi     a, 0b11101111   ; разрешить прерывания от Таймера 0 (RST4)
@@ -84,8 +67,6 @@ DoPat
         ei
 
         jmp     .
-        
-	jmp	0e003h		; теплый старт "Монитора"
 
 DoPatSub
         mvi     m, 0
@@ -119,4 +100,24 @@ DoPatSub
         inr     h
 
         ret
-
+        
+; Обработчик прерывания от Таймера 0	
+; 	.org 20h
+TimerInterruptHandler	
+        lda     COLOR
+        out     VIDEO
+        inr     a
+        ani     3fh
+        ori     40h
+        sta     COLOR
+        
+	mvi     a, 20h
+	out     80h
+        ei
+	ret
+	
+COUNT   dw      0
+COLOR   db      41h
+        
+        
+        
