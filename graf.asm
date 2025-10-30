@@ -110,7 +110,10 @@ BMP_BLOB_INV    db      0ffh, 0c3h, 8dh, 85h, 81h, 81h, 0c3h, 0ffh
 
 MANNEKIN        db      0, 10h, 0, 0, 0, 0, 0, 0
                 db      0, 0, 4ch, 3ah, 8, 34h, 22h, 0
-
+MANNEKIN1       db      18h, 0, 0, 0, 0, 0, 0, 0
+                db      0, 18h, 4ch, 3ah, 8, 34h, 22h, 0
+MANNEKIN2       db      30h, 0, 0, 0, 0, 0, 0, 0
+                db      0, 32h, 1ch, 68h, 0ah, 34h, 40h, 0
 
 
 Start
@@ -673,8 +676,6 @@ GBCDone
 ; *************************************************
 ; * Правим координаты курсора
 ; *************************************************
-
-        
 CurDown 
         call    EraseCursor
 
@@ -684,6 +685,7 @@ CurDown
         adi     8
         sta     Row
         jmp     Paint
+
 CurLeft
         call    EraseCursor
 
