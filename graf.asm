@@ -882,6 +882,8 @@ UnpackWorkBitmap
         lhld    CURPOS
         push    hl
 
+        lxi     h, XY           ; reset cursor position for redraw
+        shld    CurPos
 Wow0
         call    EraseCursor     ; ух ты, стильно!
         
