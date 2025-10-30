@@ -6,24 +6,25 @@ VIDEO	equ	0e1h		; регистр управления цветом и режим
 	.org 100h
 
 ; Дождемся кадрового ретрейса
+        lxi     b, 0002
 WaitForVR
         in      41h
-        ani     2
+        ana     c
         jz     WaitForVR
 ; Переждем его
 WaitForVRDone
         in      41h
-        ani     2
+        ana     c
         jnz     WaitForVRDone
 WaitForVR1
         in      41h
-        ani     2
+        ana     c
         jz     WaitForVR1
 
-WaitForHR
-        in      41h
-        ani      1
-        jz      WaitForHR
+; WaitForHR
+;         in      41h
+;         ani      1
+;         jz      WaitForHR
 
         mvi     a, 36h
         out     63h
