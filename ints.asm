@@ -26,11 +26,15 @@ WaitForVR1
 ;         ani      1
 ;         jz      WaitForHR
 
+; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
+
+DIV     equ     01e0h * 2   ;       = 480  = 5 lines
+
         mvi     a, 36h
         out     63h
-        mvi     a, 0e0h
+        mvi     a, DIV & 0xff
         out     60h
-        mvi     a, 01h		; делитель на 768 тактовой частоты 1.5МГц канала 0 таймера даст смену палитры каждые 8 строк (ivagor)
+        mvi     a, DIV >> 8
         out     60h
 
 ; Plant interrupt handler
@@ -108,7 +112,8 @@ TimerInterruptHandler
         lda     COLOR
         out     VIDEO
         inr     a
-        ani     3fh
+        ; ani     3fh
+        ani     7
         ori     40h
         sta     COLOR
         
