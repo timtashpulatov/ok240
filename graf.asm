@@ -375,7 +375,8 @@ ToggleHexDump
         lda     ShowHexDump
         cma     
         sta     ShowHexDump
-        jmp     RedrawWorkBitmap
+        jmp     Paint
+        ; jmp     RedrawWorkBitmap
 
 ; *************************************************
 ; *************************************************
@@ -449,13 +450,9 @@ SNB
 
         
 RedrawWorkBitmap        
-        lxi     h, XY
-        shld    CurPos
+        ; lxi     h, XY
+        ; shld    CurPos
         call    UnpackWorkBitmap
-
-; тут вроде бы уместно вывести hex dump
-
-        ; call    HexDump
 
         jmp     Paint
 
@@ -696,6 +693,7 @@ CurLeft
         sbi     2
         sta     Col
         jmp     Paint
+
 CurRight
         call    EraseCursor
 
@@ -705,6 +703,7 @@ CurRight
         adi     2
         sta     Col
         jmp     Paint
+
 CurUp
         call    EraseCursor
 
@@ -878,8 +877,12 @@ PDT
 ;       (нарисовать биты квадратиками)
 ; *************************************************
 UnpackWorkBitmap
+
+; save CURPOS
+        lhld    CURPOS
+        push    hl
+
 Wow0
-        
         call    EraseCursor     ; ух ты, стильно!
         
         lda     Col
@@ -900,6 +903,10 @@ Wow1
         sta     Row
         jmp     Wow0
 Wow2
+; restore CURPOS
+        pop     hl
+        shld    CURPOS
+
         ret
 
 DELAY   equ     2000
