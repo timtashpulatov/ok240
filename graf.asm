@@ -371,7 +371,7 @@ CenterBitmap
 
 
 ; *************************************************
-; Клипборд
+; Копирование в клипборд
 ; *************************************************
 CLIP_X  equ     13      ; координата X положения клипборда по горизонтали
 CLIP_Y  equ     3       ; координата Y по вертикали
@@ -390,18 +390,29 @@ CopyLoop
         dcr     c
         jnz     CopyLoop
         
-        ; Нарисовать клипборд
-        lxi     h, CLIPBOARD
-        lxi     b, CLIP_XY      ;1800h + 5*8  ; TODO use defines
-        mvi     a, 3
-        call    PaintBitmap
+        call    PrintClipboard
         
         jmp     RedrawWorkBitmap
+
+; *************************************************
+; Вставка из клипборда
+; *************************************************
 Paste
         lhld    BmpPtr
         lxi     d, CLIPBOARD
         xchg
         jmp     CL0
+
+PrintClipboard
+        ; Нарисовать клипборд
+        lxi     h, CLIPBOARD
+        lxi     b, CLIP_XY      ;1800h + 5*8  ; TODO use defines
+        mvi     a, 3
+        jmp    PaintBitmap
+        
+
+
+; *************************************************
 
 JumpPlus256
         lxi     d, 128  ; 256
@@ -453,8 +464,6 @@ HexDump
         lxi     b, (HEXDUMP_COL*2 << 8) + (HEXDUMP_LINE*8)
         call    PrintHexColumn
         
-        ; lhld    BmpPtr+8
-        ; HL естественным путем увеличится на 8 к этому моменту
         lxi     b, ((HEXDUMP_COL+3)*2 << 8) + (HEXDUMP_LINE*8)
         call    PrintHexColumn
 
@@ -925,7 +934,7 @@ PaintBitmap
 Plane1
         rrc
         jnc     Plane2
-        call    Copy8
+        call    CopyFromDEtoHL8
 Plane2        
         rrc
         jnc     PlaneDone
@@ -939,7 +948,7 @@ Plane2
         ; Перейдем ко второму плану экрана
         pop     h
         inr     h
-        call    Copy8
+        call    CopyFromDEtoHL8
 
 PlaneDone
         ; Включаем ПЗУ обратно
@@ -955,7 +964,7 @@ PlaneDone
 ; *************************************************
 ; Copy 8 bytes from DE to HL
 ; *************************************************
-Copy8
+CopyFromDEtoHL8
         push    h
         push    d
         push    b
@@ -1784,9 +1793,10 @@ FillTempChar
 ; DE = битмап нужной буквы
 ; перегрузим во времянку
         lxi     h, TempChar
-        call    Copy8
+        call    CopyFromDEtoHL8
+        
         lxi     h, TempChar+8
-        call    Copy8
+        call    CopyFromDEtoHL8
         ret
 
 PrintTempChar
@@ -2078,7 +2088,7 @@ HourGlass       db      0, 0, 3ch, 18h, 3ch, 7eh, 255, 255
 PrintColor      db      3
 
 ; Внутренний клипборд для символа из шрифта
-TempChar        db      16
+TempChar        ds      16
 
 ; Клипборд
 CLIPBOARD       equ     .
