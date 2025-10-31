@@ -10,21 +10,21 @@ VIDEO	equ	0e1h		; регистр управления цветом и режим
 ; 1500000 / 15625 = 96 = 1 line
 ;
 
-DIV     equ     768     ; = 8 lines
+DIV     equ     768/2     ; 768 = 8 lines
 
 
 	.org    100h
 
 ; Clear scroll
-        ; mvi     a, 7
+        ; mvi     a, 0
         ; out     0c0h
         ; out     0c2h
 
-; Timer programming, part I
-        mvi     a, 36h
-        out     63h
-        mvi     a, DIV & 0xff
-        out     60h
+; ; Timer programming, part I
+;         mvi     a, 36h
+;         out     63h
+;         mvi     a, DIV & 0xff
+;         out     60h
 
 
 ; Дождемся кадрового ретрейса
@@ -47,6 +47,12 @@ WaitForVR1
 ;         in      41h
 ;         ani      1
 ;         jz      WaitForHR
+
+; Timer programming, part I
+        mvi     a, 36h
+        out     63h
+        mvi     a, DIV & 0xff
+        out     60h
 
 ; Timer programming, part II
         mvi     a, DIV >> 8
@@ -123,7 +129,8 @@ DoPatSub
         
 ; Обработчик прерывания от Таймера 0	
 ; 	.org 20h
-TimerInterruptHandler	
+TimerInterruptHandler
+        push    a
         lda     COLOR
         out     VIDEO
         ; inr     a
@@ -134,40 +141,58 @@ TimerInterruptHandler
         ; sta     COLOR
         
 ; счетчик
-        lda     COUNT
-        inr     a
-        ani     15
-        sta     COUNT
+        ; lda     COUNT
+        ; inr     a
+        ; ani     15
+        ; sta     COUNT
 
 ; используем счетчик для выборки очередной палитры
         push    hl
-        push    bc
+        ; push    bc
         
-        lxi     hl, PALETTE_LIST
-        lxi     bc, 0
-        lda     COUNT
-        mov     c, a
-        dad     b
+        ; lxi     hl, PALETTE_LIST
+        ; lxi     bc, 0
+        ; lda     COUNT
+        ; mov     c, a
+        ; dad     b
+        ; mov     a, m
+        ; sta     COLOR
+
+
+        lhld    COUNT
+        inx     h
+        mvi     a, COUNT & 0xff
+        cmp     l
+        jnz     Next
+        lxi     h, PALETTE_LIST
+Next
+        shld    COUNT
+
         mov     a, m
         sta     COLOR
+
+
         
-        pop     bc
+        ; pop     bc
         pop     hl
 
 ; подтверждение прерывания        
 	mvi     a, 20h
 	out     80h
+	pop     a
         ei
 	ret
 
+
 PALETTE_LIST
-        db      40h, 40h, 42h, 43h, 44h, 45h, 46h, 47h
-        db      48h, 48h, 49h, 49h, 4ah, 4ah, 4bh, 4bh
         db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
-        db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
+        db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
+        ; db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
+        ; db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
 
 
-COUNT   db      0
+COUNT   dw      PALETTE_LIST
+
 COLOR   db      40h
         
         
