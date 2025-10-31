@@ -133,31 +133,9 @@ TimerInterruptHandler
         push    a
         lda     COLOR
         out     VIDEO
-        ; inr     a
-        ; ; ani     3fh
-        ; ani     7
-        ; ; ori     40h
-        ; ori     48h
-        ; sta     COLOR
-        
-; счетчик
-        ; lda     COUNT
-        ; inr     a
-        ; ani     15
-        ; sta     COUNT
 
 ; используем счетчик для выборки очередной палитры
         push    hl
-        ; push    bc
-        
-        ; lxi     hl, PALETTE_LIST
-        ; lxi     bc, 0
-        ; lda     COUNT
-        ; mov     c, a
-        ; dad     b
-        ; mov     a, m
-        ; sta     COLOR
-
 
         lhld    COUNT
         inx     h
@@ -171,9 +149,6 @@ Next
         mov     a, m
         sta     COLOR
 
-
-        
-        ; pop     bc
         pop     hl
 
 ; подтверждение прерывания        
