@@ -73,7 +73,7 @@ WaitForVR1
         out     BANKING
         
         lxi     hl, 0c000h
-        mvi     c, 250
+        mvi     c, 254
         
 DoPat   
         push    hl
@@ -160,25 +160,22 @@ Next
 
 
 PALETTE_LIST
-        
+
+; Tile lines 12..15
+        db      4ch, 4dh, 4eh, 4fh          ; color, blue background
+; Tile lines 16..23        
+        db      50h, 51h, 52h, 53h, 54h, 55h, 56h, 57h          ; color, green background
+; Tile lines 24..31
+        db      38h, 39h, 3ah, 3bh, 3ch, 3dh, 3eh, 3fh          ; mono, white background
+
+        ; Retrace zone (tile lines 32..39)        
         db      47h, 47h, 47h, 47h, 47h, 47h, 47h, 47h
-        
-        db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
-        db      48h, 49h, 4ah, 4bh, 4ch, 4dh, 4eh, 4fh
 
-        db      50h, 51h, 52h, 53h, 54h, 55h, 56h, 57h
-        db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
+; Tile lines 0..7
+        db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h          ; color, black background
+; Tile lines 8..11
+        db      48h, 49h, 4ah, 4bh                              ; color, blue background
 
-        
-
-
-
-        ; db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
-        ; db      47h, 47h, 47h, 47h, 47h, 47h, 47h, 47h
-
-        ; db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
-        ; db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
-        ; db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
 
 
 COUNT   dw      PALETTE_LIST
