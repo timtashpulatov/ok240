@@ -10,7 +10,7 @@ VIDEO	equ	0e1h		; регистр управления цветом и режим
 ; 1500000 / 15625 = 96 = 1 line
 ;
 
-DIV     equ     768/2     ; 768 = 8 lines
+DIV     equ     768     ; 768 = 8 lines
 
 
 	.org    100h
@@ -160,8 +160,23 @@ Next
 
 
 PALETTE_LIST
+        
+        db      47h, 47h, 47h, 47h, 47h, 47h, 47h, 47h
+        
         db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
+        db      48h, 49h, 4ah, 4bh, 4ch, 4dh, 4eh, 4fh
+
+        db      50h, 51h, 52h, 53h, 54h, 55h, 56h, 57h
         db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
+
+        
+
+
+
+        ; db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
+        ; db      47h, 47h, 47h, 47h, 47h, 47h, 47h, 47h
+
+        ; db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
         ; db      40h, 41h, 42h, 43h, 44h, 45h, 46h, 47h
         ; db      10h, 11h, 12h, 13h, 24h, 25h, 26h, 27h
 
