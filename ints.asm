@@ -164,7 +164,8 @@ PALETTE_LIST
 ; Tile lines 12..15
         db      4ch, 4dh, 4eh, 4fh          ; color, blue background
 ; Tile lines 16..23        
-        db      50h, 51h, 52h, 53h, 54h, 55h, 56h, 57h          ; color, green background
+        ; db      50h, 51h, 52h, 53h, 54h, 55h, 56h, 57h          ; color, green background
+        db      40h, 48h, 50h, 58h, 60h, 68h, 70h, 78h
 ; Tile lines 24..31
         db      38h, 39h, 3ah, 3bh, 3ch, 3dh, 3eh, 3fh          ; mono, white background
 
