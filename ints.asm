@@ -85,6 +85,10 @@ DoPat
         inr     l
         dcr     c
         jnz     DoPat
+
+        ; lxi     hl, 0c000h
+        ; call    HorizStripe8
+
         
         xra     a
         out     BANKING
@@ -125,6 +129,31 @@ DoPatSub
         mvi     m, 255
         inr     h
 
+        ret
+        
+HorizStripe8
+        mvi     e, 8
+HS8
+        call    HorizStripe
+        inx     hl
+        dcr     e
+        jnz     hs8
+        ret
+        
+HorizStripe
+        push    hl
+        push    de
+        mvi     e, 32
+HS
+        mvi     m, 255
+        inr     h
+        mvi     m, 255
+        inr     h
+        dcr     e
+        jnz     HS
+        
+        pop     de
+        pop     hl
         ret
         
 ; Обработчик прерывания от Таймера 0	
