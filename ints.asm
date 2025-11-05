@@ -167,7 +167,7 @@ PALETTE_LIST
         ; db      50h, 51h, 52h, 53h, 54h, 55h, 56h, 57h          ; color, green background
         db      40h, 48h, 50h, 58h, 60h, 68h, 70h, 78h
 ; Tile lines 24..31
-        db      38h, 39h, 3ah, 3bh, 3ch, 3dh, 3eh, 3fh          ; mono, white background
+        db      00h, 08h, 10h, 18h, 20h, 28h, 30h, 38h          ; mono, white background
 
         ; Retrace zone (tile lines 32..39)        
         db      47h, 47h, 47h, 47h, 47h, 47h, 47h, 47h
