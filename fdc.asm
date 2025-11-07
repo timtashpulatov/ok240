@@ -32,7 +32,7 @@ CMD_SEEK        equ     10h
 ; Restore
 
         mvi     a, CMD_RESTORE
-        out     PORT_CMDe
+        out     PORT_CMD
         call    WaitForKey
 
 ; Seek to track 79
