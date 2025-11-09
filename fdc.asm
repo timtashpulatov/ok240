@@ -19,6 +19,8 @@ DRIVE_INIT      equ     1 << 3
 CMD_RESTORE     equ     00h
 CMD_SEEK        equ     10h
 
+CRLF            equ     00d0ah
+
         lxi     d, Help
         mvi     c, 9
         call     5
@@ -27,7 +29,7 @@ CMD_SEEK        equ     10h
         mvi     c, '?'
         call    CONOUT
 
-        lxi     h, CurPosTest
+        lxi     h, MainMenu
         call    PrintString
 
         
@@ -112,6 +114,17 @@ CurPosTest
         
 Help:   db      'FDC v0.1', 10, 13
         db      'Usage:', '$'
+
+MainMenu
+        db      1fh
+        db      '0 ... Select drive 0' \ dw CRLF
+        db      '1 ... Select drive 1' \ dw CRLF
+        db      'M ... Motor' \ dw CRLF
+        db      'S ... Side' \ dw CRLF
+        db      'H ... Seek to track 00' \ dw CRLF
+        db      'E ... Seek to track 79' \ dw CRLF
+        db      'ESC ... Quit', \ dw CRLF
+        db      0
         
 vPortFloppy     db      0
         
