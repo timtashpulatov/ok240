@@ -36,10 +36,10 @@ CMD_SEEK        equ     10h
 
 ; Select drive 0
         mvi     a, DRIVE_SELECT | DRIVE_0
-; Start motor
-        out     PORT_FLOPPY
-        ori     8
-        out     PORT_FLOPPY
+        sta     vPortFloppy
+        
+        call    MotorStart
+
         call    WaitForKey
         
 ; Restore
