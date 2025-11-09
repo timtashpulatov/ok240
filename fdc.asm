@@ -19,6 +19,7 @@ DRIVE_INIT      equ     1 << 3
 CMD_RESTORE     equ     00h
 CMD_SEEK        equ     10h
 
+ESC             equ     27
 CRLF            equ     00d0ah
 
         lxi     d, Help
@@ -29,26 +30,68 @@ CRLF            equ     00d0ah
         mvi     c, '?'
         call    CONOUT
 
+MenuLoop
         lxi     h, MainMenu
         call    PrintString
 
-        
         call    WaitForKey
-        
 
-; Select drive 0
+
+
+; Большие или малые буквы, это все равно
+        cpi     0x5f
+        jc      Next0
+        sui     0x20
+Next0
+
+        mov     c, a
+        lxi     d, MenuKeys
+Next        
+        ldax    d
+        ora     a
+        jz      MenuLoop
+        cmp     c
+        jz      Gotcha
+        inx     d
+        inx     d
+        inx     d
+        jmp     Next
+Gotcha
+        inx     d
+        ldax    d
+        mov     l, a
+        inx     d
+        ldax    d
+        mov     h, a
+        mov     a, c
+        pchl
+
+MenuKeys
+        db      'R' \ dw Restore
+        db      '0' \ dw SelectDrive0
+        db      '1' \ dw SelectDrive1
+        db      'R' \ dw Restore
+        db      'E' \ dw End
+        db      'M' \ dw MotorStart
+        db      0 \ dw 0
+
+Quit    rst     0        
+
+SelectDrive0
         mvi     a, DRIVE_SELECT | DRIVE_0
         sta     vPortFloppy
-        
-        call    MotorStart
+        ret
 
-        call    WaitForKey
-        
-; Restore
+SelectDrive1
+        mvi     a, DRIVE_1
+        sta     vPortFloppy
+        ret
 
-        mvi     a, CMD_RESTORE
-        out     PORT_CMD
-        call    WaitForKey
+End
+        call    Restore
+        mvi     a, 79
+        call    SeekToTrack
+        ret
 
 ; Seek to track 79
         mvi     a, 0
@@ -63,6 +106,26 @@ CRLF            equ     00d0ah
         call    WaitForKey
 
         rst      0
+
+; ************************************************************************
+; Seek to track in accumulator
+; ************************************************************************
+SeekToTrack
+        push    a
+        call    Restore
+        pop     a
+        out     PORT_DATA
+        xra     a
+        out     PORT_TRACK
+        ret
+
+; ************************************************************************
+; Restore
+; ************************************************************************
+Restore
+        mvi     a, CMD_RESTORE
+        out     PORT_CMD
+        ret
 
 ; ************************************************************************
 ; Запуск двигателя
@@ -105,7 +168,7 @@ PrintString
         mov     c, a
         call    CONOUT
         inx     h
-        jmp PrintString
+        jmp     PrintString
 
 CurPosTest
         db      1fh
@@ -116,14 +179,16 @@ Help:   db      'FDC v0.1', 10, 13
         db      'Usage:', '$'
 
 MainMenu
-        db      1fh
-        db      '0 ... Select drive 0' \ dw CRLF
-        db      '1 ... Select drive 1' \ dw CRLF
-        db      'M ... Motor' \ dw CRLF
-        db      'S ... Side' \ dw CRLF
-        db      'H ... Seek to track 00' \ dw CRLF
-        db      'E ... Seek to track 79' \ dw CRLF
-        db      'ESC ... Quit', \ dw CRLF
+        ; db      1fh
+        db      ESC, '61'
+        db      ESC, '8b'
+        db      '0 - Select drive 0' \ dw CRLF
+        db      '1 - Select drive 1' \ dw CRLF
+        db      'M - Motor' \ dw CRLF
+        db      'S - Side' \ dw CRLF
+        db      'R - Seek to track 00' \ dw CRLF
+        db      'E - Seek to track 79' \ dw CRLF
+        db      'ESC - Quit', \ dw CRLF
         db      0
         
 vPortFloppy     db      0
