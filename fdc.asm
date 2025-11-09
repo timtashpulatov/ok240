@@ -73,25 +73,34 @@ MenuKeys
         db      'R' \ dw Restore
         db      'E' \ dw End
         db      'M' \ dw MotorStart
+        db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
 
-SelectDrive0
+_SelectDrive0
         mvi     a, DRIVE_SELECT | DRIVE_0
         sta     vPortFloppy
         ret
+SelectDrive0
+        call    _SelectDrive0
+        jmp     MenuLoop
 
-SelectDrive1
+_SelectDrive1
         mvi     a, DRIVE_1
         sta     vPortFloppy
         ret
+SelectDrive1
+        call    _SelectDrive1
+        jmp     MenuLoop
 
-End
-        call    Restore
+_End
         mvi     a, 79
         call    SeekToTrack
         ret
+End    
+        call    _End
+        jmp     MenuLoop
 
 ; Seek to track 79
         mvi     a, 0
@@ -110,32 +119,55 @@ End
 ; ************************************************************************
 ; Seek to track in accumulator
 ; ************************************************************************
-SeekToTrack
-        push    a
-        call    Restore
-        pop     a
+_SeekToTrack
+        ; push    a
+        ; call    _Restore
+        
+        ; pop     a
         out     PORT_DATA
         xra     a
         out     PORT_TRACK
+
+        mvi     a, CMD_SEEK
+        out     PORT_CMD
+
+        
+        ; call    WaitForDriveReady
+        ; ora     a
+        ; jz      MenuLoop
+        
+        ; lxi    h, aTimeout
+        ; call    PrintString
         ret
+
+SeekToTrack
+        call    _SeekToTrack
+        jmp     MenuLoop
 
 ; ************************************************************************
 ; Restore
 ; ************************************************************************
-Restore
+_Restore
         mvi     a, CMD_RESTORE
         out     PORT_CMD
         ret
+Restore
+        call    _Restore
+        jmp     MenuLoop
 
 ; ************************************************************************
 ; Запуск двигателя
 ; ************************************************************************
-MotorStart
+_MotorStart
         lda     vPortFloppy
         out     PORT_FLOPPY
         ori     DRIVE_INIT
         out     PORT_FLOPPY
         ret
+        
+MotorStart
+        call    _MotorStart
+        jmp     MenuLoop
 
 ; ************************************************************************
 ; Ожидаение готовности дисковода или остановки двигателя по таймауту
@@ -144,7 +176,7 @@ MotorStart
 WaitForDriveReady      
         in      PORT_FLOPPY
         ani     80h                     ; check MOTST
-        rz
+        rnz
 
         in      PORT_CMD
         ani     80h                     ; 0x80 if drive NOT READY
@@ -178,10 +210,13 @@ CurPosTest
 Help:   db      'FDC v0.1', 10, 13
         db      'Usage:', '$'
 
+aTimeout
+        db      'Timeout!', 7, 0
+
 MainMenu
         ; db      1fh
-        db      ESC, '61'
-        db      ESC, '8b'
+        ; db      ESC, '61'
+        ; db      ESC, '8b'
         db      '0 - Select drive 0' \ dw CRLF
         db      '1 - Select drive 1' \ dw CRLF
         db      'M - Motor' \ dw CRLF
@@ -192,4 +227,4 @@ MainMenu
         db      0
         
 vPortFloppy     db      0
-        
+        ss
