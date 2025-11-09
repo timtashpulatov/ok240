@@ -18,6 +18,9 @@ DRIVE_INIT      equ     1 << 3
 
 CMD_RESTORE     equ     00h
 CMD_SEEK        equ     10h
+CMD_STEPIN      equ     40h     ; towards center and track 79
+CMD_STEPOUT     equ     60h     ; to track 0
+
 
 ESC             equ     27
 CRLF            equ     00d0ah
@@ -73,6 +76,8 @@ MenuKeys
         db      'R' \ dw Restore
         db      'E' \ dw End
         db      'M' \ dw MotorStart
+        db      '-' \ dw StepOut
+        db      '+' \ dw StepIn
         db      ESC \ dw Quit
         db      0 \ dw 0
 
@@ -92,6 +97,22 @@ _SelectDrive1
         ret
 SelectDrive1
         call    _SelectDrive1
+        jmp     MenuLoop
+
+_StepOut
+        mvi     a, CMD_STEPOUT
+        out     PORT_CMD
+        ret
+StepOut
+        call    _StepOut
+        jmp     MenuLoop
+
+_StepIn
+        mvi     a, CMD_STEPIN
+        out     PORT_CMD
+        ret
+StepIn
+        call    _StepIn
         jmp     MenuLoop
 
 _End
@@ -214,9 +235,10 @@ aTimeout
         db      'Timeout!', 7, 0
 
 MainMenu
-        ; db      1fh
+        db      1fh
         ; db      ESC, '61'
         ; db      ESC, '8b'
+        dw      CRLF
         db      '0 - Select drive 0' \ dw CRLF
         db      '1 - Select drive 1' \ dw CRLF
         db      'M - Motor' \ dw CRLF
@@ -224,7 +246,10 @@ MainMenu
         db      'R - Seek to track 00' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
         db      'ESC - Quit', \ dw CRLF
+        
+        db      ESC, '5', 20h, 20h, "Pops!"
+        
         db      0
         
 vPortFloppy     db      0
-        ss
+        
