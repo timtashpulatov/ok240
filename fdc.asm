@@ -25,22 +25,55 @@ CMD_STEPOUT     equ     60h     ; to track 0
 ESC             equ     27
 CRLF            equ     00d0ah
 
-        lxi     d, Help
-        mvi     c, 9
-        call     5
+        ; lxi     d, Help
+        ; mvi     c, 9
+        ; call     5
 
 
-        mvi     c, '?'
-        call    CONOUT
+        ; mvi     c, '?'
+        ; call    CONOUT
 
-MenuLoop
         lxi     h, MainMenu
         call    PrintString
 
-        call    WaitForKey
+
+MenuLoop
+
+        ; call    WaitForKey
+        
+        call    CONST
+        inr     a
+        jz      WeHaveKeypress
+        
+        call    ShowFloppyPort
+        jmp     MenuLoop
 
 
+ShowFloppyPort
+        lxi     h, aPos
+        call    PrintString
 
+        in      PORT_FLOPPY
+        mvi     l, 8
+BitsLoop
+        mvi     c, '0'
+        ral
+        jc      BL1
+        inr     c
+BL1
+        push    h
+        push    a
+        call    CONOUT
+        pop     a
+        pop     h
+        
+        dcr     l
+        jnz     BitsLoop
+        
+        ret
+
+WeHaveKeypress
+        call    CONIN
 ; Большие или малые буквы, это все равно
         cpi     0x5f
         jc      Next0
@@ -86,6 +119,7 @@ Quit    rst     0
 _SelectDrive0
         mvi     a, DRIVE_SELECT | DRIVE_0
         sta     vPortFloppy
+        out     PORT_FLOPPY
         ret
 SelectDrive0
         call    _SelectDrive0
@@ -94,6 +128,7 @@ SelectDrive0
 _SelectDrive1
         mvi     a, DRIVE_1
         sta     vPortFloppy
+        out     PORT_FLOPPY
         ret
 SelectDrive1
         call    _SelectDrive1
@@ -228,17 +263,19 @@ CurPosTest
         db      27, '0', 100, 100, 31h
         db      'ABC', 0
         
-Help:   db      'FDC v0.1', 10, 13
+Help:   db      1fh
+        db      'FDC v0.1', 10, 13
         db      'Usage:', '$'
 
 aTimeout
         db      'Timeout!', 7, 0
 
 MainMenu
-        db      1fh
+        ; db      1fh
         ; db      ESC, '61'
         ; db      ESC, '8b'
-        dw      CRLF
+        ; dw      CRLF
+        db      ESC, 5, 22h, 20h
         db      '0 - Select drive 0' \ dw CRLF
         db      '1 - Select drive 1' \ dw CRLF
         db      'M - Motor' \ dw CRLF
@@ -247,9 +284,11 @@ MainMenu
         db      'E - Seek to track 79' \ dw CRLF
         db      'ESC - Quit', \ dw CRLF
         
-        db      ESC, '5', 20h, 20h, "Pops!"
+        ; db      ESC, '5', 20h, 20h, "Pops!"
         
         db      0
+        
+aPos    db      ESC, 5, 20h, 20h+16, 0
         
 vPortFloppy     db      0
         
