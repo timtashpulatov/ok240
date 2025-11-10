@@ -49,29 +49,6 @@ MenuLoop
         jmp     MenuLoop
 
 
-ShowFloppyPort
-        lxi     h, aPos
-        call    PrintString
-
-        in      PORT_FLOPPY
-        mvi     l, 8
-BitsLoop
-        mvi     c, '0'
-        ral
-        jc      BL1
-        inr     c
-BL1
-        push    h
-        push    a
-        call    CONOUT
-        pop     a
-        pop     h
-        
-        dcr     l
-        jnz     BitsLoop
-        
-        ret
-
 WeHaveKeypress
         call    CONIN
 ; Большие или малые буквы, это все равно
@@ -158,19 +135,19 @@ End
         call    _End
         jmp     MenuLoop
 
-; Seek to track 79
-        mvi     a, 0
-        out     PORT_TRACK
+; ; Seek to track 79
+;         mvi     a, 0
+;         out     PORT_TRACK
 
-        mvi     a, 79
-        out     PORT_DATA
+;         mvi     a, 79
+;         out     PORT_DATA
         
-        mvi     a, CMD_SEEK
-        out     PORT_CMD
+;         mvi     a, CMD_SEEK
+;         out     PORT_CMD
         
-        call    WaitForKey
+;         call    WaitForKey
 
-        rst      0
+;         rst      0
 
 ; ************************************************************************
 ; Seek to track in accumulator
@@ -242,13 +219,57 @@ WaitForDriveReady
 
         ret
 
+; ************************************************************************
+; Вывести содержимое порта 0x25
+; ************************************************************************
+ShowFloppyPort
+        lxi     h, aPosFloppyPort
+        call    PrintString
+
+        in      PORT_FLOPPY
+        call    PrintBinary
+        
+        ret
+
+; ************************************************************************
+; Вывести содержимое порта статуса ВГ93
+; ************************************************************************
+ShowStatusPort
+        lxi     h, aPosStatusPort
+        call    PrintString
+
+        in      PORT_CMD
+        call    PrintBinary
+        
+        ret
 
 
-WaitForKey
-        mvi     c, 1
-        jmp     5
+; ************************************************************************
+; Напечатать А в двоичной форме
+; ************************************************************************
+PrintBinary
+        mvi     l, 8
+BitsLoop
+        mvi     c, '0'
+        ral
+        jc      BL1
+        inr     c
+BL1
+        push    h
+        push    a
+        call    CONOUT
+        pop     a
+        pop     h
+        
+        dcr     l
+        jnz     BitsLoop
+        
+        ret
 
 
+; ************************************************************************
+; Вывод Z-terminated строки
+; ************************************************************************
 PrintString
         mov     a, m
         ora     a
@@ -258,6 +279,9 @@ PrintString
         inx     h
         jmp     PrintString
 
+; ************************************************************************
+; Константы и переменные
+; ************************************************************************
 CurPosTest
         db      1fh
         db      27, '0', 100, 100, 31h
@@ -288,7 +312,10 @@ MainMenu
         
         db      0
         
-aPos    db      ESC, 5, 20h, 20h+16, 0
+aPosFloppyPort
+        db      ESC, 5, 20h, 20h+16, 0
+aPosStatusPort
+        db      ESC, 5, 20h+2, 20h+16, 0
         
 vPortFloppy     db      0
         
