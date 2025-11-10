@@ -1,4 +1,4 @@
-	.project fdc
+S	.project fdc
 	.org 100h
 
 CONST           equ     0e006h  ; A = FF if there is keypress
@@ -46,6 +46,7 @@ MenuLoop
         jz      WeHaveKeypress
         
         call    ShowFloppyPort
+        call    ShowStatusPort
         jmp     MenuLoop
 
 
@@ -313,9 +314,9 @@ MainMenu
         db      0
         
 aPosFloppyPort
-        db      ESC, 5, 20h, 20h+16, 0
+        db      ESC, 5, 20h, 20h+24, 0
 aPosStatusPort
-        db      ESC, 5, 20h+2, 20h+16, 0
+        db      ESC, 5, 20h+2, 20h+24, 0
         
 vPortFloppy     db      0
         
