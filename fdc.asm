@@ -285,8 +285,8 @@ PrintBinary
         mvi     l, 8
 BitsLoop
         mvi     c, '0'
-        ral
-        jc      BL1
+        rlc
+        jnc      BL1
         inr     c
 BL1
         push    h
@@ -439,9 +439,10 @@ aTimeout
         db      'Timeout!', 7, 0
 
 MainMenu
-        ; db      1fh
-        ; db      ESC, '61'
-        ; db      ESC, '8b'
+        db      1fh
+        db      ESC, '6', '4'
+        ; db      ESC, '42'
+        db      ESC, '8', 03
         ; dw      CRLF
         db      ESC, 5, 22h, 20h
         db      '0 - Select drive 0' \ dw CRLF
@@ -450,6 +451,8 @@ MainMenu
         db      'S - Side' \ dw CRLF
         db      'R - Seek to track 00' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
+        db      '-/+ - Step Out / Step In' \ dw CRLF
+        db      'L/U - Lower Side / Upper Side' \ dw CRLF
         db      'ESC - Quit', \ dw CRLF
         
         ; db      ESC, '5', 20h, 20h, "Pops!"
@@ -474,6 +477,6 @@ aPosFloppyPort
 aPosStatusPort
         db      ESC, 5, 20h+2, 20h+24, 0
         
-vPortFloppy     db      0
+vPortFloppy     db      DRIVE_SELECT | DRIVE_0
 vSide           db      0
         
