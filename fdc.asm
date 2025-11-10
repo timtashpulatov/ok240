@@ -42,8 +42,12 @@ SCREEN          equ     0c000h
         ; mvi     c, '?'
         ; call    CONOUT
 
+
         lxi     h, MainMenu
         call    PrintString
+
+        mvi     a, 40h
+        out     VIDEO
 
 
 
@@ -440,9 +444,9 @@ aTimeout
 
 MainMenu
         db      1fh
-        db      ESC, '6', '4'
+        ; db      ESC, '6', '4'
         ; db      ESC, '42'
-        db      ESC, '8', 03
+        ; db      ESC, '8', 03
         ; dw      CRLF
         db      ESC, 5, 22h, 20h
         db      '0 - Select drive 0' \ dw CRLF
