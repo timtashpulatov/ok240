@@ -5,6 +5,11 @@ CONST           equ     0e006h  ; A = FF if there is keypress
 CONIN           equ     0e009h  
 CONOUT          equ     0e00ch  ; output symbol from C
 
+VIDEO           equ     0E1h
+ENROM           equ     0x10
+BANKING         equ     0C1h
+
+
 PORT_CMD        equ     20h
 PORT_TRACK      equ     21h
 PORT_SECTOR     equ     22h
@@ -15,6 +20,8 @@ DRIVE_0         equ     1 << 0
 DRIVE_1         equ     1 << 1
 DRIVE_SELECT    equ     1 << 2
 DRIVE_INIT      equ     1 << 3
+DRIVE_DDEN      equ     1 << 4  ; not used ?
+DRIVE_SIDE      equ     1 << 5
 
 CMD_RESTORE     equ     00h
 CMD_SEEK        equ     10h
@@ -24,6 +31,8 @@ CMD_STEPOUT     equ     60h     ; to track 0
 
 ESC             equ     27
 CRLF            equ     00d0ah
+
+SCREEN          equ     0c000h
 
         ; lxi     d, Help
         ; mvi     c, 9
@@ -35,6 +44,17 @@ CRLF            equ     00d0ah
 
         lxi     h, MainMenu
         call    PrintString
+
+        lxi     h, BMP_RDY_INACTIVE
+        lxi     bc, 0
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+        lxi     h, BMP_RDY_ACTIVE
+        lxi     bc, 0600h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
 
 
 MenuLoop
@@ -89,10 +109,21 @@ MenuKeys
         db      'M' \ dw MotorStart
         db      '-' \ dw StepOut
         db      '+' \ dw StepIn
+        db      'U' \ dw UpperSide
+        db      'L' \ dw LowerSide
         db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
+
+UpperSide
+        xra     a
+        jmp     StoreSide
+LowerSide
+        mvi     a, DRIVE_SIDE
+StoreSide
+        sta     vSide
+        jmp     MenuLoop
 
 _SelectDrive0
         mvi     a, DRIVE_SELECT | DRIVE_0
@@ -280,6 +311,108 @@ PrintString
         inx     h
         jmp     PrintString
 
+; *************************************************
+; PaintBitmap - нарисовать битмап 8х8
+; HL - адрес битмапа
+; BC - X и Y
+; A - биты плоскостей
+; *************************************************
+PaintBitmap
+        di
+        push    bc
+        push    de
+        push    hl
+        
+        push    a
+        ; Отключаем ПЗУ для доступа к экранному ОЗУ
+        mvi     a, ENROM
+        out     BANKING
+        
+        push    hl
+        lxi     h, SCREEN
+        mov     d, b
+        mvi     e, 0
+        dad     d       ; hl = SCREEN + X*256
+        mvi     d, 0
+        mov     e, c
+        dad     d       ; hl = hl + Y
+        pop     de       ; de = адрес битмапа
+
+        pop     a       ; плоскости
+        
+Plane1
+        rrc
+        jnc     Plane2
+        call    CopyFromDEtoHL8
+Plane2        
+        rrc
+        jnc     PlaneDone
+
+        ; Второй план битмапа
+        push    h
+        lxi     h, 8
+        dad     d
+        xchg
+
+        ; Перейдем ко второму плану экрана
+        pop     h
+        inr     h
+        call    CopyFromDEtoHL8
+
+PlaneDone
+        ; Включаем ПЗУ обратно
+        xra     a
+        out     BANKING
+        
+        pop     hl
+        pop     de
+        pop     bc
+        ei
+        ret
+
+
+
+PaintBitmap8x16
+        call    PaintBitmap
+        inr     b
+        inr     b
+        
+        lxi     d, 16
+        dad     d
+        call    PaintBitmap
+        
+        ret
+
+        ; lxi     h, BMP_RDY_INACTIVE+16
+        ; lxi     bc, 0200h
+        ; mvi     a, 3
+        ; call    PaintBitmap
+
+
+
+; *************************************************
+; Copy 8 bytes from DE to HL
+; *************************************************
+CopyFromDEtoHL8
+        push    h
+        push    d
+        push    b
+        push    a
+     
+        mvi     c, 8
+C8Loop  ldax    d
+        mov     m, a
+        inx     d
+        inx     h
+        dcr     c
+        jnz     C8Loop
+     
+        pop     a
+        pop     b
+        pop     d
+        pop     h
+        ret
+
 ; ************************************************************************
 ; Константы и переменные
 ; ************************************************************************
@@ -312,11 +445,25 @@ MainMenu
         ; db      ESC, '5', 20h, 20h, "Pops!"
         
         db      0
-        
+
+; ************************************************************************
+; Битмапчики
+; ************************************************************************
+BMP_RDY_ACTIVE          db      0, 0, 0, 0, 0, 0, 0, 0
+                        db      0ffh, 033h, 0a6h, 0b3h, 0a6h, 2bh, 0ffh, 0
+                        db      0, 0, 0, 0, 0, 0, 0, 0
+                        db      7fh, 6bh, 6ah, 76h, 76h, 77h, 7fh, 0
+
+BMP_RDY_INACTIVE        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
+                        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
+                        db      0, 14h, 15h, 9, 9, 8, 0, 0
+                        db      0, 14h, 15h, 9, 9, 8, 0, 0
+
 aPosFloppyPort
         db      ESC, 5, 20h, 20h+24, 0
 aPosStatusPort
         db      ESC, 5, 20h+2, 20h+24, 0
         
 vPortFloppy     db      0
+vSide           db      0
         
