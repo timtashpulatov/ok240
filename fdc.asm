@@ -45,15 +45,17 @@ SCREEN          equ     0c000h
         lxi     h, MainMenu
         call    PrintString
 
-        lxi     h, BMP_RDY_INACTIVE
-        lxi     bc, 0
-        mvi     a, 3
-        call    PaintBitmap8x16
+
 
         lxi     h, BMP_RDY_ACTIVE
-        lxi     bc, 0800h
+        lxi     bc, 0
         mvi     a, 3
-        call    PaintBitmap8x16
+        call    PaintBitmap
+
+        lxi     h, BMP_RDY_ACTIVE+16
+        lxi     bc, 0200h
+        mvi     a, 3
+        call    PaintBitmap
 
 
 
@@ -374,11 +376,17 @@ PlaneDone
 
 PaintBitmap8x16
         call    PaintBitmap
-        inr     b
-        inr     b
+        ; inr     b
+        ; inr     b
         
-        lxi     d, 16
-        dad     d
+        ; lxi     d, 16
+        ; dad     d
+
+
+        lxi     h, BMP_RDY_ACTIVE+16
+        lxi     bc, 0200h
+        mvi     a, 3
+
         call    PaintBitmap
         
         ret
@@ -450,7 +458,7 @@ MainMenu
 ; Битмапчики
 ; ************************************************************************
 BMP_RDY_ACTIVE          db      0, 0, 0, 0, 0, 0, 0, 0
-                        db      0ffh, 033h, 0a6h, 0b3h, 0a6h, 2bh, 0ffh, 0
+                        db      0ffh, 033h, 0abh, 0b3h, 0abh, 2bh, 0ffh, 0
                         db      0, 0, 0, 0, 0, 0, 0, 0
                         db      7fh, 6bh, 6ah, 76h, 76h, 77h, 7fh, 0
 
