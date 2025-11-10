@@ -505,7 +505,6 @@ MainMenu
         db      '0 - Select drive 0' \ dw CRLF
         db      '1 - Select drive 1' \ dw CRLF
         db      'M - Motor' \ dw CRLF
-        db      'S - Side' \ dw CRLF
         db      'R - Seek to track 00' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
