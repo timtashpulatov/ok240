@@ -320,6 +320,18 @@ PSB7
         pop     a
 
         push    a
+        lxi     h, BMP_WP_ACTIVE
+        ani     40h
+        jnz     PSB6
+        lxi     h, BMP_WP_INACTIVE
+PSB6        
+        lxi     bc, 0400h
+        mvi     a, 3
+        call    PaintBitmap8x16
+        pop     a
+
+
+        push    a
         lxi     h, BMP_BSY_ACTIVE
         ani     01h
         jnz     PSB0
@@ -497,25 +509,42 @@ MainMenu
 ; ************************************************************************
 ; Битмапчики
 ; ************************************************************************
-BMP_RDY_ACTIVE          db      0, 0, 0, 0, 0, 0, 0, 0
+BMP_RDY_ACTIVE          
+                        db      0, 0, 0, 0, 0, 0, 0, 0
                         db      0ffh, 033h, 0abh, 0b3h, 0abh, 2bh, 0ffh, 0
                         db      0, 0, 0, 0, 0, 0, 0, 0
                         db      7fh, 6bh, 6ah, 76h, 76h, 77h, 7fh, 0
 
-BMP_RDY_INACTIVE        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
+BMP_RDY_INACTIVE        
+        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
                         db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
                         db      0, 14h, 15h, 9, 9, 8, 0, 0
                         db      0, 14h, 15h, 9, 9, 8, 0, 0
 
-BMP_BSY_ACTIVE          db      0, 0, 0, 0, 0, 0, 0, 0
+BMP_BSY_ACTIVE          
+        db      0, 0, 0, 0, 0, 0, 0, 0
                         db      0ffh, 73h, 0abh, 33h, 0ebh, 33h, 255, 0
                         db      0, 0, 0, 0, 0, 0, 0, 0
                         db      7fh, 6ah, 6bh, 76h, 76h, 77h, 7fh, 0
 
-BMP_BSY_INACTIVE        db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0                        
+BMP_BSY_INACTIVE        
+        db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0                        
                         db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0
                         db      0, 15h, 14h, 9, 9, 8, 0, 0
                         db      0, 15h, 14h, 9, 9, 8, 0, 0
+
+BMP_WP_ACTIVE
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 55h, 55h, 55h, 55h, 6bh, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 7eh, 7dh, 7eh, 7fh, 7fh, 7fh, 0
+
+BMP_WP_INACTIVE
+        db      0, 0aah, 0aah, 0aah, 0aah, 94h, 0, 0
+        db      0, 0aah, 0aah, 0aah, 0aah, 94h, 0, 0
+        db      0, 1, 2, 1, 0, 0, 0, 0
+        db      0, 1, 2, 1, 0, 0, 0, 0
+
 
 aPosFloppyPort
         db      ESC, 5, 20h, 20h+24, 0
