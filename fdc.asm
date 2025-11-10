@@ -51,15 +51,15 @@ SCREEN          equ     0c000h
 
 
 
-        lxi     h, BMP_RDY_ACTIVE
-        lxi     bc, 0
-        mvi     a, 3
-        call    PaintBitmap8x16
-
-        ; lxi     h, BMP_RDY_ACTIVE+16
-        ; lxi     bc, 0200h
+        ; lxi     h, BMP_RDY_ACTIVE
+        ; lxi     bc, 0
         ; mvi     a, 3
-        ; call    PaintBitmap
+        ; call    PaintBitmap8x16
+
+        ; ; lxi     h, BMP_RDY_ACTIVE+16
+        ; ; lxi     bc, 0200h
+        ; ; mvi     a, 3
+        ; ; call    PaintBitmap
 
 
 
@@ -278,6 +278,7 @@ ShowStatusPort
 
         in      PORT_CMD
         call    PrintBinary
+        call    PaintStatusBits
         
         ret
 
@@ -286,6 +287,7 @@ ShowStatusPort
 ; Напечатать А в двоичной форме
 ; ************************************************************************
 PrintBinary
+        push    a
         mvi     l, 8
 BitsLoop
         mvi     c, '0'
@@ -301,6 +303,33 @@ BL1
         
         dcr     l
         jnz     BitsLoop
+        
+        pop     a
+        ret
+
+PaintStatusBits
+        push    a
+        lxi     h, BMP_RDY_ACTIVE
+        ani     80h
+        jz      PSB7
+        lxi     h, BMP_RDY_INACTIVE
+PSB7        
+        lxi     bc, 0
+        mvi     a, 3
+        call    PaintBitmap8x16
+        pop     a
+
+        push    a
+        lxi     h, BMP_BSY_ACTIVE
+        ani     01h
+        jnz     PSB0
+        lxi     h, BMP_BSY_INACTIVE
+PSB0        
+        lxi     bc, (7*2) << 8
+        mvi     a, 3
+        call    PaintBitmap8x16
+        pop     a
+        
         
         ret
 
@@ -328,6 +357,7 @@ PaintBitmap
         push    bc
         push    de
         push    hl
+        push    a
         
         push    a
         ; Отключаем ПЗУ для доступа к экранному ОЗУ
@@ -370,6 +400,7 @@ PlaneDone
         xra     a
         out     BANKING
         
+        pop     a
         pop     hl
         pop     de
         pop     bc
@@ -382,16 +413,16 @@ PaintBitmap8x16
 
         call    PaintBitmap
 
-        ; inr     b
-        ; inr     b
+        inr     b
+        inr     b
         
-        ; lxi     d, 16
-        ; dad     d
+        lxi     d, 16
+        dad     d
 
 
-        lxi     h, BMP_RDY_ACTIVE+16
-        lxi     bc, 0200h
-        mvi     a, 3
+        ; lxi     h, BMP_RDY_ACTIVE+16
+        ; lxi     bc, 0200h
+        ; mvi     a, 3
 
         call    PaintBitmap
         
@@ -475,6 +506,16 @@ BMP_RDY_INACTIVE        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
                         db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
                         db      0, 14h, 15h, 9, 9, 8, 0, 0
                         db      0, 14h, 15h, 9, 9, 8, 0, 0
+
+BMP_BSY_ACTIVE          db      0, 0, 0, 0, 0, 0, 0, 0
+                        db      0ffh, 73h, 0abh, 33h, 0ebh, 33h, 255, 0
+                        db      0, 0, 0, 0, 0, 0, 0, 0
+                        db      7fh, 6ah, 6bh, 76h, 76h, 77h, 7fh, 0
+
+BMP_BSY_INACTIVE        db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0                        
+                        db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0
+                        db      0, 15h, 14h, 9, 9, 8, 0, 0
+                        db      0, 15h, 14h, 9, 9, 8, 0, 0
 
 aPosFloppyPort
         db      ESC, 5, 20h, 20h+24, 0
