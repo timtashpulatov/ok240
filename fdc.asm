@@ -51,7 +51,7 @@ SCREEN          equ     0c000h
         call    PaintBitmap8x16
 
         lxi     h, BMP_RDY_ACTIVE
-        lxi     bc, 0600h
+        lxi     bc, 0800h
         mvi     a, 3
         call    PaintBitmap8x16
 
