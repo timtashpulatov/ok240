@@ -50,12 +50,12 @@ SCREEN          equ     0c000h
         lxi     h, BMP_RDY_ACTIVE
         lxi     bc, 0
         mvi     a, 3
-        call    PaintBitmap
+        call    PaintBitmap8x16
 
-        lxi     h, BMP_RDY_ACTIVE+16
-        lxi     bc, 0200h
-        mvi     a, 3
-        call    PaintBitmap
+        ; lxi     h, BMP_RDY_ACTIVE+16
+        ; lxi     bc, 0200h
+        ; mvi     a, 3
+        ; call    PaintBitmap
 
 
 
@@ -375,7 +375,9 @@ PlaneDone
 
 
 PaintBitmap8x16
+
         call    PaintBitmap
+
         ; inr     b
         ; inr     b
         
