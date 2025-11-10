@@ -314,7 +314,7 @@ PaintStatusBits
         jz      PSB7
         lxi     h, BMP_RDY_INACTIVE
 PSB7        
-        lxi     bc, 0
+        lxi     bc, 0000
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -330,6 +330,16 @@ PSB6
         call    PaintBitmap8x16
         pop     a
 
+        push    a
+        lxi     h, BMP_IDX_ACTIVE
+        ani     02h
+        jnz     PSB1
+        lxi     h, BMP_IDX_INACTIVE
+PSB1        
+        lxi     bc, 24 << 8
+        mvi     a, 3
+        call    PaintBitmap8x16
+        pop     a
 
         push    a
         lxi     h, BMP_BSY_ACTIVE
@@ -337,7 +347,7 @@ PSB6
         jnz     PSB0
         lxi     h, BMP_BSY_INACTIVE
 PSB0        
-        lxi     bc, (7*2) << 8
+        lxi     bc, 28 << 8
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -545,6 +555,17 @@ BMP_WP_INACTIVE
         db      0, 1, 2, 1, 0, 0, 0, 0
         db      0, 1, 2, 1, 0, 0, 0, 0
 
+BMP_IDX_ACTIVE
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 23h, 0b7h, 0b7h, 0b7h, 23h, 255, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 6bh, 6ah, 76h, 6ah, 6bh, 7fh, 0
+        
+BMP_IDX_INACTIVE
+        db      0, 0dch, 48h, 48h, 48h, 0dch, 0, 0
+        db      0, 0dch, 48h, 48h, 48h, 0dch, 0, 0
+        db      0, 14h, 15h, 9, 15h, 14h, 0, 0
+        db      0, 14h, 15h, 9, 15h, 14h, 0, 0
 
 aPosFloppyPort
         db      ESC, 5, 20h, 20h+24, 0
