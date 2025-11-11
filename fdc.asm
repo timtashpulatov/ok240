@@ -82,10 +82,9 @@ MenuLoop
         jz      WeHaveKeypress
         
         call    ShowFloppyPort
-        call    ShowStatusPort
-        call    ShowTrackReg        
+        call    ShowVG93Regs
 		
-		jmp     MenuLoop
+	jmp     MenuLoop
 
 
 WeHaveKeypress
@@ -333,33 +332,36 @@ ShowFloppyPort
         ret
 
 ; ************************************************************************
-; Вывести содержимое порта статуса ВГ93
+; Вывести содержимое регистров дорожки, сектора и данных ВГ93
 ; ************************************************************************
-ShowStatusPort
+ShowVG93Regs
         lxi     h, aPosStatusReg
         call    PrintString
 
         in      PORT_CMD
         call    PrintBinary
         call    PaintStatusBits
-        
-        ret
 
-; ************************************************************************
-; Вывести содержимое регистра дорожки ВГ93
-; ************************************************************************
-ShowTrackReg
-        ; lxi     h, aPosTrackReg
-        ; call    PrintString
-        
         lxi     b, 3828h
         mvi     a, 2
         sta     PrintColor
         in      PORT_TRACK
         call    _PrintHex
-        ; call    PrintBinary
-        
+
+        lxi     b, 3838h
+        mvi     a, 2
+        sta     PrintColor
+        in      PORT_SECTOR
+        call    _PrintHex
+
+        lxi     b, 3848h
+        mvi     a, 2
+        sta     PrintColor
+        in      PORT_DATA
+        call    _PrintHex
+
         ret
+
 
 ; *************************************************
 ; _PrintHex
@@ -653,6 +655,7 @@ MainMenu
         db      'I - Read next ID' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
         db      'L/U - Lower Side / Upper Side' \ dw CRLF
+        
         db      'ESC - Quit', \ dw CRLF
         
         ; db      ESC, '5', 20h, 20h, "Pops!"
