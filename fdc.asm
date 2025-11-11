@@ -73,7 +73,9 @@ MenuLoop
         
         call    ShowFloppyPort
         call    ShowStatusPort
-        jmp     MenuLoop
+        call    ShowTrackReg        
+		
+		jmp     MenuLoop
 
 
 WeHaveKeypress
