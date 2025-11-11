@@ -22,8 +22,9 @@ DRIVE_0         equ     1 << 0
 DRIVE_1         equ     1 << 1
 DRIVE_SELECT    equ     1 << 2
 DRIVE_INIT      equ     1 << 3
-DRIVE_DDEN      equ     1 << 4  ; not used ?
-DRIVE_SIDE      equ     1 << 5
+
+DRIVE_SIDE      equ     1 << 6
+DRIVE_MOTST     equ     1 << 7
 
 FLAG_UPDATE     equ     10h
 
@@ -142,7 +143,9 @@ ReadNextID
 ; wait for !Busy
 
         call    _MotorStart
-        ; call    _WaitForIdle
+        call    _WaitForIdle
+        ora     a
+        jz      MenuLoop
 
 ; Чтение дорожки
         lxi     h, ReadAddressBuf
@@ -178,9 +181,29 @@ DumpReadAddressBuf
         
 
 _WaitForIdle
+
+
+; wait for MOTST monostable
+WMM
+        in      PORT_FLOPPY
+        ani     DRIVE_MOTST
+        jnz     WMM
+
+; now check if MOTST is active
+WLoop
+        in      PORT_FLOPPY
+        ani     DRIVE_MOTST
+        jnz     Timeout
+
         in      PORT_CMD
-        ani     STATUS_BUSY
-        jnz     _WaitForIdle
+        ani     STATUS_BUSY | STATUS_NOTREADY
+        jnz     WLoop
+        
+        mvi     a, 1
+        ret
+
+Timeout
+        xra     a
         ret
 
 
