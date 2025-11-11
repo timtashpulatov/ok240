@@ -565,12 +565,37 @@ BMP_IDX_INACTIVE
         db      0, 0dch, 48h, 48h, 48h, 0dch, 0, 0
         db      0, 14h, 15h, 9, 15h, 14h, 0, 0
         db      0, 14h, 15h, 9, 15h, 14h, 0, 0
+HEXFONT 
+        db      38h, 44h, 44h, 0, 44h, 44h, 38h, 0      // 0
+        db      0, 40h, 40h, 0, 0, 40h, 40h, 0          // 1
+        db      38h, 40h, 40h, 38h, 4, 4, 38h, 0        // 2 
+        db      38h, 40h, 40h, 38h, 40h, 40h, 38h, 0    // 3
+        db      0, 44h, 44h, 38h, 40h, 40h, 0, 0        // 4
+        db      38h, 4, 4, 38h, 40h, 40h, 38h, 0        // 5
+        db      38h, 4, 4, 38h, 44h, 44h, 38h, 0        // 6
+        db      38h, 40h, 40h, 0, 40h, 40h, 0, 0        // 7
+        db      38h, 44h, 44h, 38h, 44h, 44h, 38h, 0    // 8
+        db      38h, 44h, 44h, 38h, 40h, 40h, 38h, 0    // 9
+        db      38h, 44h, 44h, 38h, 44h, 44h, 0, 0      // a
+        db      0, 4, 4, 38h, 44h, 44h, 38h, 0          // b
+        db      38h, 4, 4, 0, 4, 4, 38h, 0              // c
+        db      0, 40h, 40h, 38h, 44h, 44h, 38h, 0      // d
+        db      38h, 4, 4, 38h, 4, 4, 38h, 0            // e
+        db      38h, 4, 4, 38h, 4, 4, 0, 0              // f
+
 
 aPosFloppyPort
-        db      ESC, 5, 20h, 20h+24, 0
-aPosStatusPort
-        db      ESC, 5, 20h+2, 20h+24, 0
+        db      ESC, 5, 20h, 20h+30, 0
+aPosStatusReg
+        db      ESC, 5, 20h+2, 20h+30, 0
+; aPosTrackReg
+;         db      ESC, 5, 20h+4, 20h+28, 'Track', 0
         
-vPortFloppy     db      DRIVE_SELECT | DRIVE_0
+vPortFloppy     db      0
 vSide           db      0
-        
+
+; Цвет выводимых символов
+PrintColor      db      3
+
+; Внутренний клипборд для символа из шрифта
+TempChar        ds      16
