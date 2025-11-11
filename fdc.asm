@@ -143,7 +143,7 @@ ReadNextID
 ; wait for !Busy
 
         call    _MotorStart
-        call    _WaitForIdle
+        ; call    _WaitForIdle
 
 ; Чтение дорожки
         lxi     h, ReadAddressBuf
@@ -171,10 +171,12 @@ DumpReadAddressBuf
         mov     a, m
         call    _PrintHex
         inx     h
-        
         dcr     e
         jnz     DumpReadAddressBuf
-        ret
+        
+        jmp     MenuLoop
+        
+        
 
 _WaitForIdle
         in      PORT_CMD
