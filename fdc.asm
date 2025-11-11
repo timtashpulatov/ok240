@@ -11,11 +11,12 @@ ENROM           equ     0x10
 BANKING         equ     0C1h
 
 
-PORT_CMD        equ     20h
-PORT_TRACK      equ     21h
-PORT_SECTOR     equ     22h
-PORT_DATA       equ     23h
-PORT_FLOPPY     equ     25h
+PORT_CMD                equ     20h
+PORT_TRACK              equ     21h
+PORT_SECTOR             equ     22h
+PORT_DATA               equ     23h
+PORT_FLOPPY_WAIT        equ     24h
+PORT_FLOPPY             equ     25h
 
 DRIVE_0         equ     1 << 0
 DRIVE_1         equ     1 << 1
@@ -30,6 +31,13 @@ CMD_RESTORE     equ     00h
 CMD_SEEK        equ     10h
 CMD_STEPIN      equ     40h     ; towards center and track 79
 CMD_STEPOUT     equ     60h     ; to track 0
+CMD_READADDRESS equ     0c0h    ; read next ID
+
+STATUS_NOTREADY equ     80h
+STATUS_WPROT    equ     40h
+STATUS_NOTFOUND equ     10h
+STATUS_CRC      equ     08h
+STATUS_BUSY     equ     01h
 
 ESC             equ     27
 CRLF            equ     00d0ah
@@ -121,10 +129,47 @@ MenuKeys
         db      '+' \ dw StepIn
         db      'U' \ dw UpperSide
         db      'L' \ dw LowerSide
+        db      'I' \ dw ReadNextID
         db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
+
+; ************************************************************************
+; Read 6 bytes of next ID into ReadAddressBuf
+; ************************************************************************
+ReadNextID
+; start motor
+; wait for !Busy
+
+        call    _MotorStart
+        call    _WaitForIdle
+
+; Чтение дорожки
+        lxi     h, ReadAddressBuf
+        mvi     a, CMD_READADDRESS
+        out     PORT_CMD
+        nop
+        nop
+
+ReadIDLoop
+        in      PORT_FLOPPY_WAIT
+        rrc
+        in      PORT_DATA
+        mov     m, a
+        inx     h
+        jc      ReadIDLoop
+        
+        ; in      PORT_CMD
+        ; ani     ~30h ; "Массив не найден", "Тип записи" это нормально
+
+        ret
+
+_WaitForIdle
+        in      PORT_CMD
+        ani     STATUS_BUSY
+        ret
+
 
 UpperSide
         xra     a
@@ -683,3 +728,6 @@ PrintColor      db      3
 
 ; Внутренний клипборд для символа из шрифта
 TempChar        ds      16
+
+; Шесть байт для команды READ ADDRESS (Type III)
+ReadAddressBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
