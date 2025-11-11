@@ -163,11 +163,23 @@ ReadIDLoop
         ; in      PORT_CMD
         ; ani     ~30h ; "Массив не найден", "Тип записи" это нормально
 
+; dump 6 bytes
+        lxi     h, ReadAddressBuf
+        lxi     b, 0080h
+        mvi     e, 6
+DumpReadAddressBuf
+        mov     a, m
+        call    _PrintHex
+        inx     h
+        
+        dcr     e
+        jnz     DumpReadAddressBuf
         ret
 
 _WaitForIdle
         in      PORT_CMD
         ani     STATUS_BUSY
+        jnz     _WaitForIdle
         ret
 
 
@@ -636,6 +648,7 @@ MainMenu
         db      'M - Motor' \ dw CRLF
         db      'R - Seek to track 00' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
+        db      'I - Read next ID' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
         db      'L/U - Lower Side / Upper Side' \ dw CRLF
         db      'ESC - Quit', \ dw CRLF
