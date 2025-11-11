@@ -1,5 +1,4 @@
-
-S	.project fdc
+	.project fdc
 	.org 100h
 
 CONST           equ     0e006h  ; A = FF if there is keypress
