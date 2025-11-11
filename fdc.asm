@@ -275,7 +275,7 @@ ShowFloppyPort
 ; Вывести содержимое порта статуса ВГ93
 ; ************************************************************************
 ShowStatusPort
-        lxi     h, aPosStatusPort
+        lxi     h, aPosStatusReg
         call    PrintString
 
         in      PORT_CMD
