@@ -126,7 +126,9 @@ MenuKeys
         db      'E' \ dw End
         db      'M' \ dw MotorStart
         db      '-' \ dw StepOut
+        db      1ah \ dw StepOut
         db      '+' \ dw StepIn
+        db      19h \ dw StepIn
         db      'U' \ dw UpperSide
         db      'L' \ dw LowerSide
         db      'I' \ dw ReadNextID
@@ -239,6 +241,8 @@ _StepOut
         out     PORT_CMD
         ret
 StepOut
+        call    _MotorStart
+        call    _WaitForIdle
         call    _StepOut
         jmp     MenuLoop
 
@@ -247,6 +251,8 @@ _StepIn
         out     PORT_CMD
         ret
 StepIn
+        call    _MotorStart
+        call    _WaitForIdle
         call    _StepIn
         jmp     MenuLoop
 
@@ -308,6 +314,8 @@ _Restore
         out     PORT_CMD
         ret
 Restore
+        call    _MotorStart
+        call    _WaitForIdle
         call    _Restore
         jmp     MenuLoop
 
@@ -329,18 +337,18 @@ MotorStart
 ; Ожидаение готовности дисковода или остановки двигателя по таймауту
 ; Возвращает A=00, если не готов или таймаут
 ; ************************************************************************
-WaitForDriveReady      
-        in      PORT_FLOPPY
-        ani     80h                     ; check MOTST
-        rnz
+; WaitForDriveReady      
+;         in      PORT_FLOPPY
+;         ani     80h                     ; check MOTST
+;         rnz
 
-        in      PORT_CMD
-        ani     80h                     ; 0x80 if drive NOT READY
-        jnz     WaitForDriveReady
+;         in      PORT_CMD
+;         ani     80h                     ; 0x80 if drive NOT READY
+;         jnz     WaitForDriveReady
         
-        inr     a                       ; A = 1
+;         inr     a                       ; A = 1
 
-        ret
+;         ret
 
 ; ************************************************************************
 ; Вывести содержимое порта 0x25
@@ -785,7 +793,7 @@ aPosStatusReg
 ; aPosTrackReg
 ;         db      ESC, 5, 20h+4, 20h+28, 'Track', 0
         
-vPortFloppy     db      0
+vPortFloppy     db      DRIVE_SELECT | DRIVE_0  ; дисковод B: по умолчанию (а мог бы быть C:)
 vSide           db      0
 
 ; Цвет выводимых символов
