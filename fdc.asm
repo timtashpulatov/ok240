@@ -1,3 +1,4 @@
+
 	.project fdc
 	.org 100h
 
@@ -23,11 +24,12 @@ DRIVE_INIT      equ     1 << 3
 DRIVE_DDEN      equ     1 << 4  ; not used ?
 DRIVE_SIDE      equ     1 << 5
 
+FLAG_UPDATE     equ     10h
+
 CMD_RESTORE     equ     00h
 CMD_SEEK        equ     10h
 CMD_STEPIN      equ     40h     ; towards center and track 79
 CMD_STEPOUT     equ     60h     ; to track 0
-
 
 ESC             equ     27
 CRLF            equ     00d0ah
@@ -152,7 +154,7 @@ SelectDrive1
         jmp     MenuLoop
 
 _StepOut
-        mvi     a, CMD_STEPOUT
+        mvi     a, CMD_STEPOUT | FLAG_UPDATE
         out     PORT_CMD
         ret
 StepOut
@@ -160,7 +162,7 @@ StepOut
         jmp     MenuLoop
 
 _StepIn
-        mvi     a, CMD_STEPIN
+        mvi     a, CMD_STEPIN | FLAG_UPDATE
         out     PORT_CMD
         ret
 StepIn
