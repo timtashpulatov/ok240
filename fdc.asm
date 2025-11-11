@@ -282,6 +282,86 @@ ShowStatusPort
         
         ret
 
+; ************************************************************************
+; Вывести содержимое регистра дорожки ВГ93
+; ************************************************************************
+ShowTrackReg
+        ; lxi     h, aPosTrackReg
+        ; call    PrintString
+        
+        lxi     b, 3828h
+        mvi     a, 2
+        sta     PrintColor
+        in      PORT_TRACK
+        call    _PrintHex
+        ; call    PrintBinary
+        
+        ret
+
+; *************************************************
+; _PrintHex
+; *************************************************
+_PrintHex
+        push    a
+        rar
+        rar
+        rar
+        rar
+        call    _PrintHexNibble
+        pop     a
+        call    _PrintHexNibble
+        ret
+
+; *************************************************
+; _PrintHexNibble
+; *************************************************
+_PrintHexNibble
+        push    hl
+        push    de
+        
+        lxi     h, 0
+        ani     0fh
+        mov     l, a
+
+        ; multiply by 8
+        
+        dad     h
+        dad     h
+        dad     h        
+
+        lxi     d, HEXFONT
+        dad     d
+        xchg
+
+        call    FillTempChar
+        
+        call    PrintTempChar
+        
+        inr     b
+        inr     b
+        
+        pop     de
+        pop     hl
+        ret
+
+
+FillTempChar
+; DE = битмап нужной буквы
+; перегрузим во времянку
+        lxi     h, TempChar
+        call    CopyFromDEtoHL8
+        
+        lxi     h, TempChar+8
+        call    CopyFromDEtoHL8
+        ret
+
+PrintTempChar
+        lxi     h, TempChar
+        
+        lda     PrintColor
+        call    PaintBitmap
+
+        ret
 
 ; ************************************************************************
 ; Напечатать А в двоичной форме
