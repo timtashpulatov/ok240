@@ -499,6 +499,17 @@ PSB6
         pop     a
 
         push    a
+        lxi     h, BMP_ERR_ACTIVE
+        ani     10h
+        jnz     PSB4
+        lxi     h, BMP_ERR_INACTIVE
+PSB4        
+        lxi     bc, 0c00h
+        mvi     a, 3
+        call    PaintBitmap8x16
+        pop     a
+
+        push    a
         lxi     h, BMP_IDX_ACTIVE
         ani     02h
         jnz     PSB1
@@ -735,6 +746,19 @@ BMP_IDX_INACTIVE
         db      0, 0dch, 48h, 48h, 48h, 0dch, 0, 0
         db      0, 14h, 15h, 9, 15h, 14h, 0, 0
         db      0, 14h, 15h, 9, 15h, 14h, 0, 0
+        
+BMP_ERR_ACTIVE
+        db      0ffh, 23h, 0bbh, 0a3h, 0bbh, 0a3h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 62h, 7bh, 7bh, 7bh, 7bh, 7fh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+
+BMP_ERR_INACTIVE
+        db      0, 0dch, 44h, 5ch, 44h, 5ch, 0, 0
+        db      0, 0dch, 44h, 5ch, 44h, 5ch, 0, 0
+        db      0, 1dh, 4, 4, 4, 4, 0, 0
+        db      0, 1dh, 4, 4, 4, 4, 0, 0
+        
 HEXFONT 
         db      38h, 44h, 44h, 0, 44h, 44h, 38h, 0      // 0
         db      0, 40h, 40h, 0, 0, 40h, 40h, 0          // 1
