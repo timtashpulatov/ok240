@@ -34,6 +34,7 @@ CMD_SEEK        equ     10h
 CMD_STEPIN      equ     40h     ; towards center and track 79
 CMD_STEPOUT     equ     60h     ; to track 0
 CMD_READADDRESS equ     0c0h    ; read next ID
+CMD_READSECTOR  equ     80h
 
 STATUS_NOTREADY equ     80h
 STATUS_WPROT    equ     40h
@@ -127,10 +128,12 @@ MenuKeys
         db      'R' \ dw Restore
         db      'E' \ dw End
         db      'M' \ dw MotorStart
-        db      '-' \ dw StepOut
+        ; db      '-' \ dw StepOut
         db      1ah \ dw StepOut
-        db      '+' \ dw StepIn
+        ; db      '+' \ dw StepIn
         db      19h \ dw StepIn
+        db      08h \ dw SecPrev
+        db      18h \ dw SecNext
         db      'U' \ dw UpperSide
         db      'L' \ dw LowerSide
         db      'I' \ dw ReadNextID
@@ -140,6 +143,23 @@ MenuKeys
 
 Quit    rst     0        
 
+SecPrev
+        in      PORT_SECTOR
+        cpi     1
+        jz      MenuLoop
+        dcr     a
+        out     PORT_SECTOR
+        jmp     MenuLoop
+
+SecNext
+        in      PORT_SECTOR
+        cpi     1ah
+        jz      MenuLoop
+        inr     a
+        out     PORT_SECTOR
+        jmp     MenuLoop
+
+
 ; ************************************************************************
 ; Track read
 ; ************************************************************************
@@ -147,6 +167,24 @@ SECTEMPLATE_ROW equ     20
 SECTEMPLATE_COL equ     8
 
 TrackLoop
+
+        call    _MotorStart
+        call    _WaitForIdle
+        ora     a
+        jz      MenuLoop
+
+; Чтение сектора
+
+        ; xra     a
+        ; out     PORT_TRACK
+
+        ; mvi     a, 1
+        ; out     PORT_SECTOR
+
+        mvi     a, CMD_READSECTOR
+        out     PORT_CMD
+
+        
 
 ; ; Draw 9 sector template
 ;         lxi     h, BMP_SECTOR_UNK
@@ -161,21 +199,21 @@ TrackLoop
 ;         jnz     DrawSectorTemplate
 
 
-; test - paint side 0, sector 1, unk
-        lxi     h, BMP_SECTOR_UNK
-        lxi     b, 0100h
-        call    PaintSectorMark
+; ; test - paint side 0, sector 1, unk
+;         lxi     h, BMP_SECTOR_UNK
+;         lxi     b, 0100h
+;         call    PaintSectorMark
 
 
-; test - paint side 0, sector 3, good
-        lxi     h, BMP_SECTOR_GOOD
-        lxi     b, 0300h
-        call    PaintSectorMark
+; ; test - paint side 0, sector 3, good
+;         lxi     h, BMP_SECTOR_GOOD
+;         lxi     b, 0300h
+;         call    PaintSectorMark
 
-; test - paint side 1, sector 5, bad
-        lxi     h, BMP_SECTOR_BAD
-        lxi     b, 0501h
-        call    PaintSectorMark
+; ; test - paint side 1, sector 5, bad
+;         lxi     h, BMP_SECTOR_BAD
+;         lxi     b, 0501h
+;         call    PaintSectorMark
 
         jmp     MenuLoop
 
