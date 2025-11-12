@@ -73,22 +73,6 @@ SCREEN          equ     0c000h
         ; ; call    PaintBitmap
 
 
-        lxi     h, BMP_SECTOR_UNK
-        lxi     bc, 0008h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_SECTOR_GOOD
-        lxi     bc, 0208h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_SECTOR_BAD
-        lxi     bc, 0408h
-        mvi     a, 3
-        call    PaintBitmap
-
-
 MenuLoop
 
         ; call    WaitForKey
@@ -147,10 +131,89 @@ MenuKeys
         db      'U' \ dw UpperSide
         db      'L' \ dw LowerSide
         db      'I' \ dw ReadNextID
+        db      'T' \ dw TrackLoop
         db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
+
+; ************************************************************************
+; Track read
+; ************************************************************************
+SECTEMPLATE_ROW equ     16
+SECTEMPLATE_COL equ     8
+
+TrackLoop
+
+; ; Draw 9 sector template
+;         lxi     h, BMP_SECTOR_UNK
+;         lxi     b, ((SECTEMPLATE_COL*2)<<8) + SECTEMPLATE_ROW*8
+;         mvi     e, 9
+;         mvi     a, 3
+; DrawSectorTemplate
+;         call    PaintBitmap
+;         inr     b
+;         inr     b
+;         dcr     e
+;         jnz     DrawSectorTemplate
+
+
+; test - paint side 0, sector 1, unk
+        lxi     h, BMP_SECTOR_UNK
+        lxi     b, 0100h
+        call    PaintSectorMark
+
+
+; test - paint side 0, sector 3, good
+        lxi     h, BMP_SECTOR_GOOD
+        lxi     b, 0300h
+        call    PaintSectorMark
+
+; test - paint side 1, sector 5, bad
+        lxi     h, BMP_SECTOR_BAD
+        lxi     b, 0501h
+        call    PaintSectorMark
+
+
+
+        jmp     MenuLoop
+
+; ********************************************
+; Paint sector mark
+; HL = bitmap addr (UNK, GOOD, BAD)
+; B = sector number (1..9)
+; C = side (0, 1)
+; ********************************************
+PaintSectorMark
+        push    h
+        lxi     h, ((SECTEMPLATE_COL*2)<<8) + SECTEMPLATE_ROW*8
+        dcr     b       ; sector numbers start from 1
+
+; convert side (0 or 1) to vertical offset 0 or 8
+        mov     a, c
+        cma
+        ani     1
+        ral     a
+        ral     a
+        ral     a
+        mov     c, a
+; double sector number for horizontal color offset
+        dcr     b
+
+        mov     a, b
+        add     b
+        mov     b, a
+        
+        dad     b
+        push    h
+        pop     b
+        pop     h
+        
+        mvi     a, 3
+        call    PaintBitmap
+        
+        ret
+
 
 ; ************************************************************************
 ; Read 6 bytes of next ID into ReadAddressBuf
@@ -710,6 +773,7 @@ MainMenu
         db      'R - Seek to track 00' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
+        db      'T - Track read' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
         db      'L/U - Lower Side / Upper Side' \ dw CRLF
         
