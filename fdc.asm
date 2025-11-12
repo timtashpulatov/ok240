@@ -73,6 +73,8 @@ SCREEN          equ     0c000h
         ; ; call    PaintBitmap
 
 
+        call    PaintBitmapMxN
+
 MenuLoop
 
         ; call    WaitForKey
@@ -461,13 +463,13 @@ ShowVG93Regs
         in      PORT_TRACK
         call    _PrintHex
 
-        lxi     b, 3838h
+        lxi     b, 3830h
         mvi     a, 2
         sta     PrintColor
         in      PORT_SECTOR
         call    _PrintHex
 
-        lxi     b, 3848h
+        lxi     b, 3838h
         mvi     a, 2
         sta     PrintColor
         in      PORT_DATA
@@ -724,7 +726,62 @@ PaintBitmap8x16
         ; mvi     a, 3
         ; call    PaintBitmap
 
+; *************************************************
+; Paint M columns by N rows bitmap
+; *************************************************
+PaintBitmapMxN
+        lxi     h, BMP_ID
+        lxi     b, 3220h
+        
+        mvi     d, 4
+PBMN        
+        mvi     e, 6
+        call    PaintBitmapRow
+        
+        ; push    de
+        ; lxi     d, 0800h
+        ; dad     d
+        ; pop     de
 
+        mov     a, c
+        adi     8
+        mov     c, a
+        mov     a, b
+        aci     0
+        mov     b, a
+
+        
+
+        
+        dcr     d
+        jnz     PBMN
+        
+        ret
+
+; *************************************************
+; Paint row of tiles
+; E = number of tiles
+; *************************************************
+PaintBitmapRow
+        ; push    hl
+        push    bc
+        
+        mvi     a, 3
+PBR
+        call    PaintBitmap
+        inr     b
+        inr     b
+        push    de
+        lxi     d, 16
+        dad     d
+        pop     de
+        
+        dcr     e
+        jnz     PBR
+        
+        pop     bc
+        ; pop     hl
+        ret
 
 ; *************************************************
 ; Copy 8 bytes from DE to HL
