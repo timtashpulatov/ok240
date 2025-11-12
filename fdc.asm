@@ -181,8 +181,20 @@ TrackLoop
         ; mvi     a, 1
         ; out     PORT_SECTOR
 
+        lxi     h, ReadAddressBuf
+        
         mvi     a, CMD_READSECTOR
         out     PORT_CMD
+
+ReadSectorLoop
+        in      PORT_FLOPPY_WAIT
+        rrc
+        in      PORT_DATA
+        mov     m, a
+        inx     h
+        jc      ReadSectorLoop
+
+        jmp     ReadDone
 
         
 
@@ -290,6 +302,7 @@ ReadIDLoop
         ; ani     ~30h ; "Массив не найден", "Тип записи" это нормально
 
 ; dump 6 bytes
+ReadDone
         lxi     h, ReadAddressBuf
         lxi     b, 0080h
         mvi     e, 6
@@ -304,7 +317,7 @@ DumpReadAddressBuf
         lda     ReadAddressBuf+2
         mov     b, a    ; sector number
         mvi     c, 0    ; side
-        lxi     h, BMP_SECTOR_BAD
+        lxi     h, BMP_SECTOR_BAD       ; TODO swap bitmaps
         call    PaintSectorMark
 
         
@@ -1059,3 +1072,4 @@ TempChar        ds      16
 
 ; Шесть байт для команды READ ADDRESS (Type III)
 ReadAddressBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
+
