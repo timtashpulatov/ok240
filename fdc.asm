@@ -862,6 +862,62 @@ BMP_SECTOR_BAD
         db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
 
+BMP_ID
+        db      0FEh, 01h, 0A9h, 55h, 0A9h, 55h, 0A9h, 0fdh
+        db      0FEh, 01h, 0A9h, 55h, 0A9h, 55h, 0A9h, 0fdh
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+        db      7Fh, 80h, 0AAh, 0D5h, 0AAh, 0D5h, 0AAh, 0FFh
+        db      7Fh, 80h, 0AAh, 0D5h, 0AAh, 0D5h, 0AAh, 0FFh
+
+        db      0FDh, 45h, 6Dh, 6Dh, 6Dh, 6Dh, 0FDh, 0FDh 
+        db      0FDh, 45h, 6Dh, 6Dh, 6Dh, 6Dh, 0FDh, 0FDh
+        db      0FFh, 44h, 55h, 54h, 46h, 55h, 0FFh, 0FFh
+        db      0FFh, 44h, 55h, 54h, 46h, 55h, 0FFh, 0FFh
+        db      0FFh, 0D4h, 0D7h, 0E7h, 0D7h, 0D4h, 0FFh, 0FFh
+        db      0FFh, 0D4h, 0D7h, 0E7h, 0D7h, 0D4h, 0FFh, 0FFh
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
+        db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
+        
+        db      0FDh, 4Dh, 75h, 45h, 5Dh, 65h, 0FDh, 0FDh 
+        db      0FDh, 4Dh, 75h, 45h, 5Dh, 65h, 0FDh, 0FDh 
+        db      0FFh, 44h, 0F7h, 0F4h, 0F7h, 0C4h, 0FFh, 0FFh
+        db      0FFh, 44h, 0F7h, 0F4h, 0F7h, 0C4h, 0FFh, 0FFh
+        db      0FFh, 0FCh, 0FEh, 0FEh, 0FEh, 0FEh, 0FFh, 0FFh
+        db      0FFh, 0FCh, 0FEh, 0FEh, 0FEh, 0FEh, 0FFh, 0FFh
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
+        db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
+
+        db      0FDh, 65h, 55h, 55h, 55h, 65h, 0FDh, 0FFh 
+        db      0FDh, 65h, 55h, 55h, 55h, 65h, 0FDh, 0FFh
+        db      0FFh, 44h, 6Dh, 6Dh, 6Ch, 6Dh, 0FFh, 0FFh
+        db      0FFh, 44h, 6Dh, 6Dh, 6Ch, 6Dh, 0FFh, 0FFh
+        db      0FFh, 0FCh, 0FDh, 0FDh, 0FCh, 0FDh, 0FFh, 0FFh
+        db      0FFh, 0FCh, 0FDh, 0FDh, 0FCh, 0FDh, 0FFh, 0FFh
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
+        db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
+
+
+
+
 HEXFONT 
         db      38h, 44h, 44h, 0, 44h, 44h, 38h, 0      // 0
         db      0, 40h, 40h, 0, 0, 40h, 40h, 0          // 1
