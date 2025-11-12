@@ -174,8 +174,6 @@ TrackLoop
         lxi     b, 0501h
         call    PaintSectorMark
 
-
-
         jmp     MenuLoop
 
 ; ********************************************
@@ -185,6 +183,9 @@ TrackLoop
 ; C = side (0, 1)
 ; ********************************************
 PaintSectorMark
+        push    h
+        push    b
+
         push    h
         lxi     h, ((SECTEMPLATE_COL*2)<<8) + SECTEMPLATE_ROW*8
         dcr     b       ; sector numbers start from 1
@@ -212,6 +213,8 @@ PaintSectorMark
         mvi     a, 3
         call    PaintBitmap
         
+        pop     b
+        pop     h
         ret
 
 
