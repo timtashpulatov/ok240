@@ -1,4 +1,5 @@
 
+
 	.project fdc
 	.org 100h
 
@@ -142,7 +143,7 @@ Quit    rst     0
 ; ************************************************************************
 ; Track read
 ; ************************************************************************
-SECTEMPLATE_ROW equ     16
+SECTEMPLATE_ROW equ     20
 SECTEMPLATE_COL equ     8
 
 TrackLoop
@@ -232,7 +233,7 @@ ReadNextID
         ora     a
         jz      MenuLoop
 
-; Чтение дорожки
+; Чтение ID
         lxi     h, ReadAddressBuf
         mvi     a, CMD_READADDRESS
         out     PORT_CMD
@@ -260,6 +261,14 @@ DumpReadAddressBuf
         inx     h
         dcr     e
         jnz     DumpReadAddressBuf
+
+; поставим галочку на прочитанном секторе
+        lda     ReadAddressBuf+2
+        mov     b, a    ; sector number
+        mvi     c, 0    ; side
+        lxi     h, BMP_SECTOR_BAD
+        call    PaintSectorMark
+
         
         jmp     MenuLoop
         
@@ -823,8 +832,8 @@ aTimeout
 
 MainMenu
         db      1fh
-        ; db      ESC, '6', '4'
-        ; db      ESC, '42'
+        db      ESC, '6', '4'
+        db      ESC, '43'
         ; db      ESC, '8', 03
         ; dw      CRLF
         db      ESC, 5, 22h, 20h
