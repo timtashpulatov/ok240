@@ -73,6 +73,21 @@ SCREEN          equ     0c000h
         ; ; call    PaintBitmap
 
 
+        lxi     h, BMP_SECTOR_UNK
+        lxi     bc, 0008h
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_GOOD
+        lxi     bc, 0208h
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_BAD
+        lxi     bc, 0408h
+        mvi     a, 3
+        call    PaintBitmap
+
 
 MenuLoop
 
@@ -766,7 +781,19 @@ BMP_ERR_INACTIVE
         db      0, 0dch, 44h, 5ch, 44h, 5ch, 0, 0
         db      0, 1dh, 4, 4, 4, 4, 0, 0
         db      0, 1dh, 4, 4, 4, 4, 0, 0
-        
+
+BMP_SECTOR_UNK
+        ; db      00, 28h, 2Ah, 2Ah, 4Ah, 28h, 7Fh, 7Fh
+        ; db      00, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh
+        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+BMP_SECTOR_GOOD        
+        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
+BMP_SECTOR_BAD
+        db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
+        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+
 HEXFONT 
         db      38h, 44h, 44h, 0, 44h, 44h, 38h, 0      // 0
         db      0, 40h, 40h, 0, 0, 40h, 40h, 0          // 1
