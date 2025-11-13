@@ -69,33 +69,8 @@ SCREEN          equ     0c000h
         lxi     h, 100h ; ReadAddressBuf
         lxi     b, 00a0h
         mvi     a, 64
+        call    DumpHexBlock
 
-
-
-DumpHexBlock
-        push    de
-        push    bc
-        rar     a
-        rar     a
-        rar     a
-        mov     e, a
-DHB
-        mvi     a, 8
-        push    bc
-        call    HexDumpN
-        pop     bc
-
-        mov     a, c
-        adi     8
-        mov     c, a
-        
-        dcr     e
-        jnz     DHB
-
-        pop     bc
-        pop     de
-        ; ret
-        
 
 MenuLoop
 
@@ -573,6 +548,33 @@ ShowVG93Regs
         in      PORT_DATA
         call    _PrintHex
 
+        ret
+
+; *************************************************
+; Print hex block of A bytes starting from HL
+; *************************************************
+DumpHexBlock
+        push    de
+        push    bc
+        rar     a
+        rar     a
+        rar     a
+        mov     e, a
+DHB
+        mvi     a, 8
+        push    bc
+        call    HexDumpN
+        pop     bc
+
+        mov     a, c
+        adi     8
+        mov     c, a
+        
+        dcr     e
+        jnz     DHB
+
+        pop     bc
+        pop     de
         ret
 
 
