@@ -162,22 +162,25 @@ SECTEMPLATE_ROW equ     20
 SECTEMPLATE_COL equ     8
 
 TrackLoop
-
         call    _MotorStart
         call    _WaitForIdle
         ora     a
         jz      MenuLoop
 
-; Чтение сектора
-
-        ; xra     a
-        ; out     PORT_TRACK
-
-        ; mvi     a, 1
-        ; out     PORT_SECTOR
-
         lxi     h, ReadAddressBuf
-        
+
+        call    ReadSector
+
+        jmp     ReadDone
+
+; ************************************************************************
+; Sector read
+; HL = data buf addr
+; ************************************************************************
+ReadSector
+; Чтение сектора
+; Номер дорожки и номер сектора уже должны быть загружены
+; в регистры TRACK и SECTOR
         mvi     a, CMD_READSECTOR
         out     PORT_CMD
 
@@ -189,7 +192,7 @@ ReadSectorLoop
         inx     h
         jc      ReadSectorLoop
 
-        jmp     ReadDone
+
 
         
 
