@@ -78,7 +78,6 @@ DumpHexBlock
         rar     a
         rar     a
         rar     a
-        inr     a
         mov     e, a
 DHB
         mvi     a, 8
