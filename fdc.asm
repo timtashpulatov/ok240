@@ -65,6 +65,8 @@ SCREEN          equ     0c000h
 
         call    PaintBitmapMxN
 
+        mvi     a, 2
+        sta     PrintColor
 
         lxi     h, 100h ; ReadAddressBuf
         lxi     b, 00b0h
