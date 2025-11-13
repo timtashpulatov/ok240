@@ -381,13 +381,24 @@ StoreSide
         sta     vSide
         jmp     MenuLoop
 
+; ************************************************************************
+; Select drive 0 (B:)
+; ************************************************************************
+SelectDrive0
+        call    _SelectDrive0
+        jmp     MenuLoop
+
 _SelectDrive0
         mvi     a, DRIVE_SELECT | DRIVE_0
         sta     vPortFloppy
         out     PORT_FLOPPY
         ret
-SelectDrive0
-        call    _SelectDrive0
+
+; ************************************************************************
+; Select drive 1 (C:)
+; ************************************************************************
+SelectDrive1
+        call    _SelectDrive1
         jmp     MenuLoop
 
 _SelectDrive1
@@ -395,30 +406,30 @@ _SelectDrive1
         sta     vPortFloppy
         out     PORT_FLOPPY
         ret
-SelectDrive1
-        call    _SelectDrive1
-        jmp     MenuLoop
 
-_StepOut
-        mvi     a, CMD_STEPOUT | FLAG_UPDATE
-        out     PORT_CMD
-        ret
+
 StepOut
         call    _MotorStart
         call    _WaitForIdle
         call    _StepOut
         jmp     MenuLoop
 
-_StepIn
-        mvi     a, CMD_STEPIN | FLAG_UPDATE
+_StepOut
+        mvi     a, CMD_STEPOUT | FLAG_UPDATE
         out     PORT_CMD
         ret
+
 StepIn
         call    _MotorStart
         call    _WaitForIdle
         call    _StepIn
         jmp     MenuLoop
 
+_StepIn
+        mvi     a, CMD_STEPIN | FLAG_UPDATE
+        out     PORT_CMD
+        ret
+        
 _End
         mvi     a, 79
         call    SeekToTrack
