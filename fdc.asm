@@ -63,23 +63,40 @@ SCREEN          equ     0c000h
         out     VIDEO
 
 
-
-        ; lxi     h, BMP_RDY_ACTIVE
-        ; lxi     bc, 0
-        ; mvi     a, 3
-        ; call    PaintBitmap8x16
-
-        ; ; lxi     h, BMP_RDY_ACTIVE+16
-        ; ; lxi     bc, 0200h
-        ; ; mvi     a, 3
-        ; ; call    PaintBitmap
-
         call    PaintBitmapMxN
 
-        lxi     h, ReadAddressBuf
+
+        lxi     h, 100h ; ReadAddressBuf
         lxi     b, 00a0h
+        mvi     a, 64
+
+
+
+DumpHexBlock
+        push    de
+        push    bc
+        rar     a
+        rar     a
+        rar     a
+        inr     a
+        mov     e, a
+DHB
         mvi     a, 8
+        push    bc
         call    HexDumpN
+        pop     bc
+
+        mov     a, c
+        adi     8
+        mov     c, a
+        
+        dcr     e
+        jnz     DHB
+
+        pop     bc
+        pop     de
+        ; ret
+        
 
 MenuLoop
 
