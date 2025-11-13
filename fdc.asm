@@ -74,8 +74,12 @@ SCREEN          equ     0c000h
         ; ; mvi     a, 3
         ; ; call    PaintBitmap
 
-
         call    PaintBitmapMxN
+
+        lxi     h, ReadAddressBuf
+        lxi     b, 00a0h
+        mvi     a, 8
+        call    HexDumpN
 
 MenuLoop
 
@@ -305,13 +309,9 @@ ReadIDLoop
 ReadDone
         lxi     h, ReadAddressBuf
         lxi     b, 0080h
-        mvi     e, 6
-DumpReadAddressBuf
-        mov     a, m
-        call    _PrintHex
-        inx     h
-        dcr     e
-        jnz     DumpReadAddressBuf
+        mvi     a, 6
+
+        call    HexDumpN
 
 ; поставим галочку на прочитанном секторе
         lda     ReadAddressBuf+2
@@ -322,6 +322,28 @@ DumpReadAddressBuf
 
         
         jmp     MenuLoop
+
+; ************************************************************************
+; Dump an A=number of hex bytes from HL
+; BC = screen position
+; ************************************************************************
+HexDumpN
+        push    de
+        mov     e, a
+HDN
+        mov     a, m
+        call    _PrintHex
+        inx     h
+        dcr     e
+        jz      HDNDone
+        ; mvi     c, ' '
+        ; call    CONOUT
+        inr     b
+        inr     b
+        jmp     HDN
+HDNDone
+        pop     de
+        ret
         
         
 ; ************************************************************************
@@ -1072,4 +1094,3 @@ TempChar        ds      16
 
 ; Шесть байт для команды READ ADDRESS (Type III)
 ReadAddressBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
-
