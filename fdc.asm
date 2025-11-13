@@ -138,6 +138,9 @@ MenuKeys
 
 Quit    rst     0        
 
+; ************************************************************************
+; Prev/Next sector
+; ************************************************************************
 SecPrev
         in      PORT_SECTOR
         cpi     1
@@ -148,7 +151,7 @@ SecPrev
 
 SecNext
         in      PORT_SECTOR
-        cpi     1ah
+        cpi     26
         jz      MenuLoop
         inr     a
         out     PORT_SECTOR
@@ -424,28 +427,14 @@ End
         call    _End
         jmp     MenuLoop
 
-; ; Seek to track 79
-;         mvi     a, 0
-;         out     PORT_TRACK
-
-;         mvi     a, 79
-;         out     PORT_DATA
-        
-;         mvi     a, CMD_SEEK
-;         out     PORT_CMD
-        
-;         call    WaitForKey
-
-;         rst      0
-
 ; ************************************************************************
 ; Seek to track in accumulator
 ; ************************************************************************
+SeekToTrack
+        call    _SeekToTrack
+        jmp     MenuLoop
+
 _SeekToTrack
-        ; push    a
-        ; call    _Restore
-        
-        ; pop     a
         out     PORT_DATA
         xra     a
         out     PORT_TRACK
@@ -453,35 +442,30 @@ _SeekToTrack
         mvi     a, CMD_SEEK
         out     PORT_CMD
 
-        
-        ; call    WaitForDriveReady
-        ; ora     a
-        ; jz      MenuLoop
-        
-        ; lxi    h, aTimeout
-        ; call    PrintString
         ret
 
-SeekToTrack
-        call    _SeekToTrack
-        jmp     MenuLoop
 
 ; ************************************************************************
 ; Restore
 ; ************************************************************************
-_Restore
-        mvi     a, CMD_RESTORE
-        out     PORT_CMD
-        ret
 Restore
         call    _MotorStart
         call    _WaitForIdle
         call    _Restore
         jmp     MenuLoop
 
+_Restore
+        mvi     a, CMD_RESTORE
+        out     PORT_CMD
+        ret
+
 ; ************************************************************************
 ; Запуск двигателя
 ; ************************************************************************
+MotorStart
+        call    _MotorStart
+        jmp     MenuLoop
+        
 _MotorStart
         lda     vPortFloppy
         out     PORT_FLOPPY
@@ -489,9 +473,7 @@ _MotorStart
         out     PORT_FLOPPY
         ret
         
-MotorStart
-        call    _MotorStart
-        jmp     MenuLoop
+
 
 ; ************************************************************************
 ; Ожидаение готовности дисковода или остановки двигателя по таймауту
