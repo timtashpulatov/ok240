@@ -67,7 +67,7 @@ SCREEN          equ     0c000h
 
 
         lxi     h, 100h ; ReadAddressBuf
-        lxi     b, 00a0h
+        lxi     b, 00b0h
         mvi     a, 64
         call    DumpHexBlock
 
