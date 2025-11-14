@@ -244,18 +244,18 @@ SecNext
 
 
 ; ************************************************************************
-; Sector read
+; TrackLoop
 ; ************************************************************************
-SectorRead
+TrackLoop
         jmp     MenuLoop
 
 ; ************************************************************************
-; Track read
+; Sector read
 ; ************************************************************************
 SECTEMPLATE_ROW equ     18
 SECTEMPLATE_COL equ     1
 
-TrackLoop
+SectorRead
         call    _MotorStart
         call    _WaitForIdle
         ora     a
