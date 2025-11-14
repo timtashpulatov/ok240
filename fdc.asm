@@ -1036,8 +1036,8 @@ MainMenu
         
         ; db      ESC, '5', 20h, 20h, "Pops!"
         
-        db      ESC, 5, 20h+16, 20h
-        db      'DATA FIELD'
+        ; db      ESC, 5, 20h+16, 20h
+        ; db      'DATA FIELD'
         
         db      0
 
