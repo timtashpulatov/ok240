@@ -136,6 +136,28 @@ MenuKeys
 Quit    rst     0        
 
 ; ************************************************************************
+; CheckResult
+; ************************************************************************
+CheckResult
+        in      PORT_CMD
+        ani     STATUS_NOTFOUND
+        ret
+
+; ************************************************************************
+; ReadDataLoop
+; ************************************************************************
+ReadDataLoop
+        in      PORT_FLOPPY_WAIT
+        rrc
+        in      PORT_DATA
+        mov     m, a
+        inx     h
+        jc      ReadDataLoop
+
+        ret
+
+
+; ************************************************************************
 ; Prev/Next sector
 ; ************************************************************************
 SecPrev
@@ -158,8 +180,8 @@ SecNext
 ; ************************************************************************
 ; Track read
 ; ************************************************************************
-SECTEMPLATE_ROW equ     20
-SECTEMPLATE_COL equ     8
+SECTEMPLATE_ROW equ     18
+SECTEMPLATE_COL equ     1
 
 TrackLoop
         call    _MotorStart
@@ -167,17 +189,30 @@ TrackLoop
         ora     a
         jz      MenuLoop
 
-        lxi     h, ReadAddressBuf
-
+; paint sector template
+        
+        lxi     h, DataBuf
         call    ReadSector
 
-; TODO check result
+        lxi     hl, BMP_SECTOR_UNK
+        call    CheckResult
+        jnz     SectorReadDone
 
-        lxi     h, ReadAddressBuf
+        lxi     h, DataBuf
         lxi     b, 00b0h
-        mvi     a, 64
+        mvi     e, 64
         call    DumpHexBlock
 
+        lxi     hl, BMP_SECTOR_GOOD
+        
+SectorReadDone
+        in      PORT_SECTOR
+        mov     b, a
+        mvi     c, 0
+        call    PaintSectorMark
+
+
+TrackLoopDone
 
         jmp     MenuLoop
 
@@ -192,13 +227,7 @@ ReadSector
         mvi     a, CMD_READSECTOR
         out     PORT_CMD
 
-ReadSectorLoop
-        in      PORT_FLOPPY_WAIT
-        rrc
-        in      PORT_DATA
-        mov     m, a
-        inx     h
-        jc      ReadSectorLoop
+        call    ReadDataLoop
 
         ret
 
@@ -247,7 +276,7 @@ PaintSectorMark
 
         push    h
         lxi     h, ((SECTEMPLATE_COL*2)<<8) + SECTEMPLATE_ROW*8
-        dcr     b       ; sector numbers start from 1
+        ; dcr     b       ; sector numbers start from 1
 
 ; convert side (0 or 1) to vertical offset 0 or 8
         mov     a, c
@@ -278,7 +307,7 @@ PaintSectorMark
 
 
 ; ************************************************************************
-; Read 6 bytes of next ID into ReadAddressBuf
+; Read 6 bytes of next ID into DataBuf
 ; ************************************************************************
 ReadNextID
 ; start motor
@@ -290,36 +319,30 @@ ReadNextID
         jz      MenuLoop
 
 ; Чтение ID
-        lxi     h, ReadAddressBuf
+        lxi     h, DataBuf
         mvi     a, CMD_READADDRESS
         out     PORT_CMD
         nop
         nop
 
-ReadIDLoop
-        in      PORT_FLOPPY_WAIT
-        rrc
-        in      PORT_DATA
-        mov     m, a
-        inx     h
-        jc      ReadIDLoop
-        
+        call    ReadDataLoop
+
         ; in      PORT_CMD
         ; ani     ~30h ; "Массив не найден", "Тип записи" это нормально
 
 ; dump 6 bytes
 ReadDone
-        lxi     h, ReadAddressBuf
+        lxi     h, DataBuf
         lxi     b, 0080h
         mvi     a, 6
 
         call    HexDumpN
 
 ; поставим галочку на прочитанном секторе
-        lda     ReadAddressBuf+2
+        lda     DataBuf+2
         mov     b, a    ; sector number
         mvi     c, 0    ; side
-        lxi     h, BMP_SECTOR_BAD       ; TODO swap bitmaps
+        lxi     h, BMP_SECTOR_GOOD
         call    PaintSectorMark
 
         
@@ -557,6 +580,7 @@ ShowVG93Regs
 DumpHexBlock
         push    de
         push    bc
+        mov     a, e
         rar     a
         rar     a
         rar     a
@@ -1013,10 +1037,10 @@ BMP_SECTOR_UNK
         ; db      00, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
-BMP_SECTOR_GOOD        
+BMP_SECTOR_BAD
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
-BMP_SECTOR_BAD
+BMP_SECTOR_GOOD
         db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
 
@@ -1111,5 +1135,5 @@ PrintColor      db      3
 ; Внутренний клипборд для символа из шрифта
 TempChar        ds      16
 
-; Шесть байт для команды READ ADDRESS (Type III)
-ReadAddressBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
+; Буфер данных (Шесть байт для команды READ ADDRESS, например, или 1024 байт сектора, или вся дорожка)
+DataBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
