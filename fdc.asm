@@ -23,9 +23,9 @@ DRIVE_0         equ     1 << 0
 DRIVE_1         equ     1 << 1
 DRIVE_SELECT    equ     1 << 2
 DRIVE_INIT      equ     1 << 3
+DRIVE_SIDE      equ     1 << 5  ; write to reg 25
 
-DRIVE_SIDE      equ     1 << 6
-DRIVE_MOTST     equ     1 << 7
+DRIVE_MOTST     equ     1 << 7  ; read from reg 25
 
 FLAG_UPDATE     equ     10h
 
@@ -126,8 +126,7 @@ MenuKeys
         db      19h \ dw StepIn
         db      08h \ dw SecPrev
         db      18h \ dw SecNext
-        db      'U' \ dw UpperSide
-        db      'L' \ dw LowerSide
+        db      'S' \ dw SideToggle
         db      'I' \ dw ReadNextID
         db      'T' \ dw TrackLoop
         db      ESC \ dw Quit
@@ -399,14 +398,15 @@ Timeout
         xra     a
         ret
 
-
-UpperSide
-        xra     a
-        jmp     StoreSide
-LowerSide
-        mvi     a, DRIVE_SIDE
-StoreSide
+; ************************************************************************
+; Side Toggle
+; ************************************************************************
+SideToggle
+        lda     vSide
+        cma
+        ; ani     DRIVE_SIDE
         sta     vSide
+
         jmp     MenuLoop
 
 ; ************************************************************************
@@ -419,8 +419,7 @@ SelectDrive0
 _SelectDrive0
         mvi     a, DRIVE_SELECT | DRIVE_0
         sta     vPortFloppy
-        out     PORT_FLOPPY
-        ret
+        jmp     _WriteToFloppyPort
 
 ; ************************************************************************
 ; Select drive 1 (C:)
@@ -432,10 +431,18 @@ SelectDrive1
 _SelectDrive1
         mvi     a, DRIVE_1
         sta     vPortFloppy
+        jmp     _WriteToFloppyPort
+
+_WriteToFloppyPort
+        lda     vPortFloppy
+        mov     b, a
+        lda     vSide
+        ani     DRIVE_SIDE
+        ora     b
         out     PORT_FLOPPY
         ret
-
-
+        
+        
 StepOut
         call    _MotorStart
         call    _WaitForIdle
@@ -506,10 +513,17 @@ MotorStart
         jmp     MenuLoop
         
 _MotorStart
+        push    bc
         lda     vPortFloppy
+        mov     b, a
+        lda     vSide
+        ani     DRIVE_SIDE      ; ?
+        ora     b
         out     PORT_FLOPPY
+
         ori     DRIVE_INIT
         out     PORT_FLOPPY
+        pop     bc
         ret
         
 
@@ -955,13 +969,13 @@ MainMenu
         db      ESC, 5, 22h, 20h
         db      '0 - Select drive 0' \ dw CRLF
         db      '1 - Select drive 1' \ dw CRLF
+        db      'S - Side toggle' \ dw CRLF
         db      'M - Motor' \ dw CRLF
         db      'R - Seek to track 00' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
         db      'T - Track read' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
-        db      'L/U - Lower Side / Upper Side' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
         
