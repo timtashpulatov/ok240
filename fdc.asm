@@ -195,7 +195,7 @@ ContDrillCheckKey
 ; ************************************************************************
 CheckResult
         in      PORT_CMD
-        ani     STATUS_NOTFOUND
+        ani     STATUS_NOTFOUND | STATUS_CRC
         ret
 
 ; ************************************************************************
@@ -256,13 +256,14 @@ TrackLoop
         call    ReadSector
 
         call    CheckResult
-        jnz     MenuLoop
+        jnz     TLErr
 
         call    PaintSectorMarkGood
-
         call    DumpSector
+        jmp     MenuLoop
 
-TrackLoopDone
+TLErr
+        call    PaintSectorMarkBad
         jmp     MenuLoop
 
 ConvertSideToBinary
