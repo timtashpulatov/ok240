@@ -77,6 +77,17 @@ SCREEN          equ     0c000h
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_ID_TAB
+        lxi     b, ((SIDEINDICATOR_COL+1)*2<<8) + (SIDEINDICATOR_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_ID_UPPER_RIGHT_CORNER
+        lxi     b, ((SIDEINDICATOR_COL+26)*2<<8) + (SIDEINDICATOR_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+
 
         mvi     a, 2
         sta     PrintColor
@@ -1240,7 +1251,7 @@ BMP_ID_TAB
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
-BMP_ID_UPPER_RIGHT_CORNED        
+BMP_ID_UPPER_RIGHT_CORNER
         db      7Fh, 80h, 0AAh, 0D5h, 0AAh, 0D5h, 0AAh, 0FFh
         db      7Fh, 80h, 0AAh, 0D5h, 0AAh, 0D5h, 0AAh, 0FFh
 
