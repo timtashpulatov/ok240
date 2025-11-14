@@ -129,7 +129,7 @@ MenuKeys
         db      'S' \ dw SideToggle
         db      'I' \ dw ReadNextID
         db      'T' \ dw TrackLoop
-        db      'S' \ dw SectorRead
+        db      'R' \ dw SectorRead
         db      ESC \ dw Quit
         db      0 \ dw 0
 
@@ -1029,7 +1029,7 @@ MainMenu
         db      'E - Seek to track 79' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
         db      'T - Track read' \ dw CRLF
-        db      'S - Sector read' \ dw CRLF
+        db      'R - Sector read' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
