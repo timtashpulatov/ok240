@@ -68,11 +68,6 @@ SCREEN          equ     0c000h
         mvi     a, 2
         sta     PrintColor
 
-        lxi     h, 100h ; ReadAddressBuf
-        lxi     b, 00b0h
-        mvi     a, 64
-        call    DumpHexBlock
-
 
 MenuLoop
 
@@ -176,7 +171,15 @@ TrackLoop
 
         call    ReadSector
 
-        jmp     ReadDone
+; TODO check result
+
+        lxi     h, ReadAddressBuf
+        lxi     b, 00b0h
+        mvi     a, 64
+        call    DumpHexBlock
+
+
+        jmp     MenuLoop
 
 ; ************************************************************************
 ; Sector read
@@ -197,7 +200,7 @@ ReadSectorLoop
         inx     h
         jc      ReadSectorLoop
 
-
+        ret
 
         
 
