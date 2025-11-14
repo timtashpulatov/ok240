@@ -197,10 +197,7 @@ TrackLoop
         call    CheckResult
         jnz     SectorReadDone
 
-        lxi     h, DataBuf
-        lxi     b, 00b0h
-        mvi     e, 64
-        call    DumpHexBlock
+        call    DumpSector
 
         lxi     hl, BMP_SECTOR_GOOD
         
@@ -222,6 +219,13 @@ ConvertSideToBinary
         rlc     a
         rlc     a
         mov     c, a
+        ret
+
+DumpSector
+        lxi     h, DataBuf
+        lxi     b, 00b0h
+        mvi     e, 64
+        call    DumpHexBlock
         ret
 
 ; ************************************************************************
@@ -992,6 +996,9 @@ MainMenu
         db      'ESC - Quit', \ dw CRLF
         
         ; db      ESC, '5', 20h, 20h, "Pops!"
+        
+        db      ESC, 5, 20h+16, 20h
+        db      'DATA FIELD'
         
         db      0
 
