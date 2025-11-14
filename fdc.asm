@@ -67,9 +67,16 @@ SCREEN          equ     0c000h
         mvi     a, 40h
         out     VIDEO
 
-        call    PaintBitmapMxN
+        call    PaintBitmapMxN          ; TODO 
 
         call    DrawSideIndicator
+
+
+        lxi     h, BMP_ID_UPPER_LEFT_CORNER
+        lxi     b, (SIDEINDICATOR_COL*2<<8) + (SIDEINDICATOR_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
 
         mvi     a, 2
         sta     PrintColor
@@ -485,7 +492,7 @@ Timeout
 ; ************************************************************************
 SideToggle
 
-SIDEINDICATOR_COL       equ     SECTEMPLATE_COL-1
+SIDEINDICATOR_COL       equ     (SECTEMPLATE_COL-1)
 SIDEINDICATOR_ROW       equ     SECTEMPLATE_ROW
 
         call    _SideToggle
@@ -1220,8 +1227,10 @@ BMP_SIDE
         db      18h, 2eh, 42h, 82h, 0feh, 7eh, 3eh, 18h
 
 BMP_ID
+BMP_ID_UPPER_LEFT_CORNER
         db      0FEh, 01h, 0A9h, 55h, 0A9h, 55h, 0A9h, 0fdh
         db      0FEh, 01h, 0A9h, 55h, 0A9h, 55h, 0A9h, 0fdh
+BMP_ID_TAB
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
@@ -1230,6 +1239,7 @@ BMP_ID
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
         db      0FFh, 00h, 0AAh, 55h, 0AAh, 55h, 0AAh, 0FFh 
+BMP_ID_UPPER_RIGHT_CORNED        
         db      7Fh, 80h, 0AAh, 0D5h, 0AAh, 0D5h, 0AAh, 0FFh
         db      7Fh, 80h, 0AAh, 0D5h, 0AAh, 0D5h, 0AAh, 0FFh
 
