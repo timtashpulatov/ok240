@@ -114,10 +114,10 @@ Gotcha
         pchl
 
 MenuKeys
-        db      'R' \ dw Restore
+        db      'H' \ dw RestoreHome
         db      '0' \ dw SelectDrive0
         db      '1' \ dw SelectDrive1
-        db      'R' \ dw Restore
+        db      'H' \ dw RestoreHome
         db      'E' \ dw End
         db      'M' \ dw MotorStart
         ; db      '-' \ dw StepOut
@@ -129,6 +129,7 @@ MenuKeys
         db      'S' \ dw SideToggle
         db      'I' \ dw ReadNextID
         db      'T' \ dw TrackLoop
+        db      'S' \ dw SectorRead
         db      ESC \ dw Quit
         db      0 \ dw 0
 
@@ -177,6 +178,12 @@ SecNext
 
 
 ; ************************************************************************
+; Sector read
+; ************************************************************************
+SectorRead
+        jmp     MenuLoop
+
+; ************************************************************************
 ; Track read
 ; ************************************************************************
 SECTEMPLATE_ROW equ     18
@@ -213,7 +220,6 @@ SectorReadDone
         mov     b, a
         call    ConvertSideToBinary
         call    PaintSectorMark
-
 
 TrackLoopDone
 
@@ -422,12 +428,37 @@ Timeout
 ; Side Toggle
 ; ************************************************************************
 SideToggle
+
+SIDEINDICATOR_COL       equ     SECTEMPLATE_COL-1
+SIDEINDICATOR_ROW       equ     SECTEMPLATE_ROW
+
+; erase side bitmap
+        lxi     h, BMP_VOID
+        call    DrawSideIndicator
+
+; toggle side
         lda     vSide
         cma
         ; ani     DRIVE_SIDE
         sta     vSide
 
+; draw side bitmap
+        lxi     h, BMP_SIDE
+        call    DrawSideIndicator
         jmp     MenuLoop
+
+DrawSideIndicator
+        lxi     bc, ((SIDEINDICATOR_COL*2) << 8) + (SIDEINDICATOR_ROW+1)*8
+
+        lda     vSide
+
+        ora     a
+        jz      ST1
+        mvi     c, (SIDEINDICATOR_ROW)*8
+ST1
+        mvi     a, 3
+        call    PaintBitmap
+        ret
 
 ; ************************************************************************
 ; Select drive 0 (B:)
@@ -517,7 +548,7 @@ _SeekToTrack
 ; ************************************************************************
 ; Restore
 ; ************************************************************************
-Restore
+RestoreHome
         call    _MotorStart
         call    _WaitForIdle
         call    _Restore
@@ -994,10 +1025,11 @@ MainMenu
         db      '1 - Select drive 1' \ dw CRLF
         db      'S - Side toggle' \ dw CRLF
         db      'M - Motor' \ dw CRLF
-        db      'R - Seek to track 00' \ dw CRLF
+        db      'H - Home (seek to track 00)' \ dw CRLF
         db      'E - Seek to track 79' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
         db      'T - Track read' \ dw CRLF
+        db      'S - Sector read' \ dw CRLF
         db      '-/+ - Step Out / Step In' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
@@ -1084,6 +1116,10 @@ BMP_SECTOR_GOOD
         db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
 
+BMP_SIDE
+        db      0, 10h, 3ch, 7ch, 7ch, 3ch, 10h, 0
+        db      18h, 2eh, 42h, 82h, 0feh, 7eh, 3eh, 18h
+
 BMP_ID
         db      0FEh, 01h, 0A9h, 55h, 0A9h, 55h, 0A9h, 0fdh
         db      0FEh, 01h, 0A9h, 55h, 0A9h, 55h, 0A9h, 0fdh
@@ -1137,7 +1173,7 @@ BMP_ID
         db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
         db      0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh, 0FFh
 
-
+BMP_VOID        dw      0, 0, 0, 0, 0, 0, 0, 0
 
 
 HEXFONT 
