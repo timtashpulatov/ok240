@@ -130,10 +130,68 @@ MenuKeys
         db      'I' \ dw ReadNextID
         db      'T' \ dw TrackLoop
         db      'R' \ dw SectorRead
+        db      'C' \ dw ContinuousDrill
         db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
+
+; ************************************************************************
+; Continuous drill
+; ************************************************************************
+
+Delay
+        push    bc
+        mov     c, a
+WaitForVR
+        in      41h
+        ani     2
+        jz     WaitForVR        ; Дождемся кадрового ретрейса
+        
+WaitForVRDone
+        in      41h
+        ani     2
+        jnz     WaitForVRDone
+
+        dcr     c
+        jnz     WaitForVR
+        
+        pop     bc
+        ret
+
+; ************************************************************************
+; Continuous drill
+; ************************************************************************
+ContinuousDrill
+
+ContDrill
+        call    _MotorStart
+        call    _WaitForIdle
+        ora     a
+        jz      MenuLoop
+
+
+        lxi     h, DataBuf    
+        call    ReadSector
+
+        call    CheckResult
+        jnz     CDNext
+
+        call    DumpSector
+
+CDNext
+        call    _SideToggle
+        mvi     a, 50
+        call    Delay
+
+        
+; exit on any key        
+ContDrillCheckKey
+        call    CONST
+        inr     a
+        jnz     ContDrill
+        
+        jmp     MenuLoop
 
 ; ************************************************************************
 ; CheckResult
@@ -432,6 +490,10 @@ SideToggle
 SIDEINDICATOR_COL       equ     SECTEMPLATE_COL-1
 SIDEINDICATOR_ROW       equ     SECTEMPLATE_ROW
 
+        call    _SideToggle
+        jmp     MenuLoop
+
+_SideToggle
 ; erase side bitmap
         lxi     h, BMP_VOID
         call    DrawSideIndicator
@@ -445,7 +507,7 @@ SIDEINDICATOR_ROW       equ     SECTEMPLATE_ROW
 ; draw side bitmap
         lxi     h, BMP_SIDE
         call    DrawSideIndicator
-        jmp     MenuLoop
+        ret
 
 DrawSideIndicator
         lxi     bc, ((SIDEINDICATOR_COL*2) << 8) + (SIDEINDICATOR_ROW+1)*8
@@ -1030,7 +1092,7 @@ MainMenu
         db      'I - Read next ID' \ dw CRLF
         db      'T - Track read' \ dw CRLF
         db      'R - Sector read' \ dw CRLF
-        db      '-/+ - Step Out / Step In' \ dw CRLF
+        db      'C - Continuous drill' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
         
