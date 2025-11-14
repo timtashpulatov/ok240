@@ -631,6 +631,8 @@ RestoreHome
         jmp     MenuLoop
 
 _Restore
+        mvi     a, 1
+        out     PORT_SECTOR
         mvi     a, CMD_RESTORE
         out     PORT_CMD
         ret
