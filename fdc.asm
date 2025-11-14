@@ -7,9 +7,12 @@ CONST           equ     0e006h  ; A = FF if there is keypress
 CONIN           equ     0e009h  
 CONOUT          equ     0e00ch  ; output symbol from C
 
+
 VIDEO           equ     0E1h
 ENROM           equ     0x10
+SCROLL_V        equ     0C0h
 BANKING         equ     0C1h
+SCROLL_VH       equ     0C2h
 
 
 PORT_CMD                equ     20h
@@ -55,6 +58,8 @@ SCREEN          equ     0c000h
         ; mvi     c, '?'
         ; call    CONOUT
 
+
+        ; call    ResetScroll
 
         lxi     h, MainMenu
         call    PrintString
@@ -137,28 +142,6 @@ MenuKeys
 
 Quit    rst     0        
 
-; ************************************************************************
-; Continuous drill
-; ************************************************************************
-
-Delay
-        push    bc
-        mov     c, a
-WaitForVR
-        in      41h
-        ani     2
-        jz     WaitForVR        ; Дождемся кадрового ретрейса
-        
-WaitForVRDone
-        in      41h
-        ani     2
-        jnz     WaitForVRDone
-
-        dcr     c
-        jnz     WaitForVR
-        
-        pop     bc
-        ret
 
 ; ************************************************************************
 ; Continuous drill
@@ -171,12 +154,15 @@ ContDrill
         ora     a
         jz      MenuLoop
 
+        call    PaintSectorTemplate
 
         lxi     h, DataBuf    
         call    ReadSector
 
         call    CheckResult
         jnz     CDNext
+
+        call    PaintSectorMarkGood
 
         call    DumpSector
 
@@ -257,34 +243,19 @@ TrackLoop
         ora     a
         jz      MenuLoop
 
-; paint sector template
-        lxi     hl, BMP_SECTOR_UNK
-
-        in      PORT_SECTOR
-        mov     b, a
-        call    ConvertSideToBinary
-        call    PaintSectorMark
-
+        call    PaintSectorTemplate
         
         lxi     h, DataBuf
         call    ReadSector
 
         call    CheckResult
-        lxi     hl, BMP_SECTOR_UNK
-        jnz     SectorReadDone
+        jnz     MenuLoop
+
+        call    PaintSectorMarkGood
 
         call    DumpSector
 
-        lxi     hl, BMP_SECTOR_GOOD
-        
-SectorReadDone
-        in      PORT_SECTOR
-        mov     b, a
-        call    ConvertSideToBinary
-        call    PaintSectorMark
-
 TrackLoopDone
-
         jmp     MenuLoop
 
 ConvertSideToBinary
@@ -301,6 +272,23 @@ DumpSector
         lxi     b, 00b0h
         mvi     e, 64
         call    DumpHexBlock
+        ret
+
+PaintSectorMarkGood
+        lxi     hl, BMP_SECTOR_GOOD
+        jmp     PaintSectorMark
+
+PaintSectorMarkBad
+        lxi     hl, BMP_SECTOR_BAD
+        jmp     PaintSectorMark
+
+PaintSectorTemplate
+        lxi     hl, BMP_SECTOR_UNK
+PaintSectorMark
+        in      PORT_SECTOR
+        mov     b, a
+        call    ConvertSideToBinary
+        call    _PaintSectorMark
         ret
 
 ; ************************************************************************
@@ -357,7 +345,7 @@ ReadSector
 ; B = sector number (1..9)
 ; C = side (0, 1)
 ; ********************************************
-PaintSectorMark
+_PaintSectorMark
         push    h
         push    b
 
@@ -437,7 +425,7 @@ ReadDone
         mov     b, a    ; sector number
         call    ConvertSideToBinary
         lxi     h, BMP_SECTOR_GOOD
-        call    PaintSectorMark
+        call    _PaintSectorMark
         
         jmp     MenuLoop
 
@@ -1076,6 +1064,39 @@ C8Loop  ldax    d
         pop     d
         pop     h
         ret
+
+; ************************************************************************
+; Delay synched with Vertical Retrace
+; ************************************************************************
+Delay
+        push    bc
+        mov     c, a
+WaitForVR
+        in      41h
+        ani     2
+        jz     WaitForVR        ; Дождемся кадрового ретрейса
+        
+WaitForVRDone
+        in      41h
+        ani     2
+        jnz     WaitForVRDone
+
+        dcr     c
+        jnz     WaitForVR
+        
+        pop     bc
+        ret
+
+
+; ; *************************************************
+; ; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
+; ; *************************************************
+; ResetScroll
+;         xra     a
+;         out     SCROLL_V
+;         out     SCROLL_VH
+;         ret
+
 
 ; ************************************************************************
 ; Константы и переменные
