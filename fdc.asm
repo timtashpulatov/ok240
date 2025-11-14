@@ -62,8 +62,9 @@ SCREEN          equ     0c000h
         mvi     a, 40h
         out     VIDEO
 
-
         call    PaintBitmapMxN
+
+        call    DrawSideIndicator
 
         mvi     a, 2
         sta     PrintColor
@@ -416,6 +417,8 @@ ReadNextID
         ; in      PORT_CMD
         ; ani     ~30h ; "Массив не найден", "Тип записи" это нормально
 
+        call    CheckResult
+
 ; dump 6 bytes
 ReadDone
         lxi     h, DataBuf
@@ -423,14 +426,18 @@ ReadDone
         mvi     a, 6
 
         call    HexDumpN
+        jnz     MenuLoop
+
+; FDC зачем-то помещает номер дорожки в регистр сектора, что неудобно для
+; последующей работы
+        lda     DataBuf+2
+        out     PORT_SECTOR
 
 ; поставим галочку на прочитанном секторе
-        lda     DataBuf+2
         mov     b, a    ; sector number
         call    ConvertSideToBinary
         lxi     h, BMP_SECTOR_GOOD
         call    PaintSectorMark
-
         
         jmp     MenuLoop
 
@@ -498,8 +505,7 @@ SIDEINDICATOR_ROW       equ     SECTEMPLATE_ROW
 
 _SideToggle
 ; erase side bitmap
-        lxi     h, BMP_VOID
-        call    DrawSideIndicator
+        call    EraseSideIndicator
 
 ; toggle side
         lda     vSide
@@ -508,11 +514,12 @@ _SideToggle
         sta     vSide
 
 ; draw side bitmap
-        lxi     h, BMP_SIDE
         call    DrawSideIndicator
         ret
 
 DrawSideIndicator
+        lxi     h, BMP_SIDE
+_DrawSideIndicator
         lxi     bc, ((SIDEINDICATOR_COL*2) << 8) + (SIDEINDICATOR_ROW+1)*8
 
         lda     vSide
@@ -524,6 +531,10 @@ ST1
         mvi     a, 3
         call    PaintBitmap
         ret
+
+EraseSideIndicator
+        lxi     h, BMP_VOID
+        jmp     _DrawSideIndicator
 
 ; ************************************************************************
 ; Select drive 0 (B:)
