@@ -207,13 +207,22 @@ TrackLoop
 SectorReadDone
         in      PORT_SECTOR
         mov     b, a
-        mvi     c, 0
+        call    ConvertSideToBinary
         call    PaintSectorMark
 
 
 TrackLoopDone
 
         jmp     MenuLoop
+
+ConvertSideToBinary
+        lda     vSide
+        ani     DRIVE_SIDE
+        rlc     a
+        rlc     a
+        rlc     a
+        mov     c, a
+        ret
 
 ; ************************************************************************
 ; Sector read
@@ -340,7 +349,7 @@ ReadDone
 ; поставим галочку на прочитанном секторе
         lda     DataBuf+2
         mov     b, a    ; sector number
-        mvi     c, 0    ; side
+        call    ConvertSideToBinary
         lxi     h, BMP_SECTOR_GOOD
         call    PaintSectorMark
 
@@ -465,13 +474,16 @@ _StepIn
         out     PORT_CMD
         ret
         
+End    
+        call    _MotorStart
+        call    _WaitForIdle
+        call    _End
+        jmp     MenuLoop
+
 _End
         mvi     a, 79
         call    SeekToTrack
         ret
-End    
-        call    _End
-        jmp     MenuLoop
 
 ; ************************************************************************
 ; Seek to track in accumulator
