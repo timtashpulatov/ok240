@@ -189,12 +189,19 @@ TrackLoop
         jz      MenuLoop
 
 ; paint sector template
+        lxi     hl, BMP_SECTOR_UNK
+
+        in      PORT_SECTOR
+        mov     b, a
+        call    ConvertSideToBinary
+        call    PaintSectorMark
+
         
         lxi     h, DataBuf
         call    ReadSector
 
-        lxi     hl, BMP_SECTOR_UNK
         call    CheckResult
+        lxi     hl, BMP_SECTOR_UNK
         jnz     SectorReadDone
 
         call    DumpSector
