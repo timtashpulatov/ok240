@@ -180,6 +180,9 @@ ContDrill
         call    DumpSector
 
 CDNext
+        call    ShowFloppyPort
+        call    ShowVG93Regs
+
         call    _SideToggle
         mvi     a, 50
         call    Delay
