@@ -911,6 +911,9 @@ BL1
         pop     a
         ret
 
+; ************************************************************************
+; Разрисовать красивыми битмапчиками биты регистра статуса ВГ93
+; ************************************************************************
 PaintStatusBits
         push    a
         lxi     h, BMP_RDY_ACTIVE
@@ -944,6 +947,18 @@ PSB4
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
+
+        push    a
+        lxi     h, BMP_CRC_ACTIVE
+        ani     08h
+        jnz     PSB3
+        lxi     h, BMP_CRC_INACTIVE
+PSB3        
+        lxi     bc, 16 << 8
+        mvi     a, 3
+        call    PaintBitmap8x16
+        pop     a
+
 
         push    a
         lxi     h, BMP_IDX_ACTIVE
@@ -1287,6 +1302,19 @@ BMP_ERR_INACTIVE
         db      0, 0dch, 44h, 5ch, 44h, 5ch, 0, 0
         db      0, 1dh, 4, 4, 4, 4, 0, 0
         db      0, 1dh, 4, 4, 4, 4, 0, 0
+
+BMP_CRC_ACTIVE
+        db      0ffh, 27h, 0bbh, 3bh, 0bbh, 0a7h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 67h, 7ah, 7bh, 7ah, 66h, 7fh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+
+BMP_CRC_INACTIVE
+        db      0, 0d8h, 44h, 0c4h, 44h, 58h, 0, 0
+        db      0, 0d8h, 44h, 0c4h, 44h, 58h, 0, 0
+        db      0, 18h, 5, 4, 5, 19h, 0, 0
+        db      0, 18h, 5, 4, 5, 19h, 0, 0
+
 
 BMP_SECTOR_UNK
         ; db      00, 28h, 2Ah, 2Ah, 4Ah, 28h, 7Fh, 7Fh
