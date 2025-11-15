@@ -258,6 +258,7 @@ TrackLoop
 ; repeat with side 1
         call    _SideToggle
         call    _TrackLoop
+        
         jmp     MenuLoop
         
 _TrackLoop        
@@ -288,7 +289,12 @@ TLoop
         jmp     TLNext
 
 TLErr
+        cpi     STATUS_NOTFOUND
+        jnz     TLErr1
         call    PaintSectorMarkBad
+        jmp     TLNext
+TLErr1
+        call    PaintSectorMarkUgly
 
 TLNext
         pop     de
@@ -356,6 +362,10 @@ PaintSectorMarkGood
 
 PaintSectorMarkBad
         lxi     hl, BMP_SECTOR_BAD
+        jmp     PaintSectorMark
+
+PaintSectorMarkUgly
+        lxi     hl, BMP_SECTOR_UGLY
         jmp     PaintSectorMark
 
 PaintSectorTemplate
@@ -1327,6 +1337,9 @@ BMP_SECTOR_BAD
 BMP_SECTOR_GOOD
         db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+BMP_SECTOR_UGLY
+        db      00, 7fh, 55h, 55h, 4bh, 4bh, 41h, 7fh
+        db      00, 7fh, 4bh, 4bh, 55h, 55h, 41h, 7fh
 
 BMP_SIDE
         db      0, 10h, 3ch, 7ch, 7ch, 3ch, 10h, 0
