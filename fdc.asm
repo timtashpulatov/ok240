@@ -72,20 +72,20 @@ SCREEN          equ     0c000h
         call    DrawSideIndicator
 
 
-        lxi     h, BMP_ID_UPPER_LEFT_CORNER
-        lxi     b, (SIDEINDICATOR_COL*2<<8) + (SIDEINDICATOR_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
+        ; lxi     h, BMP_ID_UPPER_LEFT_CORNER
+        ; lxi     b, (SIDEINDICATOR_COL*2<<8) + (SIDEINDICATOR_ROW-1)*8
+        ; mvi     a, 3
+        ; call    PaintBitmap
 
-        lxi     h, BMP_ID_TAB
-        lxi     b, ((SIDEINDICATOR_COL+1)*2<<8) + (SIDEINDICATOR_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
+        ; lxi     h, BMP_ID_TAB
+        ; lxi     b, ((SIDEINDICATOR_COL+1)*2<<8) + (SIDEINDICATOR_ROW-1)*8
+        ; mvi     a, 3
+        ; call    PaintBitmap
 
-        lxi     h, BMP_ID_UPPER_RIGHT_CORNER
-        lxi     b, ((SIDEINDICATOR_COL+26)*2<<8) + (SIDEINDICATOR_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
+        ; lxi     h, BMP_ID_UPPER_RIGHT_CORNER
+        ; lxi     b, ((SIDEINDICATOR_COL+26)*2<<8) + (SIDEINDICATOR_ROW-1)*8
+        ; mvi     a, 3
+        ; call    PaintBitmap
 
 
 
@@ -306,7 +306,7 @@ RSCAPErr1
 ; Sector read
 ; ************************************************************************
 SECTEMPLATE_ROW equ     18
-SECTEMPLATE_COL equ     1
+SECTEMPLATE_COL equ     4
 
 SectorRead
         call    _MotorStart
@@ -522,7 +522,7 @@ Timeout
 ; ************************************************************************
 SideToggle
 
-SIDEINDICATOR_COL       equ     (SECTEMPLATE_COL-1)
+SIDEINDICATOR_COL       equ     (SECTEMPLATE_COL-2)
 SIDEINDICATOR_ROW       equ     SECTEMPLATE_ROW
 
         call    _SideToggle
