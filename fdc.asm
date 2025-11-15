@@ -247,7 +247,58 @@ SecNext
 ; TrackLoop
 ; ************************************************************************
 TrackLoop
+        call    _MotorStart
+        call    _WaitForIdle
+        ora     a
+        jz      MenuLoop
+
+; select side 0
+        call    _ResetSide
+        call    _TrackLoop
+; repeat with side 1
+        call    _SideToggle
+        call    _TrackLoop
         jmp     MenuLoop
+        
+_TrackLoop        
+        ; call    _WaitForIdle
+
+; start with sector 1
+        mvi     a, 1
+        out     PORT_SECTOR
+
+        mvi     e, 9
+TLoop
+        push    de
+
+        call    _MotorStart     ; keep rollin'
+
+        call    ShowFloppyPort
+        call    ShowVG93Regs
+
+        call    PaintSectorTemplate
+        
+        lxi     h, DataBuf
+        call    ReadSector
+        call    CheckResult
+        jnz     TLErr
+
+        call    PaintSectorMarkGood
+        call    DumpSector
+        jmp     TLNext
+
+TLErr
+        call    PaintSectorMarkBad
+
+TLNext
+        pop     de
+        dcr     e
+        rz
+
+        in      PORT_SECTOR
+        inr     a
+        out     PORT_SECTOR
+        jmp     TLoop
 
 ; ************************************************************************
 ; Sector read
@@ -267,16 +318,19 @@ SectorRead
         call    ReadSector
 
         call    CheckResult
-        jnz     TLErr
+        jnz     SRErr
 
         call    PaintSectorMarkGood
         call    DumpSector
         jmp     MenuLoop
 
-TLErr
+SRErr
         call    PaintSectorMarkBad
         jmp     MenuLoop
 
+; ********************************************
+; Convert Side To Binary (0/1)
+; ********************************************
 ConvertSideToBinary
         lda     vSide
         ani     DRIVE_SIDE
@@ -286,6 +340,9 @@ ConvertSideToBinary
         mov     c, a
         ret
 
+; ********************************************
+; Dump 64 bytes of sector data
+; ********************************************
 DumpSector
         lxi     h, DataBuf
         lxi     b, 00b0h
@@ -543,7 +600,7 @@ EraseSideIndicator
         lxi     h, BMP_VOID
         jmp     _DrawSideIndicator
 
-ResetSide
+_ResetSide
         call    EraseSideIndicator
         xra     a
         sta     vSide
@@ -650,7 +707,7 @@ _Restore
         mvi     a, CMD_RESTORE
         out     PORT_CMD
         
-        call    ResetSide
+        call    _ResetSide
         ret
 
 ; ************************************************************************
