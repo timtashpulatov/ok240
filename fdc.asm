@@ -172,17 +172,7 @@ ContDrill
         ora     a
         jz      MenuLoop
 
-        call    PaintSectorTemplate
-
-        lxi     h, DataBuf    
-        call    ReadSector
-
-        call    CheckResult
-        jnz     CDNext
-
-        call    PaintSectorMarkGood
-
-        call    DumpSector
+        call    ReadSectorCheckAndPaintResult
 
 CDNext
         call    ShowFloppyPort
@@ -277,24 +267,7 @@ TLoop
         call    ShowFloppyPort
         call    ShowVG93Regs
 
-        call    PaintSectorTemplate
-        
-        lxi     h, DataBuf
-        call    ReadSector
-        call    CheckResult
-        jnz     TLErr
-
-        call    PaintSectorMarkGood
-        call    DumpSector
-        jmp     TLNext
-
-TLErr
-        cpi     STATUS_NOTFOUND
-        jnz     TLErr1
-        call    PaintSectorMarkBad
-        jmp     TLNext
-TLErr1
-        call    PaintSectorMarkUgly
+        call    ReadSectorCheckAndPaintResult
 
 TLNext
         pop     de
@@ -305,6 +278,29 @@ TLNext
         inr     a
         out     PORT_SECTOR
         jmp     TLoop
+
+ReadSectorCheckAndPaintResult
+
+        call    PaintSectorTemplate
+
+        lxi     h, DataBuf
+        call    ReadSector
+        call    CheckResult
+        jnz     RSCAPErr
+
+        call    PaintSectorMarkGood
+        call    DumpSector
+        ret
+
+RSCAPErr
+        cpi     STATUS_NOTFOUND
+        jnz     RSCAPErr1
+        call    PaintSectorMarkBad
+        ret
+RSCAPErr1
+        call    PaintSectorMarkUgly
+        ret
+
 
 ; ************************************************************************
 ; Sector read
@@ -391,39 +387,6 @@ ReadSector
         call    ReadDataLoop
 
         ret
-
-        
-
-; ; Draw 9 sector template
-;         lxi     h, BMP_SECTOR_UNK
-;         lxi     b, ((SECTEMPLATE_COL*2)<<8) + SECTEMPLATE_ROW*8
-;         mvi     e, 9
-;         mvi     a, 3
-; DrawSectorTemplate
-;         call    PaintBitmap
-;         inr     b
-;         inr     b
-;         dcr     e
-;         jnz     DrawSectorTemplate
-
-
-; ; test - paint side 0, sector 1, unk
-;         lxi     h, BMP_SECTOR_UNK
-;         lxi     b, 0100h
-;         call    PaintSectorMark
-
-
-; ; test - paint side 0, sector 3, good
-;         lxi     h, BMP_SECTOR_GOOD
-;         lxi     b, 0300h
-;         call    PaintSectorMark
-
-; ; test - paint side 1, sector 5, bad
-;         lxi     h, BMP_SECTOR_BAD
-;         lxi     b, 0501h
-;         call    PaintSectorMark
-
-        jmp     MenuLoop
 
 ; ********************************************
 ; Paint sector mark
