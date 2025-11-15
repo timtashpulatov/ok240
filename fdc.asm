@@ -543,6 +543,13 @@ EraseSideIndicator
         lxi     h, BMP_VOID
         jmp     _DrawSideIndicator
 
+ResetSide
+        call    EraseSideIndicator
+        xra     a
+        sta     vSide
+        call    DrawSideIndicator
+        ret
+
 ; ************************************************************************
 ; Select drive 0 (B:)
 ; ************************************************************************
@@ -642,6 +649,8 @@ _Restore
         out     PORT_SECTOR
         mvi     a, CMD_RESTORE
         out     PORT_CMD
+        
+        call    ResetSide
         ret
 
 ; ************************************************************************
