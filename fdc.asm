@@ -314,20 +314,8 @@ SectorRead
         ora     a
         jz      MenuLoop
 
-        call    PaintSectorTemplate
-        
-        lxi     h, DataBuf
-        call    ReadSector
+        call    ReadSectorCheckAndPaintResult
 
-        call    CheckResult
-        jnz     SRErr
-
-        call    PaintSectorMarkGood
-        call    DumpSector
-        jmp     MenuLoop
-
-SRErr
-        call    PaintSectorMarkBad
         jmp     MenuLoop
 
 ; ********************************************
