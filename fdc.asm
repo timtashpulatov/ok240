@@ -88,10 +88,31 @@ SCREEN          equ     0c000h
         ; call    PaintBitmap
 
 
+        lxi     h, BMP_SECTOR_UNK
+        lxi     b, 0008h
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_BAD
+        lxi     b, 0208h
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_GOOD
+        lxi     b, 0408h
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_UGLY
+        lxi     b, 0608h
+        mvi     a, 3
+        call    PaintBitmap
+
+
+        call    DrawSectorsTemplate
 
         mvi     a, 2
         sta     PrintColor
-
 
 MenuLoop
 
@@ -375,6 +396,28 @@ ReadSector
         call    ReadDataLoop
 
         ret
+        
+; ********************************************
+; Draw two lines of placeholders for sector readout
+; ********************************************
+DrawSectorsTemplate
+        lxi     h, BMP_SECTOR_UNK
+        lxi     bc, 0100h
+        push    bc
+        call    DrawSectorsTempliteLine
+        pop     bc
+        inr     c
+        jmp     DrawSectorsTempliteLine
+        
+DrawSectorsTempliteLine
+        call    _PaintSectorMark
+        mov     a, b
+        inr     a
+        cpi     27    ; in theory, there can be 26 sectors (or more)
+        rz
+        mov     b, a
+        jmp     DrawSectorsTempliteLine
+
 
 ; ********************************************
 ; Paint sector mark
@@ -1181,12 +1224,10 @@ MainMenu
         ; db      ESC, '8', 03
         ; dw      CRLF
         db      ESC, 5, 22h, 20h
-        db      '0 - Select drive 0' \ dw CRLF
-        db      '1 - Select drive 1' \ dw CRLF
+        db      '0/1 - Select drive 0/1' \ dw CRLF
         db      'S - Side toggle' \ dw CRLF
         db      'M - Motor' \ dw CRLF
-        db      'H - Home (seek to track 00)' \ dw CRLF
-        db      'E - Seek to track 79' \ dw CRLF
+        db      'H/E - Home/End (seek to track 00/79)' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
         db      'T - Track read' \ dw CRLF
         db      'R - Sector read' \ dw CRLF
@@ -1280,17 +1321,28 @@ BMP_CRC_INACTIVE
 BMP_SECTOR_UNK
         ; db      00, 28h, 2Ah, 2Ah, 4Ah, 28h, 7Fh, 7Fh
         ; db      00, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh, 7Fh
-        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
-        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        
+        db      55h, 2ah, 0, 55h, 2ah, 55h, 2ah, 0
+        db      55h, 2ah, 0, 55h, 2ah, 55h, 2ah, 0
+        
 BMP_SECTOR_BAD
-        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
-        db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
+        ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
+        db      7fh, 7fh, 0, 55h, 2ah, 55h, 2ah, 0
+        db      0, 0, 0, 55h, 2ah, 55h, 2ah, 0
 BMP_SECTOR_GOOD
-        db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
-        db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
+        ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 7fh, 0, 7fh, 7fh, 7fh, 7fh, 0
 BMP_SECTOR_UGLY
-        db      00, 7fh, 55h, 55h, 4bh, 4bh, 41h, 7fh
-        db      00, 7fh, 4bh, 4bh, 55h, 55h, 41h, 7fh
+        ; db      00, 7fh, 55h, 55h, 4bh, 4bh, 41h, 7fh
+        ; db      00, 7fh, 4bh, 4bh, 55h, 55h, 41h, 7fh
+        db      0, 0, 0, 7fh, 7fh, 7fh, 7fh, 0
+        db      7fh, 7fh, 0, 0, 0, 0, 0, 0
+
 
 BMP_SIDE
         db      0, 10h, 3ch, 7ch, 7ch, 3ch, 10h, 0
