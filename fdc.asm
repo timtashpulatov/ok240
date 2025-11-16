@@ -88,58 +88,11 @@ SCREEN          equ     0c000h
         ; call    PaintBitmap
 
 
-        lxi     h, BMP_SECTOR_UNK
-        lxi     b, 0008h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_SECTOR_BAD
-        lxi     b, 0208h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_SECTOR_GOOD
-        lxi     b, 0408h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_SECTOR_UGLY
-        lxi     b, 0608h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_SECTOR_ID_GOOD
-        lxi     b, 0808h
-        mvi     a, 3
-        call    PaintBitmap
-
 
 
         call    DrawSectorsTemplate
+        call    DrawSectorsRuler
 
-        lxi     hl, BMP_ONE
-        mvi     b, (SECTEMPLATE_COL)*2
-        mvi     c, (SECTEMPLATE_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     hl, BMP_NINE
-        mvi     b, (SECTEMPLATE_COL+8)*2
-        mvi     c, (SECTEMPLATE_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     hl, BMP_SWEET_FIFTEEN
-        mvi     b, (SECTEMPLATE_COL+14)*2
-        mvi     c, (SECTEMPLATE_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     hl, BMP_TWENTY_SIX
-        mvi     b, (SECTEMPLATE_COL+25)*2
-        mvi     c, (SECTEMPLATE_ROW-1)*8
-        mvi     a, 3
-        call    PaintBitmap
 
         lxi     d, HEX_DASH
         lxi     b, 0878h
@@ -453,6 +406,63 @@ DrawSectorsTempliteLine
         rz
         mov     b, a
         jmp     DrawSectorsTempliteLine
+
+DrawSectorsRuler
+        lxi     hl, BMP_ONE
+        mvi     b, (SECTEMPLATE_COL)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     hl, BMP_NINE
+        mvi     b, (SECTEMPLATE_COL+8)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     hl, BMP_SWEET_FIFTEEN
+        mvi     b, (SECTEMPLATE_COL+14)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     hl, BMP_TWENTY_SIX
+        mvi     b, (SECTEMPLATE_COL+25)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+
+; test misc sector marks
+
+        lxi     h, BMP_SECTOR_BAD
+        mvi     b, (SECTEMPLATE_COL+9)*2
+        mvi     c, SECTEMPLATE_ROW*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_GOOD
+        mvi     b, (SECTEMPLATE_COL+10)*2
+        mvi     c, SECTEMPLATE_ROW*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_UGLY
+        mvi     b, (SECTEMPLATE_COL+11)*2
+        mvi     c, SECTEMPLATE_ROW*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_SECTOR_ID_GOOD
+        mvi     b, (SECTEMPLATE_COL+12)*2
+        mvi     c, SECTEMPLATE_ROW*8
+
+        mvi     a, 3
+        call    PaintBitmap
+
+
+
+        ret
 
 
 ; ********************************************
