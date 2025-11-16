@@ -534,7 +534,7 @@ ReadDone
 ; поставим галочку на прочитанном секторе
         mov     b, a    ; sector number
         call    ConvertSideToBinary
-        lxi     h, BMP_SECTOR_GOOD
+        lxi     h, BMP_SECTOR_ID_GOOD
         call    _PaintSectorMark
         
         jmp     MenuLoop
