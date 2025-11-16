@@ -113,7 +113,33 @@ SCREEN          equ     0c000h
         mvi     a, 3
         call    PaintBitmap
 
+
+
         call    DrawSectorsTemplate
+
+        lxi     hl, BMP_ONE
+        mvi     b, (SECTEMPLATE_COL)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     hl, BMP_NINE
+        mvi     b, (SECTEMPLATE_COL+8)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     hl, BMP_SWEET_FIFTEEN
+        mvi     b, (SECTEMPLATE_COL+14)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     hl, BMP_TWENTY_SIX
+        mvi     b, (SECTEMPLATE_COL+25)*2
+        mvi     c, (SECTEMPLATE_ROW-1)*8
+        mvi     a, 3
+        call    PaintBitmap
 
         mvi     a, 2
         sta     PrintColor
@@ -832,6 +858,7 @@ DHB
 
 ; *************************************************
 ; _PrintHex
+; BC = screen position
 ; *************************************************
 _PrintHex
         push    a
@@ -846,6 +873,7 @@ _PrintHex
 
 ; *************************************************
 ; _PrintHexNibble
+; BC = screen position
 ; *************************************************
 _PrintHexNibble
         push    hl
@@ -1328,29 +1356,45 @@ BMP_SECTOR_UNK
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         
-        db      55h, 2ah, 0, 55h, 2ah, 55h, 0, 0
-        db      55h, 2ah, 0, 55h, 2ah, 55h, 0, 0
+        db      0, 55h, 2ah, 0, 55h, 2ah, 55h, 0
+        db      0, 55h, 2ah, 0, 55h, 2ah, 55h, 0
         
 BMP_SECTOR_BAD
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
-        db      7fh, 7fh, 0, 55h, 2ah, 55h, 0, 0
-        db      0, 0, 0, 55h, 2ah, 55h, 0, 0
+        db      0, 7fh, 7fh, 0, 55h, 2ah, 55h, 0
+        db      0, 0, 0, 0, 55h, 2ah, 55h, 0
 BMP_SECTOR_GOOD
         ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         db      0, 0, 0, 0, 0, 0, 0, 0
-        db      7fh, 7fh, 0, 7fh, 7fh, 7fh, 0, 0
+        db      0, 7fh, 7fh, 0, 7fh, 7fh, 7fh, 0
 BMP_SECTOR_ID_GOOD
         ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
-        db      0, 0, 0, 55h, 2ah, 55h, 0, 0
-        db      7fh, 7fh, 0, 55h, 2ah, 55h, 0, 0
+        db      0, 0, 0, 0, 55h, 2ah, 55h, 0
+        db      0, 7fh, 7fh, 0, 55h, 2ah, 55h, 0
 BMP_SECTOR_UGLY
         ; db      00, 7fh, 55h, 55h, 4bh, 4bh, 41h, 7fh
         ; db      00, 7fh, 4bh, 4bh, 55h, 55h, 41h, 7fh
-        db      0, 0, 0, 7fh, 7fh, 7fh, 0, 0
-        db      7fh, 7fh, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 7fh, 7fh, 7fh, 0
+        db      0, 7fh, 7fh, 0, 0, 0, 0, 0
+
+BMP_ONE
+        db      0, 0, 16, 16, 16, 16, 16, 0
+        db      0, 0, 16, 16, 16, 16, 16, 0
+
+BMP_NINE
+        db      0, 0, 38h, 28h, 38h, 20h, 38h, 0
+        db      0, 0, 38h, 28h, 38h, 20h, 38h, 0
+
+BMP_SWEET_FIFTEEN
+        db      0, 0, 74h, 14h, 74h, 44h, 74h, 0
+        db      0, 0, 74h, 14h, 74h, 44h, 74h, 0
+
+BMP_TWENTY_SIX
+        db      0, 0, 77h, 14h, 77h, 51h, 77h, 0
+        db      0, 0, 77h, 14h, 77h, 51h, 77h, 0
 
 
 BMP_SIDE
