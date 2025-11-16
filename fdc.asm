@@ -141,6 +141,12 @@ SCREEN          equ     0c000h
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     d, HEX_DASH
+        lxi     b, 0878h
+        call    FillTempChar
+        call    PrintTempChar
+
+
         mvi     a, 2
         sta     PrintColor
 
@@ -1478,6 +1484,8 @@ HEXFONT
         db      38h, 4, 4, 38h, 4, 4, 38h, 0            // e
         db      38h, 4, 4, 38h, 4, 4, 0, 0              // f
 
+HEX_DASH
+        db      0, 0, 0, 38h, 0, 0, 0, 0
 
 aPosFloppyPort
         db      ESC, 5, 20h, 20h+30, 0
