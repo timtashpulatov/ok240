@@ -108,6 +108,10 @@ SCREEN          equ     0c000h
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_SECTOR_ID_GOOD
+        lxi     b, 0808h
+        mvi     a, 3
+        call    PaintBitmap
 
         call    DrawSectorsTemplate
 
@@ -1324,23 +1328,28 @@ BMP_SECTOR_UNK
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         
-        db      55h, 2ah, 0, 55h, 2ah, 55h, 2ah, 0
-        db      55h, 2ah, 0, 55h, 2ah, 55h, 2ah, 0
+        db      55h, 2ah, 0, 55h, 2ah, 55h, 0, 0
+        db      55h, 2ah, 0, 55h, 2ah, 55h, 0, 0
         
 BMP_SECTOR_BAD
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
-        db      7fh, 7fh, 0, 55h, 2ah, 55h, 2ah, 0
-        db      0, 0, 0, 55h, 2ah, 55h, 2ah, 0
+        db      7fh, 7fh, 0, 55h, 2ah, 55h, 0, 0
+        db      0, 0, 0, 55h, 2ah, 55h, 0, 0
 BMP_SECTOR_GOOD
         ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
         ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
         db      0, 0, 0, 0, 0, 0, 0, 0
-        db      7fh, 7fh, 0, 7fh, 7fh, 7fh, 7fh, 0
+        db      7fh, 7fh, 0, 7fh, 7fh, 7fh, 0, 0
+BMP_SECTOR_ID_GOOD
+        ; db      00, 7Fh, 41h, 41h, 41h, 41h, 41h, 7Fh
+        ; db      00, 7Fh, 5Fh, 5Fh, 5Fh, 5Fh, 41h, 7Fh
+        db      0, 0, 0, 55h, 2ah, 55h, 0, 0
+        db      7fh, 7fh, 0, 55h, 2ah, 55h, 0, 0
 BMP_SECTOR_UGLY
         ; db      00, 7fh, 55h, 55h, 4bh, 4bh, 41h, 7fh
         ; db      00, 7fh, 4bh, 4bh, 55h, 55h, 41h, 7fh
-        db      0, 0, 0, 7fh, 7fh, 7fh, 7fh, 0
+        db      0, 0, 0, 7fh, 7fh, 7fh, 0, 0
         db      7fh, 7fh, 0, 0, 0, 0, 0, 0
 
 
