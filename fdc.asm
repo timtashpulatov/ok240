@@ -61,6 +61,13 @@ SCREEN          equ     0c000h
 
         ; call    ResetScroll
 
+
+Loop
+        call    ProcessTasks
+        jmp     Loop
+
+
+
         lxi     h, MainMenu
         call    PrintString
 
@@ -1314,12 +1321,22 @@ PTLoop
 ; skip timer address
         inx     hl
         inx     hl
+; DE = process addr        
+
+        push    hl
+        push    de
+
+                xchg
+                
+                ; save return addr
+                lxi     de, PTRet
+                push    de
+                
+                pchl
+PTRet
+        pop     de
+        pop     hl
         
-        xchg
-
-        ; pchl
-
-        xchg
         jmp     PTLoop
 
 PTDone
