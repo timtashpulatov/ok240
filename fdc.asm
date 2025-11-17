@@ -1304,6 +1304,23 @@ ProcessTasks
         push    de
         lxi     hl, TasksList
 PTLoop
+        mov     e, m
+        inx     hl
+        mov     a, m
+        ora     e
+        jz      PTDone  ; 00 00 = end of list
+        mov     d, m
+        inx     hl
+; skip timer address
+        inx     hl
+        inx     hl
+        
+        xchg
+
+        ; pchl
+
+        xchg
+        jmp     PTLoop
 
 PTDone
         pop     de
