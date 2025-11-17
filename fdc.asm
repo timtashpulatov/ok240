@@ -62,9 +62,9 @@ SCREEN          equ     0c000h
         ; call    ResetScroll
 
 
-Loop
-        call    ProcessTasks
-        jmp     Loop
+; Loop
+;         call    ProcessTasks
+;         jmp     Loop
 
 
 
@@ -97,8 +97,8 @@ Loop
 
 
 
-        call    DrawSectorsTemplate
         call    DrawSectorsRuler
+        call    DrawSectorsTemplate
 
 
         lxi     d, HEX_DASH
@@ -255,6 +255,10 @@ SecNext
 ; TrackLoop
 ; ************************************************************************
 TrackLoop
+
+        call    DrawSectorsTemplate
+
+
         call    _MotorStart
         call    _WaitForIdle
         ora     a
@@ -521,6 +525,8 @@ _PaintSectorMark
 ReadNextID
 ; start motor
 ; wait for !Busy
+
+        call    DrawSectorsTemplate
 
         call    _MotorStart
         call    _WaitForIdle
