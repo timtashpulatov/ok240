@@ -105,7 +105,8 @@ SCREEN          equ     0c000h
 
 MenuLoop
 
-        ; call    WaitForKey
+        ; mvi     a, 1
+        ; call    Delay
         
         call    CONST
         inr     a
@@ -1219,6 +1220,7 @@ C8Loop  ldax    d
 
 ; ************************************************************************
 ; Delay synched with Vertical Retrace
+; A = number of 20ms ticks
 ; ************************************************************************
 Delay
         push    bc
@@ -1233,12 +1235,89 @@ WaitForVRDone
         ani     2
         jnz     WaitForVRDone
 
+; update free-running Tick counter
+        lda     Ticks
+        inr     a
+        sta     Ticks
+
+; update soft timers
+        call    UpdateTimers
+
         dcr     c
         jnz     WaitForVR
         
         pop     bc
         ret
 
+; ************************************************************************
+; Update soft timers
+; ************************************************************************
+UpdateTimers
+        push    hl
+        push    de
+        lxi     hl, TimersList
+UTLoop
+        mov     e, m
+        inx     hl
+        mov     a, m
+        ora     e
+        jz      UTDone  ; 00 00 = end of list
+        mov     d, m
+        inx     hl
+; skip task address
+        inx     hl
+        inx     hl
+        
+        xchg
+        xra     a
+        ora     m
+        jz      UTNext  ; do not decrement expired Timer
+        dcr     m
+UTNext
+        xchg
+        jmp     UTLoop
+
+UTDone        
+        pop     de
+        pop     hl
+        ret
+
+; ************************************************************************
+; Timers'n'Tasks list format:
+;       dw      Timer1 pointer, Task1 pointer
+;       dw      TimerN pointer, TaskN pointer
+;       dw      0, 0
+; ************************************************************************
+TimersList
+        dw      TimScroller
+TasksList        
+        dw      ScrollerTask
+        dw      TimGlow, GlowTask
+        dw      0, 0
+
+
+; ************************************************************************
+; Process task list
+; ************************************************************************
+ProcessTasks
+        push    hl
+        push    de
+        lxi     hl, TasksList
+PTLoop
+
+PTDone
+        pop     de
+        pop     hl
+        ret
+
+; ************************************************************************
+; Scroller
+; ************************************************************************
+ScrollerTask
+        ret
+
+GlowTask
+        ret
 
 ; ; *************************************************
 ; ; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
@@ -1288,6 +1367,10 @@ MainMenu
         ; db      ESC, 5, 20h+16, 20h
         ; db      'DATA FIELD'
         
+        db      0
+
+ScrollerText
+        db      'Friendly scroller - '
         db      0
 
 ; ************************************************************************
@@ -1506,6 +1589,10 @@ aPosStatusReg
         
 vPortFloppy     db      DRIVE_SELECT | DRIVE_0  ; дисковод B: по умолчанию (а мог бы быть C:)
 vSide           db      0
+
+Ticks           db      0       ; free-running VR (20ms hopefully) counter
+TimScroller     db      10      ; 10 * 20 = 200 ms
+TimGlow         db      5       ; 5 * 20 = 100 ms
 
 ; Цвет выводимых символов
 PrintColor      db      3
