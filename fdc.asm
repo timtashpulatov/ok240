@@ -180,7 +180,7 @@ DTShiftMaskLoopDone
         pop     hl
         ret
         
-; AND contents of TempChar with inverted mask
+; AND contents of TempChar with mask
 MaskTempChar
         push    bc
         lxi     hl, TempChar
@@ -198,7 +198,11 @@ MTCLoop
         ret
 
 
+
+
 Cont
+
+
 
 
         call    DrawSectorsRuler
@@ -1649,6 +1653,14 @@ BMP_SIDE
 BMP_4TRACK_TEMPLATE
         db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
         db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
+
+BMP_4TRACK_MASKS
+        db      0b11111111      ; for track ..0
+        db      0b00111111      ; for track ..1
+        db      0b00001111      ; for track ..2
+        db      0b00000011      ; for track ..3
+
+
 
 BMP_ID
 BMP_ID_UPPER_LEFT_CORNER
