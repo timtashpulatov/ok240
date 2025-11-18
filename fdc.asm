@@ -150,21 +150,25 @@ DrawTrack
         ani     3
         inr     a
         mov     e, a
-        mvi     a, 0ffh
+        xra     a
 DTShiftMaskLoop
         dcr     e
         jz      DTShiftMaskLoopDone
-        ora     a
-        rar     a
-        ora     a
-        rar     a
+        
+        stc
+        ral     a
+        stc     a
+        ral     a
+
         jmp     DTShiftMaskLoop
 DTShiftMaskLoopDone
-        cma
         mov     e, a
-; E = inverted mask (ff, 3f, 0f, or 03)
+; E = mask (00, c0, f0, fc)
 
         call    MaskTempChar
+        
+        
+        
         
         lxi     hl, TempChar
         mvi     a, 3
