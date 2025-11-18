@@ -95,6 +95,106 @@ SCREEN          equ     0c000h
         ; call    PaintBitmap
 
 
+        lxi     hl, BMP_4TRACK_TEMPLATE
+        lxi     bc, 0018h
+        mvi     a, 3
+        call    PaintBitmap
+
+
+        lxi     d, BMP_4TRACK_TEMPLATE
+        call    FillTempChar
+
+        mvi     a, 0
+        call    DrawTrack
+
+        lxi     d, BMP_4TRACK_TEMPLATE
+        call    FillTempChar
+
+        mvi     a, 5
+        call    DrawTrack
+
+        lxi     d, BMP_4TRACK_TEMPLATE
+        call    FillTempChar
+
+        mvi     a, 10
+        call    DrawTrack
+
+        lxi     d, BMP_4TRACK_TEMPLATE
+        call    FillTempChar
+
+        mvi     a, 15
+        call    DrawTrack
+
+
+
+        jmp     Cont
+
+; A = track number
+DrawTrack
+; calculate screen col position
+        push    hl
+        
+        
+        
+        push    a
+        rar     a
+        rar     a       ; divide by 4
+        add     a       ; double
+        ani     3fh
+        mov     b, a
+        
+        pop     a
+        mvi     c, 8
+        
+; calculate mask shift
+        ani     3
+        inr     a
+        mov     e, a
+        mvi     a, 0ffh
+DTShiftMaskLoop
+        dcr     e
+        jz      DTShiftMaskLoopDone
+        ora     a
+        rar     a
+        ora     a
+        rar     a
+        jmp     DTShiftMaskLoop
+DTShiftMaskLoopDone
+        cma
+        mov     e, a
+; E = inverted mask (ff, 3f, 0f, or 03)
+
+        call    MaskTempChar
+        
+        lxi     hl, TempChar
+        mvi     a, 3
+        call    PaintBitmap
+        
+        ; call    PrintTempChar
+
+
+        pop     hl
+        ret
+        
+; AND contents of TempChar with inverted mask
+MaskTempChar
+        push    bc
+        lxi     hl, TempChar
+        mvi     c, 16
+MTCLoop
+        mov     a, m
+        ana     e
+        mov     m, a
+        
+        inx     hl
+        dcr     c
+        jnz     MTCLoop
+        
+        pop     bc
+        ret
+
+
+Cont
 
 
         call    DrawSectorsRuler
@@ -1538,10 +1638,13 @@ BMP_TWENTY_SIX
         db      0, 0, 77h, 14h, 77h, 51h, 77h, 0
         db      0, 0, 77h, 14h, 77h, 51h, 77h, 0
 
-
 BMP_SIDE
         db      0, 10h, 3ch, 7ch, 7ch, 3ch, 10h, 0
         db      18h, 2eh, 42h, 82h, 0feh, 7eh, 3eh, 18h
+
+BMP_4TRACK_TEMPLATE
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
 
 BMP_ID
 BMP_ID_UPPER_LEFT_CORNER
