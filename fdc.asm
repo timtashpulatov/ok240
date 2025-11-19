@@ -78,58 +78,6 @@ SCREEN          equ     0c000h
 
         call    DrawSideIndicator
 
-
-        ; lxi     h, BMP_ID_UPPER_LEFT_CORNER
-        ; lxi     b, (SIDEINDICATOR_COL*2<<8) + (SIDEINDICATOR_ROW-1)*8
-        ; mvi     a, 3
-        ; call    PaintBitmap
-
-        ; lxi     h, BMP_ID_TAB
-        ; lxi     b, ((SIDEINDICATOR_COL+1)*2<<8) + (SIDEINDICATOR_ROW-1)*8
-        ; mvi     a, 3
-        ; call    PaintBitmap
-
-        ; lxi     h, BMP_ID_UPPER_RIGHT_CORNER
-        ; lxi     b, ((SIDEINDICATOR_COL+26)*2<<8) + (SIDEINDICATOR_ROW-1)*8
-        ; mvi     a, 3
-        ; call    PaintBitmap
-
-
-;         lxi     hl, BMP_4TRACK_TEMPLATE
-;         lxi     bc, 0018h
-;         mvi     a, 3
-;         call    PaintBitmap
-
-
-; TRACK_BAD       equ     80h
-
-;         mvi     a, 0
-;         call    DrawTrack
-
-;         mvi     a, 4
-;         call    DrawTrack
-        
-;         mvi     a, 5 | TRACK_BAD
-;         call    DrawTrack
-
-;         mvi     a, 8
-;         call    DrawTrack
-        
-;         mvi     a, 9 | TRACK_BAD
-;         call    DrawTrack
-;         mvi     a, 10
-;         call    DrawTrack
-
-;         mvi     a, 12 | TRACK_BAD
-;         call    DrawTrack
-;         mvi     a, 13
-;         call    DrawTrack
-;         mvi     a, 14 
-;         call    DrawTrack
-;         mvi     a, 15 | TRACK_BAD
-;         call    DrawTrack
-
-
         lxi     b, 0c08h
         lxi     hl, BMP_4TRACK_TEMPLATE
         mvi     e, 20
@@ -140,139 +88,13 @@ SCREEN          equ     0c000h
         mvi     e, 20
         call    PaintRowOfSameBitmap
 
-
-        jmp     Cont
-
-; A = track number
-; bit 7 set for BAD track
-DrawTrack
-
-TRACK_GAUGE_X   equ     6
-TRACK_GAUGE_Y   equ     16
-
-; calculate screen position
-        push    hl
-        push    de
-
-        
-        lxi     hl, BMP_GOOD_TRACK_PHASES
-        rlc     a
-        jnc      DT0
-        lxi     hl, BMP_BAD_TRACK_PHASES
-DT0
-        rrc     a
-
-        push    a
-        rar     a
-        rar     a       ; divide by 4
-        add     a       ; double
-        ani     3fh
-        adi     TRACK_GAUGE_X * 2
-        mov     b, a    ; col (horizontal X position)
-        
-        mvi     c, TRACK_GAUGE_Y        ; row (vertical Y position)     TODO take SIDE into account
-        lda     vSide
-        ora     a
-        jz      DT1
-        mvi     c, TRACK_GAUGE_Y-8
-DT1        
-        
-        
-        
-        
-        
-        pop     a
-
-        push    bc      ; save XY position
-
-        ani     3       ; get phase (0, 1, 2, 3)
-
-        push    hl
-        
-        lxi     hl, BMP_4TRACK_MASKS
-        mov     e, a
-        mvi     d, 0
-        dad     d       ; HL points to necessary phase mask
-        mov     b, m    ; B = mask
-        
-        pop     hl
-
-
-
-        add     a
-        add     a
-        add     a
-        add     a
-        
-        mov     e, a
-        mvi     d, 0
-        dad     d       ; HL points to necessary phase bitmap
-
-        call    ANDORToTempChar
-
-        pop     bc      ; restore XY position
-
-        lxi     hl, TempChar
-        mvi     a, 3
-        call    PaintBitmap
-        
-        ; call    PrintTempChar
-
-
-        pop     de
-        pop     hl
-        ret
-        
-; Mask contents of TempChar, then OR with new data
-; HL = new data
-; B = AND mask
-ANDORToTempChar
-        push    de
-        push    bc
-        
-        lxi     de, TempChar
-        mvi     c, 16
-MTCLoop
-; AND buf contents with mask from B
-        xchg    ; HL = TempChar
-        mov     a, m
-        ana     b
-        mov     m, a
-        xchg
-; OR buf contents with data from (HL)
-
-        mov     a, m
-        xchg
-        ora     m
-        mov     m, a
-        xchg
-        
-        inx     hl
-        inx     de
-        dcr     c
-        jnz     MTCLoop
-        
-        pop     bc
-        pop     de
-        ret
-
-
-
-
-Cont
-
-
-
-
         call    DrawSectorsRuler
         call    DrawSectorsTemplate
-
 
         lxi     d, HEX_DASH
         lxi     b, 0878h
         call    FillTempChar
         call    PrintTempChar
-
 
         mvi     a, 2
         sta     PrintColor
@@ -403,6 +225,109 @@ SDLoop
         pop     a
         pop     hl
         ret
+
+; ************************************************************************
+; Draw track
+; ************************************************************************
+; A = track number
+; bit 7 set for BAD track
+DrawTrack
+
+TRACK_GAUGE_X   equ     6
+TRACK_GAUGE_Y   equ     16
+
+; calculate screen position
+        push    hl
+        push    de
+
+        lxi     hl, BMP_GOOD_TRACK_PHASES
+        rlc     a
+        jnc      DT0
+        lxi     hl, BMP_BAD_TRACK_PHASES
+DT0
+        rrc     a
+
+        push    a
+        rar     a
+        rar     a       ; divide by 4
+        add     a       ; double
+        ani     3fh
+        adi     TRACK_GAUGE_X * 2
+        mov     b, a    ; col (horizontal X position)
+        
+        mvi     c, TRACK_GAUGE_Y        ; row (vertical Y position)     TODO take SIDE into account
+        lda     vSide
+        ora     a
+        jz      DT1
+        mvi     c, TRACK_GAUGE_Y-8
+DT1        
+        pop     a
+        push    bc      ; save XY position
+        ani     3       ; get phase (0, 1, 2, 3)
+        push    hl
+        
+        lxi     hl, BMP_4TRACK_MASKS
+        mov     e, a
+        mvi     d, 0
+        dad     d       ; HL points to necessary phase mask
+        mov     b, m    ; B = mask
+        
+        pop     hl
+
+        add     a
+        add     a
+        add     a
+        add     a
+        
+        mov     e, a
+        mvi     d, 0
+        dad     d       ; HL points to necessary phase bitmap
+
+        call    ANDORToTempChar
+
+        pop     bc      ; restore XY position
+
+        lxi     hl, TempChar
+        mvi     a, 3
+        call    PaintBitmap
+
+        pop     de
+        pop     hl
+        ret
+        
+; Mask contents of TempChar, then OR with new data
+; HL = new data
+; B = AND mask
+ANDORToTempChar
+        push    de
+        push    bc
+        
+        lxi     de, TempChar
+        mvi     c, 16
+ANDORLoop
+; AND buf contents with mask from B
+        xchg    ; HL = TempChar
+        mov     a, m
+        ana     b
+        mov     m, a
+        xchg
+; OR buf contents with data from (HL)
+
+        mov     a, m
+        xchg
+        ora     m
+        mov     m, a
+        xchg
+        
+        inx     hl
+        inx     de
+        dcr     c
+        jnz     ANDORLoop
+        
+        pop     bc
+        pop     de
+        ret
+
 
 ; ************************************************************************
 ; Continuous drill
@@ -553,7 +478,7 @@ RSCAPErr1
 ; Sector read
 ; ************************************************************************
 SECTEMPLATE_ROW equ     18
-SECTEMPLATE_COL equ     4
+SECTEMPLATE_COL equ     3
 
 SectorRead
         call    _MotorStart
