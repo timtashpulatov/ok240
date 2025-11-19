@@ -120,9 +120,9 @@ TRACK_BAD       equ     80h
         mvi     a, 10
         call    DrawTrack
 
-        mvi     a, 12
+        mvi     a, 12 | TRACK_BAD
         call    DrawTrack
-        mvi     a, 13 | TRACK_BAD
+        mvi     a, 13
         call    DrawTrack
         mvi     a, 14 
         call    DrawTrack
@@ -160,10 +160,6 @@ DT0
         push    bc      ; save XY position
 
         ani     3       ; get phase (0, 1, 2, 3)
-;         jnz     DT1
-;         lxi     de, BMP_VOID
-;         call    FillTempChar    ; clear tmp buffer for phase 0
-; DT1
 
         push    hl
         
@@ -318,11 +314,52 @@ MenuKeys
         db      'T' \ dw TrackLoop
         db      'R' \ dw SectorRead
         db      'C' \ dw ContinuousDrill
+        db      'D' \ dw DiskScan
         db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
 
+
+; ************************************************************************
+; Disk scan
+; ************************************************************************
+DiskScan
+
+        xra     a
+DSLoop
+        push    a
+        call    DrawTrack
+        mvi     a, 5
+        call    SmallDelay
+        pop     a
+        
+        inr     a
+        cpi     80
+        jnz     DSLoop
+
+        jmp     MenuLoop
+
+
+SmallDelay
+        push    hl
+        push    a
+
+SD0
+        lxi     hl, 03fffh
+        push    a
+SDLoop
+                dcx     hl
+                mov     a, h
+                ora     l
+                jnz     SDLoop
+        pop     a
+        dcr     a
+        jnz     SD0
+        
+        pop     a
+        pop     hl
+        ret
 
 ; ************************************************************************
 ; Continuous drill
@@ -1556,6 +1593,7 @@ MainMenu
         db      'T - Track read' \ dw CRLF
         db      'R - Sector read' \ dw CRLF
         db      'C - Continuous drill' \ dw CRLF
+        db      'D - Disk scan' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
         
