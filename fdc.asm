@@ -136,6 +136,10 @@ SCREEN          equ     0c000h
 ; A = track number
 ; bit 7 set for BAD track
 DrawTrack
+
+TRACK_GAUGE_X   equ     6
+TRACK_GAUGE_Y   equ     16
+
 ; calculate screen position
         push    hl
         push    de
@@ -153,8 +157,20 @@ DT0
         rar     a       ; divide by 4
         add     a       ; double
         ani     3fh
+        adi     TRACK_GAUGE_X * 2
         mov     b, a    ; col (horizontal X position)
-        mvi     c, 8    ; row (vertical Y position)     TODO use constants      TODO take SIDE into account
+        
+        mvi     c, TRACK_GAUGE_Y        ; row (vertical Y position)     TODO take SIDE into account
+        lda     vSide
+        ora     a
+        jz      DT1
+        mvi     c, TRACK_GAUGE_Y-8
+DT1        
+        
+        
+        
+        
+        
         pop     a
 
         push    bc      ; save XY position
@@ -338,6 +354,23 @@ DSLoop
         cpi     80
         jnz     DSLoop
 
+        call    _SideToggle 
+
+        xra     a
+DSLoop1
+        push    a
+        call    DrawTrack
+        mvi     a, 5
+        call    SmallDelay
+        pop     a
+        
+        inr     a
+        cpi     80
+        jnz     DSLoop1
+
+
+
+
         jmp     MenuLoop
 
 
@@ -346,7 +379,7 @@ SmallDelay
         push    a
 
 SD0
-        lxi     hl, 03fffh
+        lxi     hl, 01fffh
         push    a
 SDLoop
                 dcx     hl
@@ -627,32 +660,32 @@ DrawSectorsRuler
         call    PaintBitmap
 
 
-; test misc sector marks
+; ; test misc sector marks
 
-        lxi     h, BMP_SECTOR_BAD
-        mvi     b, (SECTEMPLATE_COL+9)*2
-        mvi     c, SECTEMPLATE_ROW*8
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     h, BMP_SECTOR_BAD
+;         mvi     b, (SECTEMPLATE_COL+9)*2
+;         mvi     c, SECTEMPLATE_ROW*8
+;         mvi     a, 3
+;         call    PaintBitmap
 
-        lxi     h, BMP_SECTOR_GOOD
-        mvi     b, (SECTEMPLATE_COL+10)*2
-        mvi     c, SECTEMPLATE_ROW*8
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     h, BMP_SECTOR_GOOD
+;         mvi     b, (SECTEMPLATE_COL+10)*2
+;         mvi     c, SECTEMPLATE_ROW*8
+;         mvi     a, 3
+;         call    PaintBitmap
 
-        lxi     h, BMP_SECTOR_UGLY
-        mvi     b, (SECTEMPLATE_COL+11)*2
-        mvi     c, SECTEMPLATE_ROW*8
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     h, BMP_SECTOR_UGLY
+;         mvi     b, (SECTEMPLATE_COL+11)*2
+;         mvi     c, SECTEMPLATE_ROW*8
+;         mvi     a, 3
+;         call    PaintBitmap
 
-        lxi     h, BMP_SECTOR_ID_GOOD
-        mvi     b, (SECTEMPLATE_COL+12)*2
-        mvi     c, SECTEMPLATE_ROW*8
+;         lxi     h, BMP_SECTOR_ID_GOOD
+;         mvi     b, (SECTEMPLATE_COL+12)*2
+;         mvi     c, SECTEMPLATE_ROW*8
 
-        mvi     a, 3
-        call    PaintBitmap
+;         mvi     a, 3
+;         call    PaintBitmap
 
 
 
