@@ -101,28 +101,32 @@ SCREEN          equ     0c000h
         call    PaintBitmap
 
 
+TRACK_BAD       equ     80h
+
         mvi     a, 0
         call    DrawTrack
 
         mvi     a, 4
         call    DrawTrack
-        mvi     a, 5
+        
+        mvi     a, 5 | TRACK_BAD
         call    DrawTrack
 
         mvi     a, 8
         call    DrawTrack
-        mvi     a, 9
+        
+        mvi     a, 9 | TRACK_BAD
         call    DrawTrack
         mvi     a, 10
         call    DrawTrack
 
         mvi     a, 12
         call    DrawTrack
-        mvi     a, 13
+        mvi     a, 13 | TRACK_BAD
         call    DrawTrack
-        mvi     a, 14
+        mvi     a, 14 
         call    DrawTrack
-        mvi     a, 15
+        mvi     a, 15 | TRACK_BAD
         call    DrawTrack
 
 
@@ -130,12 +134,19 @@ SCREEN          equ     0c000h
         jmp     Cont
 
 ; A = track number
+; bit 7 set for BAD track
 DrawTrack
-; calculate screen col position
+; calculate screen position
         push    hl
         push    de
 
-        lxi     hl, BMP_GOOD_TRACK_PHASES       ; TODO input parameter to select GOOD or BAD track
+        
+        lxi     hl, BMP_GOOD_TRACK_PHASES
+        rlc     a
+        jnc      DT0
+        lxi     hl, BMP_BAD_TRACK_PHASES
+DT0
+        rrc     a
 
         push    a
         rar     a
@@ -143,16 +154,16 @@ DrawTrack
         add     a       ; double
         ani     3fh
         mov     b, a    ; col (horizontal X position)
-        mvi     c, 8    ; row (vertical Y position)
+        mvi     c, 8    ; row (vertical Y position)     TODO use constants
         pop     a
 
         push    bc      ; save XY position
 
         ani     3       ; get phase (0, 1, 2, 3)
-        jnz     DT1
-        lxi     de, BMP_VOID
-        call    FillTempChar    ; clear tmp buffer for phase 0
-DT1
+;         jnz     DT1
+;         lxi     de, BMP_VOID
+;         call    FillTempChar    ; clear tmp buffer for phase 0
+; DT1
 
         push    hl
         
@@ -1712,7 +1723,7 @@ BMP_BAD_TRACK_PHASES
         db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
         db      0, 54h, 54h, 54h, 54h, 54h, 54h, 0
 
-        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
+        db      0, 54h, 54h, 54h, 54h, 54h, 54h, 0
         db      0, 50h, 50h, 50h, 50h, 50h, 50h, 0
         
         db      0, 50h, 50h, 50h, 50h, 50h, 50h, 0
