@@ -101,27 +101,27 @@ SCREEN          equ     0c000h
         call    PaintBitmap
 
 
-        lxi     d, BMP_4TRACK_TEMPLATE
-        call    FillTempChar
-
         mvi     a, 0
         call    DrawTrack
 
-        lxi     d, BMP_4TRACK_TEMPLATE
-        call    FillTempChar
-
+        mvi     a, 4
+        call    DrawTrack
         mvi     a, 5
         call    DrawTrack
 
-        lxi     d, BMP_4TRACK_TEMPLATE
-        call    FillTempChar
-
+        mvi     a, 8
+        call    DrawTrack
+        mvi     a, 9
+        call    DrawTrack
         mvi     a, 10
         call    DrawTrack
 
-        lxi     d, BMP_4TRACK_TEMPLATE
-        call    FillTempChar
-
+        mvi     a, 12
+        call    DrawTrack
+        mvi     a, 13
+        call    DrawTrack
+        mvi     a, 14
+        call    DrawTrack
         mvi     a, 15
         call    DrawTrack
 
@@ -144,14 +144,28 @@ DrawTrack
         ani     3fh
         mov     b, a    ; col (horizontal X position)
         mvi     c, 8    ; row (vertical Y position)
-        
         pop     a
+
+        push    bc      ; save XY position
 
         ani     3       ; get phase (0, 1, 2, 3)
         jnz     DT1
         lxi     de, BMP_VOID
         call    FillTempChar    ; clear tmp buffer for phase 0
 DT1
+
+        push    hl
+        
+        lxi     hl, BMP_4TRACK_MASKS
+        mov     e, a
+        mvi     d, 0
+        dad     d       ; HL points to necessary phase mask
+        mov     b, m    ; B = mask
+        
+        pop     hl
+
+
+
         add     a
         add     a
         add     a
@@ -161,7 +175,9 @@ DT1
         mvi     d, 0
         dad     d       ; HL points to necessary phase bitmap
 
-        call    ORToTempChar
+        call    ANDORToTempChar
+
+        pop     bc      ; restore XY position
 
         lxi     hl, TempChar
         mvi     a, 3
@@ -174,14 +190,24 @@ DT1
         pop     hl
         ret
         
-; OR contents of TempChar with new data
-ORToTempChar
+; Mask contents of TempChar, then OR with new data
+; HL = new data
+; B = AND mask
+ANDORToTempChar
         push    de
         push    bc
         
         lxi     de, TempChar
         mvi     c, 16
 MTCLoop
+; AND buf contents with mask from B
+        xchg    ; HL = TempChar
+        mov     a, m
+        ana     b
+        mov     m, a
+        xchg
+; OR buf contents with data from (HL)
+
         mov     a, m
         xchg
         ora     m
@@ -1664,10 +1690,10 @@ BMP_4TRACK_TEMPLATE
         db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
 
 BMP_4TRACK_MASKS
-        db      0b11111111      ; for track ..0
-        db      0b00111111      ; for track ..1
+        db      0b00000000      ; for track ..0
+        db      0b00000011      ; for track ..1
         db      0b00001111      ; for track ..2
-        db      0b00000011      ; for track ..3
+        db      0b00111111      ; for track ..3
 
 BMP_GOOD_TRACK_PHASES
         db      0, 54h, 54h, 54h, 54h, 54h, 54h, 0
