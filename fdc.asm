@@ -95,39 +95,39 @@ SCREEN          equ     0c000h
         ; call    PaintBitmap
 
 
-        lxi     hl, BMP_4TRACK_TEMPLATE
-        lxi     bc, 0018h
-        mvi     a, 3
-        call    PaintBitmap
+;         lxi     hl, BMP_4TRACK_TEMPLATE
+;         lxi     bc, 0018h
+;         mvi     a, 3
+;         call    PaintBitmap
 
 
-TRACK_BAD       equ     80h
+; TRACK_BAD       equ     80h
 
-        mvi     a, 0
-        call    DrawTrack
+;         mvi     a, 0
+;         call    DrawTrack
 
-        mvi     a, 4
-        call    DrawTrack
+;         mvi     a, 4
+;         call    DrawTrack
         
-        mvi     a, 5 | TRACK_BAD
-        call    DrawTrack
+;         mvi     a, 5 | TRACK_BAD
+;         call    DrawTrack
 
-        mvi     a, 8
-        call    DrawTrack
+;         mvi     a, 8
+;         call    DrawTrack
         
-        mvi     a, 9 | TRACK_BAD
-        call    DrawTrack
-        mvi     a, 10
-        call    DrawTrack
+;         mvi     a, 9 | TRACK_BAD
+;         call    DrawTrack
+;         mvi     a, 10
+;         call    DrawTrack
 
-        mvi     a, 12 | TRACK_BAD
-        call    DrawTrack
-        mvi     a, 13
-        call    DrawTrack
-        mvi     a, 14 
-        call    DrawTrack
-        mvi     a, 15 | TRACK_BAD
-        call    DrawTrack
+;         mvi     a, 12 | TRACK_BAD
+;         call    DrawTrack
+;         mvi     a, 13
+;         call    DrawTrack
+;         mvi     a, 14 
+;         call    DrawTrack
+;         mvi     a, 15 | TRACK_BAD
+;         call    DrawTrack
 
 
 
@@ -154,7 +154,7 @@ DT0
         add     a       ; double
         ani     3fh
         mov     b, a    ; col (horizontal X position)
-        mvi     c, 8    ; row (vertical Y position)     TODO use constants
+        mvi     c, 8    ; row (vertical Y position)     TODO use constants      TODO take SIDE into account
         pop     a
 
         push    bc      ; save XY position
