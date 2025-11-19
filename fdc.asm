@@ -1660,6 +1660,32 @@ BMP_4TRACK_MASKS
         db      0b00001111      ; for track ..2
         db      0b00000011      ; for track ..3
 
+BMP_GOOD_TRACK_PHASES
+        db      0, 54h, 54h, 54h, 54h, 54h, 54h, 0
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
+        
+        db      0, 50h, 50h, 50h, 50h, 50h, 50h, 0
+        db      0, 54h, 54h, 54h, 54h, 54h, 54h, 0
+        
+        db      0, 40h, 40h, 40h, 40h, 40h, 40h, 0
+        db      0, 50h, 50h, 50h, 50h, 50h, 50h, 0
+        
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 40h, 40h, 40h, 40h, 40h, 40h, 0
+
+BMP_BAD_TRACK_PHASES
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
+        db      0, 54h, 54h, 54h, 54h, 54h, 54h, 0
+
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
+        db      0, 50h, 50h, 50h, 50h, 50h, 50h, 0
+        
+        db      0, 50h, 50h, 50h, 50h, 50h, 50h, 0
+        db      0, 40h, 40h, 40h, 40h, 40h, 40h, 0
+        
+        db      0, 40h, 40h, 40h, 40h, 40h, 40h, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+
 
 
 BMP_ID
