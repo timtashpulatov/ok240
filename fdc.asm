@@ -133,43 +133,36 @@ SCREEN          equ     0c000h
 DrawTrack
 ; calculate screen col position
         push    hl
-        
-        
-        
+        push    de
+
+        lxi     hl, BMP_GOOD_TRACK_PHASES       ; TODO input parameter to select GOOD or BAD track
+
         push    a
         rar     a
         rar     a       ; divide by 4
         add     a       ; double
         ani     3fh
-        mov     b, a
+        mov     b, a    ; col (horizontal X position)
+        mvi     c, 8    ; row (vertical Y position)
         
         pop     a
-        mvi     c, 8
-        
-; calculate mask shift
-        ani     3
-        inr     a
-        mov     e, a
-        xra     a
-DTShiftMaskLoop
-        dcr     e
-        jz      DTShiftMaskLoopDone
-        
-        stc
-        ral     a
-        stc     a
-        ral     a
 
-        jmp     DTShiftMaskLoop
-DTShiftMaskLoopDone
+        ani     3       ; get phase (0, 1, 2, 3)
+        jnz     DT1
+        lxi     de, BMP_VOID
+        call    FillTempChar    ; clear tmp buffer for phase 0
+DT1
+        add     a
+        add     a
+        add     a
+        add     a
+        
         mov     e, a
-; E = mask (00, c0, f0, fc)
+        mvi     d, 0
+        dad     d       ; HL points to necessary phase bitmap
 
-        call    MaskTempChar
-        
-        
-        
-        
+        call    ORToTempChar
+
         lxi     hl, TempChar
         mvi     a, 3
         call    PaintBitmap
@@ -177,24 +170,31 @@ DTShiftMaskLoopDone
         ; call    PrintTempChar
 
 
+        pop     de
         pop     hl
         ret
         
-; AND contents of TempChar with mask
-MaskTempChar
+; OR contents of TempChar with new data
+ORToTempChar
+        push    de
         push    bc
-        lxi     hl, TempChar
+        
+        lxi     de, TempChar
         mvi     c, 16
 MTCLoop
         mov     a, m
-        ana     e
+        xchg
+        ora     m
         mov     m, a
+        xchg
         
         inx     hl
+        inx     de
         dcr     c
         jnz     MTCLoop
         
         pop     bc
+        pop     de
         ret
 
 
@@ -1046,11 +1046,20 @@ _PrintHexNibble
 FillTempChar
 ; DE = битмап нужной буквы
 ; перегрузим во времянку
+        push    hl
+        push    bc
+        push    a
+        
         lxi     h, TempChar
         call    CopyFromDEtoHL8
         
         lxi     h, TempChar+8
         call    CopyFromDEtoHL8
+        
+        pop     a
+        pop     bc
+        pop     hl
+        
         ret
 
 PrintTempChar
