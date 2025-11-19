@@ -130,6 +130,16 @@ SCREEN          equ     0c000h
 ;         call    DrawTrack
 
 
+        lxi     b, 0c08h
+        lxi     hl, BMP_4TRACK_TEMPLATE
+        mvi     e, 20
+        call    PaintRowOfSameBitmap
+
+        lxi     b, 0c10h
+        lxi     hl, BMP_4TRACK_TEMPLATE
+        mvi     e, 20
+        call    PaintRowOfSameBitmap
+
 
         jmp     Cont
 
@@ -379,7 +389,7 @@ SmallDelay
         push    a
 
 SD0
-        lxi     hl, 01fffh
+        lxi     hl, 1000h
         push    a
 SDLoop
                 dcx     hl
@@ -1432,6 +1442,23 @@ PBR
         ; pop     hl
         ret
 
+
+PaintRowOfSameBitmap
+        push    bc
+        
+        mvi     a, 3
+PROSB
+        call    PaintBitmap
+        inr     b
+        inr     b
+
+        dcr     e
+        jnz     PROSB
+        
+        pop     bc
+
+        ret
+
 ; *************************************************
 ; Copy 8 bytes from DE to HL
 ; *************************************************
@@ -1768,8 +1795,8 @@ BMP_SIDE
         db      18h, 2eh, 42h, 82h, 0feh, 7eh, 3eh, 18h
 
 BMP_4TRACK_TEMPLATE
-        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
-        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 55h
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
+        db      0, 55h, 55h, 55h, 55h, 55h, 55h, 0
 
 BMP_4TRACK_MASKS
         db      0b00000000      ; for track ..0
