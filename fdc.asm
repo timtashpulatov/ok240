@@ -2006,9 +2006,9 @@ HEX_DASH
         db      0, 0, 0, 38h, 0, 0, 0, 0
 
 aPosFloppyPort
-        db      ESC, 5, 20h, 20h+31, 0
+        db      ESC, 5, 20h, 20h+32, 0
 aPosStatusReg
-        db      ESC, 5, 20h+1, 20h+31, 0
+        db      ESC, 5, 20h+1, 20h+32, 0
 ; aPosTrackReg
 ;         db      ESC, 5, 20h+4, 20h+28, 'Track', 0
         
