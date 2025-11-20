@@ -96,6 +96,12 @@ SCREEN          equ     0c000h
         call    FillTempChar
         call    PrintTempChar
 
+        lxi     h, BMP_MST_ON
+        lxi     b, 0028h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+
         mvi     a, 2
         sta     PrintColor
 
@@ -1573,11 +1579,11 @@ MainMenu
         db      '0/1 - Select drive 0/1' \ dw CRLF
         db      'S - Side toggle' \ dw CRLF
         db      'M - Motor' \ dw CRLF
-        db      'H/E - Home/End (seek to track 00/79)' \ dw CRLF
+        db      'H/E - Home/End (seek to 00/79)' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
-        db      'T - Track read' \ dw CRLF
+        db      'T - Track read   '
         db      'R - Sector read' \ dw CRLF
-        db      'C - Continuous drill' \ dw CRLF
+        db      'C - Cont   '
         db      'D - Disk scan' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
@@ -1594,31 +1600,33 @@ ScrollerText
         db      0
 
 ; ************************************************************************
+;
 ; Битмапчики
+;
 ; ************************************************************************
 BMP_RDY_ACTIVE          
-                        db      0, 0, 0, 0, 0, 0, 0, 0
-                        db      0ffh, 033h, 0abh, 0b3h, 0abh, 2bh, 0ffh, 0
-                        db      0, 0, 0, 0, 0, 0, 0, 0
-                        db      7fh, 6bh, 6ah, 76h, 76h, 77h, 7fh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 033h, 0abh, 0b3h, 0abh, 2bh, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 6bh, 6ah, 76h, 76h, 77h, 7fh, 0
 
 BMP_RDY_INACTIVE        
         db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
-                        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
-                        db      0, 14h, 15h, 9, 9, 8, 0, 0
-                        db      0, 14h, 15h, 9, 9, 8, 0, 0
+        db      0, 0cch, 54h, 4ch, 54h, 0d4h, 0, 0
+        db      0, 14h, 15h, 9, 9, 8, 0, 0
+        db      0, 14h, 15h, 9, 9, 8, 0, 0
 
 BMP_BSY_ACTIVE          
         db      0, 0, 0, 0, 0, 0, 0, 0
-                        db      0ffh, 73h, 0abh, 33h, 0ebh, 33h, 255, 0
-                        db      0, 0, 0, 0, 0, 0, 0, 0
-                        db      7fh, 6ah, 6bh, 76h, 76h, 77h, 7fh, 0
+        db      0ffh, 73h, 0abh, 33h, 0ebh, 33h, 255, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 6ah, 6bh, 76h, 76h, 77h, 7fh, 0
 
 BMP_BSY_INACTIVE        
         db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0                        
-                        db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0
-                        db      0, 15h, 14h, 9, 9, 8, 0, 0
-                        db      0, 15h, 14h, 9, 9, 8, 0, 0
+        db      0, 8ch, 54h, 0cch, 14h, 0cch, 0, 0
+        db      0, 15h, 14h, 9, 9, 8, 0, 0
+        db      0, 15h, 14h, 9, 9, 8, 0, 0
 
 BMP_WP_ACTIVE
         db      0, 0, 0, 0, 0, 0, 0, 0
@@ -1667,6 +1675,23 @@ BMP_CRC_INACTIVE
         db      0, 0d8h, 44h, 0c4h, 44h, 58h, 0, 0
         db      0, 18h, 5, 4, 5, 19h, 0, 0
         db      0, 18h, 5, 4, 5, 19h, 0, 0
+
+; ************************************************************************
+; Read from register 25h
+; ************************************************************************
+BMP_MST_ON
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 0ddh, 49h, 55h, 0ddh, 5dh, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 44h, 6fh, 6ch, 6dh, 6eh, 7fh, 0
+
+BMP_SIDE_ON
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 53h, 5dh, 51h, 57h, 59h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 46h, 75h, 45h, 75h, 46h, 7fh, 0
+
+
 
 
 BMP_SECTOR_UNK
