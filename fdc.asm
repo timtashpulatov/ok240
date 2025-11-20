@@ -96,8 +96,7 @@ SCREEN          equ     0c000h
         call    FillTempChar
         call    PrintTempChar
 
-        call    Paint25Bits
-
+        call    PaintFloppyBits
 
         mvi     a, 2
         sta     PrintColor
@@ -976,6 +975,7 @@ ShowFloppyPort
 
         in      PORT_FLOPPY
         call    PrintBinary
+        call    PaintFloppyBits
         
         ret
 
@@ -1142,37 +1142,75 @@ BL1
 ; ************************************************************************
 ; Разрисовать красивыми битмапчиками биты регистра 25h
 ; ************************************************************************
-Paint25Bits
+PaintFloppyBits
+
+        push    a
         lxi     h, BMP_MST_ON
+        ani     80h
+        jz      PB7
+        lxi     h, BMP_MST_OFF
+PB7        
         lxi     b, 0028h
         mvi     a, 3
         call    PaintBitmap8x16
+        pop     a
 
+        push    a
         lxi     h, BMP_SIDE_ON
+        ani     40h
+        jz      PB6
+        lxi     h, BMP_SIDE_OFF
+PB6        
         lxi     b, 0428h
         mvi     a, 3
         call    PaintBitmap8x16
+        pop     a
 
+
+        push    a
         lxi     h, BMP_DSEL_ON
+        ani     08h
+        jz      PB3
+        lxi     h, BMP_DSEL_OFF
+PB3        
         lxi     b, 1028h
         mvi     a, 3
         call    PaintBitmap8x16
+        pop     a
 
+        push    a
         lxi     h, BMP_M1_ON
+        ani     04h
+        jz      PB2
+        lxi     h, BMP_M1_OFF
+PB2        
         lxi     b, 1428h
         mvi     a, 3
         call    PaintBitmap8x16
+        pop     a
 
+
+        push    a
         lxi     h, BMP_M0_ON
+        ani     02h
+        jz      PB1
+        lxi     h, BMP_M0_OFF
+PB1        
         lxi     b, 1828h
         mvi     a, 3
         call    PaintBitmap8x16
+        pop     a
 
+        push    a
         lxi     h, BMP_INT_ON
-        lxi     b, 1c28h
+        ani     01h
+        jz      PB0
+        lxi     h, BMP_INT_OFF
+PB0        
+        lxi     b, 1C28h
         mvi     a, 3
         call    PaintBitmap8x16
-
+        pop     a
 
 
         ret
@@ -1720,11 +1758,23 @@ BMP_MST_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 44h, 6fh, 6ch, 6dh, 6eh, 7fh, 0
 
+BMP_MST_OFF
+        db      0, 22h, 0b6h, 0aah, 22h, 0a2h, 0, 0
+        db      0, 22h, 0b6h, 0aah, 22h, 0a2h, 0, 0
+        db      0, 3bh, 10h, 13h, 12h, 11h, 0, 0
+        db      0, 3bh, 10h, 13h, 12h, 11h, 0, 0
+
 BMP_SIDE_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      0ffh, 53h, 5dh, 51h, 57h, 59h, 0ffh, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 46h, 75h, 45h, 75h, 46h, 7fh, 0
+
+BMP_SIDE_OFF
+        db      0, 0ach, 0a2h, 0aeh, 0a8h, 0a6h, 0, 0
+        db      0, 0ach, 0a2h, 0aeh, 0a8h, 0a6h, 0, 0
+        db      0, 39h, 0ah, 3ah, 0ah, 39h, 0, 0
+        db      0, 39h, 0ah, 3ah, 0ah, 39h, 0, 0
 
 BMP_DSEL_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
@@ -1732,11 +1782,23 @@ BMP_DSEL_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 67h, 7ah, 62h, 6eh, 73h, 7fh, 0
 
+BMP_DSEL_OFF
+        db      0, 0c0h, 40h, 40h, 40h, 0dch, 0, 0
+        db      0, 0c0h, 40h, 40h, 40h, 0dch, 0, 0
+        db      0, 18h, 5, 1dh, 11h, 0ch, 0, 0
+        db      0, 18h, 5, 1dh, 11h, 0ch, 0, 0
+
 BMP_M1_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      0ffh, 77h, 27h, 57h, 77h, 77h, 0ffh, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 7bh, 79h, 7bh, 7bh, 71h, 7fh, 0
+
+BMP_M1_OFF
+        db      0, 88h, 0d8h, 0a8h, 88h, 88h, 0, 0
+        db      0, 88h, 0d8h, 0a8h, 88h, 88h, 0, 0
+        db      0, 4, 6, 4, 4, 14, 0, 0
+        db      0, 4, 6, 4, 4, 14, 0, 0
 
 BMP_M0_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
