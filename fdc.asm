@@ -96,10 +96,7 @@ SCREEN          equ     0c000h
         call    FillTempChar
         call    PrintTempChar
 
-        lxi     h, BMP_MST_ON
-        lxi     b, 0028h
-        mvi     a, 3
-        call    PaintBitmap8x16
+        call    Paint25Bits
 
 
         mvi     a, 2
@@ -1140,6 +1137,23 @@ BL1
         jnz     BitsLoop
         
         pop     a
+        ret
+
+; ************************************************************************
+; Разрисовать красивыми битмапчиками биты регистра 25h
+; ************************************************************************
+Paint25Bits
+        lxi     h, BMP_MST_ON
+        lxi     b, 0028h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+        lxi     h, BMP_SIDE_ON
+        lxi     b, 0228h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+
         ret
 
 ; ************************************************************************
