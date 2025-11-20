@@ -1744,11 +1744,28 @@ BMP_M0_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 73h, 75h, 75h, 75h, 79h, 7fh, 0
 
+BMP_M0_OFF
+        db      0, 88h, 0d8h, 0a8h, 88h, 88h, 0, 0
+        db      0, 88h, 0d8h, 0a8h, 88h, 88h, 0, 0
+        db      0, 0ch, 0ah, 0ah, 0ah, 6, 0, 0
+        db      0, 0ch, 0ah, 0ah, 0ah, 6, 0, 0
+
 BMP_INT_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      0ffh, 97h, 57h, 57h, 57h, 57h, 0ffh, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 71h, 7bh, 7bh, 7bh, 7bh, 7fh, 0
+
+BMP_INT_OFF
+        db      0, 68h, 0a8h, 0a8h, 0a8h, 0a8h, 0, 0
+        db      0, 68h, 0a8h, 0a8h, 0a8h, 0a8h, 0, 0
+        db      0, 0eh, 4, 4, 4, 4, 0, 0
+        db      0, 0eh, 4, 4, 4, 4, 0, 0
+
+
+
+
+
 
 BMP_SECTOR_UNK
         ; db      00, 28h, 2Ah, 2Ah, 4Ah, 28h, 7Fh, 7Fh
