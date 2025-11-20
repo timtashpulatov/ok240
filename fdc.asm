@@ -78,12 +78,12 @@ SCREEN          equ     0c000h
 
         call    DrawSideIndicator
 
-        lxi     b, 0c08h
+        lxi     b, (TRACK_GAUGE_X*2 << 8) + TRACK_GAUGE_Y        ;0c08h
         lxi     hl, BMP_4TRACK_TEMPLATE
         mvi     e, 20
         call    PaintRowOfSameBitmap
 
-        lxi     b, 0c10h
+        lxi     b, (TRACK_GAUGE_X*2 << 8) + TRACK_GAUGE_Y - 8
         lxi     hl, BMP_4TRACK_TEMPLATE
         mvi     e, 20
         call    PaintRowOfSameBitmap
@@ -236,7 +236,7 @@ SDLoop
 DrawTrack
 
 TRACK_GAUGE_X   equ     6
-TRACK_GAUGE_Y   equ     16
+TRACK_GAUGE_Y   equ     80      ;16
 
 ; calculate screen position
         push    hl
@@ -1142,6 +1142,10 @@ BL1
 ; ************************************************************************
 ; Разрисовать красивыми битмапчиками биты регистра 25h
 ; ************************************************************************
+
+FLOPPY_BITS_COL        equ     0
+FLOPPY_BITS_ROW        equ     0
+
 PaintFloppyBits
 
         push    a
@@ -1150,7 +1154,7 @@ PaintFloppyBits
         jz      PB7
         lxi     h, BMP_MST_OFF
 PB7        
-        lxi     b, 0028h
+        lxi     b, (FLOPPY_BITS_COL << 8) + FLOPPY_BITS_ROW     ;0028h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1161,7 +1165,7 @@ PB7
         jz      PB6
         lxi     h, BMP_SIDE_OFF
 PB6        
-        lxi     b, 0428h
+        lxi     b, ((FLOPPY_BITS_COL+1)*4 << 8) + FLOPPY_BITS_ROW     ;0428h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1173,7 +1177,7 @@ PB6
         jz      PB3
         lxi     h, BMP_DSEL_OFF
 PB3        
-        lxi     b, 1028h
+        lxi     b, ((FLOPPY_BITS_COL+4)*4 << 8) + FLOPPY_BITS_ROW       ;1028h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1184,7 +1188,7 @@ PB3
         jz      PB2
         lxi     h, BMP_M1_OFF
 PB2        
-        lxi     b, 1428h
+        lxi     b, ((FLOPPY_BITS_COL+5)*4 << 8) + FLOPPY_BITS_ROW       ;1428h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1196,7 +1200,7 @@ PB2
         jz      PB1
         lxi     h, BMP_M0_OFF
 PB1        
-        lxi     b, 1828h
+        lxi     b, ((FLOPPY_BITS_COL+6)*4 << 8) + FLOPPY_BITS_ROW       ;1828h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1207,7 +1211,7 @@ PB1
         jz      PB0
         lxi     h, BMP_INT_OFF
 PB0        
-        lxi     b, 1C28h
+        lxi     b, ((FLOPPY_BITS_COL+7)*4 << 8) + FLOPPY_BITS_ROW       ;1C28h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1218,6 +1222,10 @@ PB0
 ; ************************************************************************
 ; Разрисовать красивыми битмапчиками биты регистра статуса ВГ93
 ; ************************************************************************
+STATUS_BITS_COL        equ     0
+STATUS_BITS_ROW        equ     8
+
+
 PaintStatusBits
         push    a
         lxi     h, BMP_RDY_ACTIVE
@@ -1225,7 +1233,7 @@ PaintStatusBits
         jz      PSB7
         lxi     h, BMP_RDY_INACTIVE
 PSB7        
-        lxi     bc, 0000
+        lxi     bc, (STATUS_BITS_COL << 8) + STATUS_BITS_ROW      ;0000
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1236,7 +1244,7 @@ PSB7
         jnz     PSB6
         lxi     h, BMP_WP_INACTIVE
 PSB6        
-        lxi     bc, 0400h
+        lxi     bc, ((STATUS_BITS_COL+1)*4 << 8) + STATUS_BITS_ROW      ;0400h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1247,7 +1255,7 @@ PSB6
         jnz     PSB4
         lxi     h, BMP_ERR_INACTIVE
 PSB4        
-        lxi     bc, 0c00h
+        lxi     bc, ((STATUS_BITS_COL+3)*4 << 8) + STATUS_BITS_ROW      ;0c00h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1258,7 +1266,7 @@ PSB4
         jnz     PSB3
         lxi     h, BMP_CRC_INACTIVE
 PSB3        
-        lxi     bc, 16 << 8
+        lxi     bc, ((STATUS_BITS_COL+4)*4 << 8) + STATUS_BITS_ROW
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1270,7 +1278,7 @@ PSB3
         jnz     PSB1
         lxi     h, BMP_IDX_INACTIVE
 PSB1        
-        lxi     bc, 24 << 8
+        lxi     bc, ((STATUS_BITS_COL+6)*4 << 8) + STATUS_BITS_ROW
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -1281,7 +1289,7 @@ PSB1
         jnz     PSB0
         lxi     h, BMP_BSY_INACTIVE
 PSB0        
-        lxi     bc, 28 << 8
+        lxi     bc, ((STATUS_BITS_COL+7)*4 << 8) + STATUS_BITS_ROW
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
