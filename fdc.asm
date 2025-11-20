@@ -1143,27 +1143,27 @@ BL1
 ; Разрисовать красивыми битмапчиками биты регистра 25h
 ; ************************************************************************
 
-FLOPPY_BITS_COL        equ     0
+FLOPPY_BITS_COL        equ     4
 FLOPPY_BITS_ROW        equ     0
 
 PaintFloppyBits
 
         push    a
-        lxi     h, BMP_MST_ON
+        lxi     h, BMP_MST_OFF
         ani     80h
         jz      PB7
-        lxi     h, BMP_MST_OFF
+        lxi     h, BMP_MST_ON
 PB7        
-        lxi     b, (FLOPPY_BITS_COL << 8) + FLOPPY_BITS_ROW     ;0028h
+        lxi     b, (FLOPPY_BITS_COL*4 << 8) + FLOPPY_BITS_ROW     ;0028h
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
 
         push    a
-        lxi     h, BMP_SIDE_ON
+        lxi     h, BMP_SIDE_OFF
         ani     40h
         jz      PB6
-        lxi     h, BMP_SIDE_OFF
+        lxi     h, BMP_SIDE_ON
 PB6        
         lxi     b, ((FLOPPY_BITS_COL+1)*4 << 8) + FLOPPY_BITS_ROW     ;0428h
         mvi     a, 3
@@ -1172,10 +1172,10 @@ PB6
 
 
         push    a
-        lxi     h, BMP_DSEL_ON
+        lxi     h, BMP_DSEL_OFF
         ani     08h
         jz      PB3
-        lxi     h, BMP_DSEL_OFF
+        lxi     h, BMP_DSEL_ON
 PB3        
         lxi     b, ((FLOPPY_BITS_COL+4)*4 << 8) + FLOPPY_BITS_ROW       ;1028h
         mvi     a, 3
@@ -1183,10 +1183,10 @@ PB3
         pop     a
 
         push    a
-        lxi     h, BMP_M1_ON
+        lxi     h, BMP_M1_OFF
         ani     04h
         jz      PB2
-        lxi     h, BMP_M1_OFF
+        lxi     h, BMP_M1_ON
 PB2        
         lxi     b, ((FLOPPY_BITS_COL+5)*4 << 8) + FLOPPY_BITS_ROW       ;1428h
         mvi     a, 3
@@ -1195,10 +1195,10 @@ PB2
 
 
         push    a
-        lxi     h, BMP_M0_ON
+        lxi     h, BMP_M0_OFF
         ani     02h
         jz      PB1
-        lxi     h, BMP_M0_OFF
+        lxi     h, BMP_M0_ON
 PB1        
         lxi     b, ((FLOPPY_BITS_COL+6)*4 << 8) + FLOPPY_BITS_ROW       ;1828h
         mvi     a, 3
@@ -1206,10 +1206,10 @@ PB1
         pop     a
 
         push    a
-        lxi     h, BMP_INT_ON
+        lxi     h, BMP_INT_OFF
         ani     01h
         jz      PB0
-        lxi     h, BMP_INT_OFF
+        lxi     h, BMP_INT_ON
 PB0        
         lxi     b, ((FLOPPY_BITS_COL+7)*4 << 8) + FLOPPY_BITS_ROW       ;1C28h
         mvi     a, 3
@@ -1222,7 +1222,7 @@ PB0
 ; ************************************************************************
 ; Разрисовать красивыми битмапчиками биты регистра статуса ВГ93
 ; ************************************************************************
-STATUS_BITS_COL        equ     0
+STATUS_BITS_COL        equ     4
 STATUS_BITS_ROW        equ     8
 
 
@@ -1233,7 +1233,7 @@ PaintStatusBits
         jz      PSB7
         lxi     h, BMP_RDY_INACTIVE
 PSB7        
-        lxi     bc, (STATUS_BITS_COL << 8) + STATUS_BITS_ROW      ;0000
+        lxi     bc, (STATUS_BITS_COL*4 << 8) + STATUS_BITS_ROW      ;0000
         mvi     a, 3
         call    PaintBitmap8x16
         pop     a
@@ -2006,9 +2006,9 @@ HEX_DASH
         db      0, 0, 0, 38h, 0, 0, 0, 0
 
 aPosFloppyPort
-        db      ESC, 5, 20h, 20h+30, 0
+        db      ESC, 5, 20h, 20h+31, 0
 aPosStatusReg
-        db      ESC, 5, 20h+2, 20h+30, 0
+        db      ESC, 5, 20h+1, 20h+31, 0
 ; aPosTrackReg
 ;         db      ESC, 5, 20h+4, 20h+28, 'Track', 0
         
