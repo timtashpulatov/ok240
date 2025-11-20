@@ -1149,9 +1149,30 @@ Paint25Bits
         call    PaintBitmap8x16
 
         lxi     h, BMP_SIDE_ON
-        lxi     b, 0228h
+        lxi     b, 0428h
         mvi     a, 3
         call    PaintBitmap8x16
+
+        lxi     h, BMP_DSEL_ON
+        lxi     b, 1028h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+        lxi     h, BMP_M1_ON
+        lxi     b, 1428h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+        lxi     h, BMP_M0_ON
+        lxi     b, 1828h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
+        lxi     h, BMP_INT_ON
+        lxi     b, 1c28h
+        mvi     a, 3
+        call    PaintBitmap8x16
+
 
 
         ret
@@ -1705,8 +1726,29 @@ BMP_SIDE_ON
         db      0, 0, 0, 0, 0, 0, 0, 0
         db      7fh, 46h, 75h, 45h, 75h, 46h, 7fh, 0
 
+BMP_DSEL_ON
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 3fh, 0bfh, 0bfh, 0bfh, 23h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 67h, 7ah, 62h, 6eh, 73h, 7fh, 0
 
+BMP_M1_ON
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 77h, 27h, 57h, 77h, 77h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 7bh, 79h, 7bh, 7bh, 71h, 7fh, 0
 
+BMP_M0_ON
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 77h, 27h, 57h, 77h, 77h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 73h, 75h, 75h, 75h, 79h, 7fh, 0
+
+BMP_INT_ON
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0ffh, 97h, 57h, 57h, 57h, 57h, 0ffh, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      7fh, 71h, 7bh, 7bh, 7bh, 7bh, 7fh, 0
 
 BMP_SECTOR_UNK
         ; db      00, 28h, 2Ah, 2Ah, 4Ah, 28h, 7Fh, 7Fh
