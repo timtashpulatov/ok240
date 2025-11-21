@@ -494,8 +494,10 @@ TLNext
         out     PORT_SECTOR
         jmp     TLoop
 
+; ************************************************************************
+; Read Sector, Check Result and paint
+; ************************************************************************
 ReadSectorCheckAndPaintResult
-
         call    PaintSectorTemplate
 
         lxi     h, DataBuf
