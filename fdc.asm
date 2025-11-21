@@ -176,8 +176,14 @@ Quit    rst     0
 ; ************************************************************************
 DiskScan
 
+        call    _MotorStart
+        call    _WaitForIdle
+        ora     a
+        jz      MenuLoop
+
         call    _Restore
         call    _WaitForIdle
+        
         xra     a
         out     PORT_TRACK
 DSLoop
@@ -193,6 +199,12 @@ DSLoop
         ; call    SmallDelay
         pop     a
         
+        call    CONST
+        inr     a
+        jz      DSDone
+
+        
+        
         call    _StepIn
         call    _WaitForIdle
         
@@ -200,6 +212,7 @@ DSLoop
         cpi     80
         jnz     DSLoop
 
+; Second side
         call    _Restore
         call    _WaitForIdle
         call    _SideToggle 
@@ -217,6 +230,10 @@ DSLoop1
         ; mvi     a, 5
         ; call    SmallDelay
         pop     a
+
+        call    CONST
+        inr     a
+        jz      DSDone
         
         call    _StepIn
         call    _WaitForIdle
@@ -224,7 +241,8 @@ DSLoop1
         in      PORT_TRACK
         cpi     80
         jnz     DSLoop1
-        
+
+DSDone
         jmp     MenuLoop
 
 
