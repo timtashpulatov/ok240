@@ -176,35 +176,55 @@ Quit    rst     0
 ; ************************************************************************
 DiskScan
 
+        call    _Restore
+        call    _WaitForIdle
         xra     a
+        out     PORT_TRACK
 DSLoop
         push    a
+
+        call    _TrackLoop
+
+        pop     a
+        push    a
+
         call    DrawTrack
-        mvi     a, 5
-        call    SmallDelay
+        ; mvi     a, 5
+        ; call    SmallDelay
         pop     a
         
-        inr     a
+        call    _StepIn
+        call    _WaitForIdle
+        
+        in      PORT_TRACK
         cpi     80
         jnz     DSLoop
 
+        call    _Restore
+        call    _WaitForIdle
         call    _SideToggle 
-
         xra     a
+        out     PORT_TRACK
 DSLoop1
         push    a
+
+        call    _TrackLoop
+
+        pop     a
+        push    a
+
         call    DrawTrack
-        mvi     a, 5
-        call    SmallDelay
+        ; mvi     a, 5
+        ; call    SmallDelay
         pop     a
         
-        inr     a
+        call    _StepIn
+        call    _WaitForIdle
+        
+        in      PORT_TRACK
         cpi     80
         jnz     DSLoop1
-
-
-
-
+        
         jmp     MenuLoop
 
 
@@ -285,11 +305,11 @@ DT1
         mvi     d, 0
         dad     d       ; HL points to necessary phase bitmap
 
-        call    ANDORToTempChar
+        call    ANDORToTrackBmpBuf
 
         pop     bc      ; restore XY position
 
-        lxi     hl, TempChar
+        lxi     hl, TrackBmpBuf
         mvi     a, 3
         call    PaintBitmap
 
@@ -297,18 +317,18 @@ DT1
         pop     hl
         ret
         
-; Mask contents of TempChar, then OR with new data
+; Mask contents of TrackBmpBuf, then OR with new data
 ; HL = new data
 ; B = AND mask
-ANDORToTempChar
+ANDORToTrackBmpBuf
         push    de
         push    bc
         
-        lxi     de, TempChar
+        lxi     de, TrackBmpBuf
         mvi     c, 16
 ANDORLoop
 ; AND buf contents with mask from B
-        xchg    ; HL = TempChar
+        xchg    ; HL = TrackBmpBuf
         mov     a, m
         ana     b
         mov     m, a
@@ -424,7 +444,10 @@ TrackLoop
         call    _TrackLoop
         
         jmp     MenuLoop
-        
+
+; ************************************************************************
+;
+; ************************************************************************
 _TrackLoop        
         ; call    _WaitForIdle
 
@@ -2024,6 +2047,9 @@ PrintColor      db      3
 
 ; Внутренний клипборд для символа из шрифта
 TempChar        ds      16
+
+; Внутренний битмап для блока из 4 дорожек
+TrackBmpBuf     ds      16
 
 ; Буфер данных (Шесть байт для команды READ ADDRESS, например, или 1024 байт сектора, или вся дорожка)
 DataBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
