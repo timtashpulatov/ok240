@@ -522,7 +522,7 @@ ConvertSideToBinary
 ; ********************************************
 DumpSector
         lxi     h, DataBuf
-        lxi     b, 00b0h
+        lxi     b, 08b0h
         mvi     e, 64
         call    DumpHexBlock
         ret
