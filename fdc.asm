@@ -91,10 +91,10 @@ SCREEN          equ     0c000h
         call    DrawSectorsRuler
         call    DrawSectorsTemplate
 
-        lxi     d, HEX_DASH
-        lxi     b, 0878h
-        call    FillTempChar
-        call    PrintTempChar
+        ; lxi     d, HEX_DASH
+        ; lxi     b, 0878h
+        ; call    FillTempChar
+        ; call    PrintTempChar
 
         call    PaintFloppyBits
 
@@ -233,7 +233,7 @@ DSDone
 DrawTrack
 
 TRACK_GAUGE_X   equ     6
-TRACK_GAUGE_Y   equ     80      ;16
+TRACK_GAUGE_Y   equ     80+32      ;16
 
 ; calculate screen position
         push    hl
@@ -1695,7 +1695,7 @@ MainMenu
         ; dw      CRLF
         db      ESC, 5, 22h, 20h
         db      '0/1 - Select drive 0/1' \ dw CRLF
-        db      'S - Side toggle' \ dw CRLF
+        db      'S - Side toggle   '
         db      'M - Motor' \ dw CRLF
         db      'H/E - Home/End (seek to 00/79)' \ dw CRLF
         db      'I - Read next ID' \ dw CRLF
