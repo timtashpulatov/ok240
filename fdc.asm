@@ -187,24 +187,19 @@ DiskScan
         xra     a
         out     PORT_TRACK
 DSLoop
-        push    a
-
         call    _TrackLoop
 
-        pop     a
-        push    a
-
+        ora     a
+        in      PORT_TRACK
+        jz      DSLOk
+        ori     80h
+DSLOk
         call    DrawTrack
-        ; mvi     a, 5
-        ; call    SmallDelay
-        pop     a
-        
+
         call    CONST
         inr     a
         jz      DSDone
 
-        
-        
         call    _StepIn
         call    _WaitForIdle
         
@@ -219,17 +214,15 @@ DSLoop
         xra     a
         out     PORT_TRACK
 DSLoop1
-        push    a
 
         call    _TrackLoop
 
-        pop     a
-        push    a
-
+        ora     a
+        in      PORT_TRACK
+        jz      DSLOk1
+        ori     80h
+DSLOk1
         call    DrawTrack
-        ; mvi     a, 5
-        ; call    SmallDelay
-        pop     a
 
         call    CONST
         inr     a
@@ -464,11 +457,13 @@ TrackLoop
         jmp     MenuLoop
 
 ; ************************************************************************
-;
+; Read 9 sectors of current track/side
+; Return number of failed sector reads in A (could be ID field or Data field)
 ; ************************************************************************
 _TrackLoop        
         ; call    _WaitForIdle
-
+        xra     a
+        sta     SectorReadFailures
 ; start with sector 1
         mvi     a, 1
         out     PORT_SECTOR
@@ -483,6 +478,11 @@ TLoop
         call    ShowVG93Regs
 
         call    ReadSectorCheckAndPaintResult
+        ora     a
+        jz      TLNext
+        lda     SectorReadFailures
+        inr     a
+        sta     SectorReadFailures
 
 TLNext
         pop     de
@@ -496,6 +496,7 @@ TLNext
 
 ; ************************************************************************
 ; Read Sector, Check Result and paint
+; Return A=0 if OK, 1 or 2 if ID or Data field problem
 ; ************************************************************************
 ReadSectorCheckAndPaintResult
         call    PaintSectorTemplate
@@ -507,15 +508,18 @@ ReadSectorCheckAndPaintResult
 
         call    PaintSectorMarkGood
         call    DumpSector
+        xra     a
         ret
 
 RSCAPErr
         cpi     STATUS_NOTFOUND
-        jnz     RSCAPErr1
+        jnz     RSCAPErr2
         call    PaintSectorMarkBad
+        mvi     a, 1
         ret
-RSCAPErr1
+RSCAPErr2
         call    PaintSectorMarkUgly
+        mvi     a, 2
         ret
 
 
@@ -2070,6 +2074,8 @@ TempChar        ds      16
 
 ; Внутренний битмап для блока из 4 дорожек
 TrackBmpBuf     ds      16
+
+SectorReadFailures      db      0
 
 ; Буфер данных (Шесть байт для команды READ ADDRESS, например, или 1024 байт сектора, или вся дорожка)
 DataBuf  db      0, 0, 0xde, 0xad, 0xbe, 0xef
