@@ -191,10 +191,21 @@ DSLoop
 
         ora     a
         in      PORT_TRACK
-        jz      DSLOk
+        jz      DSLOk0
         ori     80h
-DSLOk
+DSLOk0
         call    DrawTrack
+        call    _SideToggle
+        
+        call    _TrackLoop
+
+        ora     a
+        in      PORT_TRACK
+        jz      DSLOk1
+        ori     80h
+DSLOk1
+        call    DrawTrack
+        call    _SideToggle
 
         call    CONST
         inr     a
@@ -206,34 +217,6 @@ DSLOk
         in      PORT_TRACK
         cpi     80
         jnz     DSLoop
-
-; Second side
-        call    _Restore
-        call    _WaitForIdle
-        call    _SideToggle 
-        xra     a
-        out     PORT_TRACK
-DSLoop1
-
-        call    _TrackLoop
-
-        ora     a
-        in      PORT_TRACK
-        jz      DSLOk1
-        ori     80h
-DSLOk1
-        call    DrawTrack
-
-        call    CONST
-        inr     a
-        jz      DSDone
-        
-        call    _StepIn
-        call    _WaitForIdle
-        
-        in      PORT_TRACK
-        cpi     80
-        jnz     DSLoop1
 
 DSDone
         call    _Restore
