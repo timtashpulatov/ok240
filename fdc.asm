@@ -38,6 +38,7 @@ CMD_STEPIN      equ     40h     ; towards center and track 79
 CMD_STEPOUT     equ     60h     ; to track 0
 CMD_READADDRESS equ     0c0h    ; read next ID
 CMD_READSECTOR  equ     80h
+CMD_READTRACK   equ     0e0h    ; read track
 
 STATUS_NOTREADY equ     80h
 STATUS_WPROT    equ     40h
@@ -144,7 +145,6 @@ MenuKeys
         db      'H' \ dw RestoreHome
         db      '0' \ dw SelectDrive0
         db      '1' \ dw SelectDrive1
-        db      'H' \ dw RestoreHome
         db      'E' \ dw End
         db      'M' \ dw MotorStart
         ; db      '-' \ dw StepOut
@@ -159,12 +159,30 @@ MenuKeys
         db      'R' \ dw SectorRead
         db      'C' \ dw ContinuousDrill
         db      'D' \ dw DiskScan
+        db      'W' \ dw WholeTrackRead
         db      ESC \ dw Quit
         db      0 \ dw 0
 
 Quit    rst     0        
 
 
+; ************************************************************************
+; Whole Track Read
+; ************************************************************************
+WholeTrackRead
+        call    _MotorStart
+        call    _WaitForIdle
+        ora     a
+        jz      MenuLoop
+
+        mvi     a, CMD_READTRACK
+        out     PORT_CMD
+
+        lxi     h, 4000h
+        call    ReadDataLoop
+
+        jmp     MenuLoop
+        
 ; ************************************************************************
 ; Disk scan
 ; ************************************************************************
@@ -1713,6 +1731,7 @@ MainMenu
         db      'R - Sector read' \ dw CRLF
         db      'C - Cont   '
         db      'D - Disk scan' \ dw CRLF
+        db      'W - Whole track read' \ dw CRLF
         
         db      'ESC - Quit', \ dw CRLF
         
