@@ -78,18 +78,12 @@ SCREEN          equ     0c000h
 
         call    DrawSideIndicator
 
-        lxi     b, (TRACK_GAUGE_X*2 << 8) + TRACK_GAUGE_Y        ;0c08h
-        lxi     hl, BMP_4TRACK_TEMPLATE
-        mvi     e, 20
-        call    PaintRowOfSameBitmap
-
-        lxi     b, (TRACK_GAUGE_X*2 << 8) + TRACK_GAUGE_Y - 8
-        lxi     hl, BMP_4TRACK_TEMPLATE
-        mvi     e, 20
-        call    PaintRowOfSameBitmap
+        call    DrawDiskTemplate
 
         call    DrawSectorsRuler
         call    DrawSectorsTemplate
+
+
 
         ; lxi     d, HEX_DASH
         ; lxi     b, 0878h
@@ -224,6 +218,20 @@ DSDone
 
         jmp     MenuLoop
 
+; ************************************************************************
+; Draw Disk Template
+; ************************************************************************
+DrawDiskTemplate
+        lxi     b, (TRACK_GAUGE_X*2 << 8) + TRACK_GAUGE_Y        ;0c08h
+        lxi     hl, BMP_4TRACK_TEMPLATE
+        mvi     e, 20
+        call    PaintRowOfSameBitmap
+
+        lxi     b, (TRACK_GAUGE_X*2 << 8) + TRACK_GAUGE_Y - 8
+        lxi     hl, BMP_4TRACK_TEMPLATE
+        mvi     e, 20
+        call    PaintRowOfSameBitmap
+ret
 
 ; ************************************************************************
 ; Draw track
