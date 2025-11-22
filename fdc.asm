@@ -170,6 +170,8 @@ Quit    rst     0
 ; ************************************************************************
 DiskScan
 
+        call    DrawDiskTemplate
+
         call    _MotorStart
         call    _WaitForIdle
         ora     a
