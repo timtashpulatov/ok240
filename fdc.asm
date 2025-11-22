@@ -181,6 +181,13 @@ WholeTrackRead
         lxi     h, 4000h
         call    ReadDataLoop
 
+        lxi     h, 4000h + 80
+        lxi     b, 08b0h
+        mvi     e, 64
+        call    DumpHexBlock
+
+
+
         jmp     MenuLoop
         
 ; ************************************************************************
@@ -1052,7 +1059,7 @@ ShowVG93Regs
         ret
 
 ; *************************************************
-; Print hex block of A bytes starting from HL
+; Print hex block of E bytes starting from HL
 ; *************************************************
 DumpHexBlock
         push    de
