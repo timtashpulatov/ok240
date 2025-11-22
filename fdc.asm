@@ -236,28 +236,11 @@ DSLOk1
         jnz     DSLoop1
 
 DSDone
+        call    _Restore
+        call    _WaitForIdle
+
         jmp     MenuLoop
 
-
-SmallDelay
-        push    hl
-        push    a
-
-SD0
-        lxi     hl, 1000h
-        push    a
-SDLoop
-                dcx     hl
-                mov     a, h
-                ora     l
-                jnz     SDLoop
-        pop     a
-        dcr     a
-        jnz     SD0
-        
-        pop     a
-        pop     hl
-        ret
 
 ; ************************************************************************
 ; Draw track
@@ -1671,6 +1654,30 @@ ScrollerTask
 ; ************************************************************************
 GlowTask
         ret
+
+; ************************************************************************
+; Some delay
+; ************************************************************************
+SmallDelay
+        push    hl
+        push    a
+
+SD0
+        lxi     hl, 1000h
+        push    a
+SDLoop
+                dcx     hl
+                mov     a, h
+                ora     l
+                jnz     SDLoop
+        pop     a
+        dcr     a
+        jnz     SD0
+        
+        pop     a
+        pop     hl
+        ret
+
 
 ; ; *************************************************
 ; ; Установить нулевые смещения для вертикальной и горизонтальной прокруток        
