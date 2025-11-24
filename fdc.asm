@@ -480,8 +480,8 @@ TLoop
 
         call    ReadSectorCheckAndPaintResult
         ora     a
-        jz      TLNext
         lda     SectorReadFailures
+        jz      TLNext
         inr     a
         sta     SectorReadFailures
 
