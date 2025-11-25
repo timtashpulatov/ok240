@@ -289,7 +289,7 @@ DT0
         adi     TRACK_GAUGE_X * 2
         mov     b, a    ; col (horizontal X position)
         
-        mvi     c, TRACK_GAUGE_Y        ; row (vertical Y position)     TODO take SIDE into account
+        mvi     c, TRACK_GAUGE_Y        ; row (vertical Y position)
         lda     vSide
         ora     a
         jz      DT1
@@ -322,6 +322,12 @@ DT1
         pop     bc      ; restore XY position
 
         lxi     hl, TrackBmpBuf
+        lda     vSide
+        ora     a
+        jz      DrawTrackDone
+        lxi     hl, TrackBmpBuf1
+
+DrawTrackDone
         mvi     a, 3
         call    PaintBitmap
 
@@ -337,6 +343,11 @@ ANDORToTrackBmpBuf
         push    bc
         
         lxi     de, TrackBmpBuf
+        lda     vSide
+        ora     a
+        jz      ANDORInit
+        lxi     de, TrackBmpBuf1
+ANDORInit
         mvi     c, 16
 ANDORLoop
 ; AND buf contents with mask from B
@@ -2070,7 +2081,7 @@ HEXFONT
         db      38h, 44h, 44h, 38h, 40h, 40h, 38h, 0    // 9
         db      38h, 44h, 44h, 38h, 44h, 44h, 0, 0      // a
         db      0, 4, 4, 38h, 44h, 44h, 38h, 0          // b
-        db      38h, 4, 4, 0, 4, 4, 38h, 0              // c
+        db      38h, 4, 4, 0, 4, 4, 38h, 0              // cD
         db      0, 40h, 40h, 38h, 44h, 44h, 38h, 0      // d
         db      38h, 4, 4, 38h, 4, 4, 38h, 0            // e
         db      38h, 4, 4, 38h, 4, 4, 0, 0              // f
@@ -2100,6 +2111,7 @@ TempChar        ds      16
 
 ; Внутренний битмап для блока из 4 дорожек
 TrackBmpBuf     ds      16
+TrackBmpBuf1    ds      16      ; то же, для верхней стороны
 
 SectorReadFailures      db      0
 
