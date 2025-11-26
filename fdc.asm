@@ -89,6 +89,13 @@ SCREEN          equ     0c000h
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_GLASS_HORIZ
+        lxi     b, 08a8h
+        mvi     e, 16
+        mvi     a, 3
+        call    PaintRowOfSameBitmap
+
+
         ; lxi     d, HEX_DASH
         ; lxi     b, 0878h
         ; call    FillTempChar
@@ -2088,6 +2095,9 @@ BMP_ID_UPPER_RIGHT_CORNER
 BMP_GLASS_CORNER
         db      0, 0, 0f0h, 8, 4, 4, 4, 4
         db      0, 0, 0f0h, 8, 24h, 14h, 14h, 4
+BMP_GLASS_HORIZ
+        db      0, 0, 255, 0, 0, 0, 0, 0
+        db      0, 0, 255, 0, 0, 0, 0, 0
 
 BMP_VOID        dw      0, 0, 0, 0, 0, 0, 0, 0
 
