@@ -75,6 +75,27 @@ SCREEN          equ     0c000h
         mvi     a, 40h
         out     VIDEO
 
+
+
+
+        lxi     hl, BMP_LOGO
+        lxi     bc, 0
+        mvi     e, 4
+        call    PaintBitmapRow
+
+        lxi     hl, BMP_LOGO + 4*16
+        lxi     bc, 0008h
+        mvi     e, 4
+        call    PaintBitmapRow
+
+        lxi     hl, BMP_LOGO + 8*16
+        lxi     bc, 0010h
+        mvi     e, 4
+        call    PaintBitmapRow
+
+
+
+
         call    PaintBitmapMxN          ; TODO 
 
         call    DrawSideIndicator
@@ -83,6 +104,8 @@ SCREEN          equ     0c000h
 
         call    DrawSectorsRuler
         call    DrawSectorsTemplate
+
+
 
         lxi     h, BMP_GLASS_CORNER
         lxi     b, 06a8h
@@ -1760,7 +1783,7 @@ MainMenu
         db      ESC, '43'
         ; db      ESC, '8', 03
         ; dw      CRLF
-        db      ESC, 5, 22h, 20h
+        db      ESC, 5, 23h, 20h
         db      '0/1 - Select drive 0/1' \ dw CRLF
         db      'S - Side toggle   '
         db      'M - Motor' \ dw CRLF
@@ -2098,6 +2121,34 @@ BMP_GLASS_CORNER
 BMP_GLASS_HORIZ
         db      0, 0, 255, 0, 0, 0, 0, 0
         db      0, 0, 255, 0, 0, 0, 0, 0
+
+BMP_LOGO
+        db      00, 0fch, 02, 0dah, 0cah, 0c2h, 0eah, 0d2h
+        db      00, 0fch, 02, 0dah, 0cah, 0c2h, 0eah, 0d2h
+        db      00, 0ffh, 00, 0dbh, 0cbh, 0c3h, 0ffh, 00
+        db      00, 0ffh, 00, 0dbh, 0cbh, 0c3h, 0ffh, 00
+        db      00, 0ffh, 00, 0dbh, 0cbh, 0c3h, 0ffh, 00
+        db      00, 0ffh, 00, 0dbh, 0cbh, 0c3h, 0ffh, 00
+        db      00, 0ffh, 00, 9ah, 49h, 82h, 0ffh, 00
+        db      00, 0ffh, 00, 9ah, 49h, 82h, 0ffh, 00
+        
+        db      2ah, 52h, 02, 5ah, 0ah, 42h, 2ah, 52h
+        db      2ah, 52h, 02, 5ah, 0ah, 42h, 2ah, 52h
+        db      00, 0feh, 82h, 0fah, 0c2h, 0fah, 0fah, 0feh
+        db      00, 00, 7ch, 04h, 3ch, 04, 04, 00 
+        db      00, 0feh, 0e2h, 0dah, 0bah, 0bah, 0c2h, 0feh
+        db      00, 00, 1ch, 24h, 44h, 44h, 3ch, 00
+        db      00, 0feh, 82h, 0eeh, 0eeh, 0eeh, 0eeh, 0feh
+        db      00, 00, 7ch, 10h, 10h, 10h, 10h, 00          
+
+        db      6ah, 52h, 42h, 5ah, 4ah, 42h, 42h, 3ch
+        db      6ah, 52h, 42h, 5ah, 4ah, 42h, 42h, 3ch
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 40h, 40h, 40h, 40h, 40h, 0
+        db      0, 0, 0, 0, 0, 0, 0, 0
+        db      0, 0, 1ch, 14h, 14h, 14h, 1dh, 0
 
 BMP_VOID        dw      0, 0, 0, 0, 0, 0, 0, 0
 
