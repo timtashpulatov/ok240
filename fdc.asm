@@ -258,6 +258,17 @@ DrawDiskTemplate
         lxi     hl, BMP_4TRACK_TEMPLATE
         mvi     e, 20
         call    PaintRowOfSameBitmap
+        
+        lxi     b, ((TRACK_GAUGE_X - 1)*2 << 8) + TRACK_GAUGE_Y - 4
+        lxi     hl, BMP_TRACK_00
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     b, ((TRACK_GAUGE_X + 20)*2 << 8) + TRACK_GAUGE_Y - 4
+        lxi     hl, BMP_TRACK_79
+        mvi     a, 3
+        call    PaintBitmap
+        
 ret
 
 ; ************************************************************************
@@ -2007,6 +2018,12 @@ BMP_BAD_TRACK_PHASES
         db      0, 40h, 40h, 40h, 40h, 40h, 40h, 0
         db      0, 0, 0, 0, 0, 0, 0, 0
 
+BMP_TRACK_00
+        db      0, 0, 077h, 055h, 055h, 055h, 077h, 0
+        db      0, 0, 077h, 055h, 055h, 055h, 077h, 0
+BMP_TRACK_79
+        db      0, 0, 077h, 054h, 074h, 044h, 044h, 0
+        db      0, 0, 077h, 054h, 074h, 044h, 044h, 0
 
 
 BMP_ID
