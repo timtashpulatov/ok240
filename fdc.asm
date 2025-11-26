@@ -312,7 +312,7 @@ ret
 DrawTrack
 
 TRACK_GAUGE_X   equ     6
-TRACK_GAUGE_Y   equ     80+32      ;16
+TRACK_GAUGE_Y   equ     80+32+8      ;16
 
 ; calculate screen position
         push    hl
