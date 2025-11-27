@@ -1,6 +1,6 @@
 
 
-	.project fdc
+	.project fdt
 	.org 100h
 
 CONST           equ     0e006h  ; A = FF if there is keypress
@@ -105,19 +105,9 @@ SCREEN          equ     0c000h
         call    DrawSectorsRuler
         call    DrawSectorsTemplate
 
+        call    DrawDumpTemplate
 
-
-        lxi     h, BMP_GLASS_CORNER
-        lxi     b, 06a8h
-        mvi     a, 3
-        call    PaintBitmap
-
-        lxi     h, BMP_GLASS_HORIZ
-        lxi     b, 08a8h
-        mvi     e, 16
-        mvi     a, 3
-        call    PaintRowOfSameBitmap
-
+        call    DumpSector
 
         ; lxi     d, HEX_DASH
         ; lxi     b, 0878h
@@ -1111,6 +1101,30 @@ ShowVG93Regs
         in      PORT_DATA
         call    _PrintHex
 
+        ret
+
+; ************************************************************************
+; Нарисовать рамку для hex-дампа
+; ************************************************************************
+DrawDumpTemplate
+        lxi     h, BMP_GLASS_CORNER
+        lxi     b, 06a8h
+        mvi     a, 3
+        call    PaintBitmap
+
+        lxi     h, BMP_GLASS_HORIZ
+        lxi     b, 08a8h
+        mvi     e, 24
+        mvi     a, 3
+        call    PaintRowOfSameBitmap
+
+        lxi     h, BMP_GLASS_CORNER_TOP_RIGHT
+        lxi     b, 38a8h
+        mvi     a, 3
+        call    PaintBitmap
+        
+        
+        
         ret
 
 ; *************************************************
@@ -2121,6 +2135,9 @@ BMP_GLASS_CORNER
 BMP_GLASS_HORIZ
         db      0, 0, 255, 0, 0, 0, 0, 0
         db      0, 0, 255, 0, 0, 0, 0, 0
+BMP_GLASS_CORNER_TOP_RIGHT
+        db      0, 0, 3, 4, 8, 8, 8, 8
+        db      0, 0, 3, 4, 8, 8, 8, 8
 
 BMP_LOGO
         db      00, 0fch, 02, 0dah, 0cah, 0c2h, 0eah, 0d2h
