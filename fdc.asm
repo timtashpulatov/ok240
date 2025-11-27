@@ -107,6 +107,9 @@ SCREEN          equ     0c000h
 
         call    DrawDumpTemplate
 
+        mvi     a, 2
+        sta     PrintColor
+
         call    DumpSector
 
         ; lxi     d, HEX_DASH
@@ -116,8 +119,8 @@ SCREEN          equ     0c000h
 
         call    PaintFloppyBits
 
-        mvi     a, 2
-        sta     PrintColor
+        ; mvi     a, 2
+        ; sta     PrintColor
 
 MenuLoop
 
