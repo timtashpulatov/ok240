@@ -1112,6 +1112,11 @@ DrawDumpTemplate
         mvi     a, 3
         call    PaintBitmap
 
+        lxi     h, BMP_GLASS_LEFT
+        lxi     b, 06b0h
+        mvi     a, 3
+        call    PaintBitmap
+
         lxi     h, BMP_GLASS_HORIZ
         lxi     b, 08a8h
         mvi     e, 24
@@ -2138,6 +2143,9 @@ BMP_GLASS_HORIZ
 BMP_GLASS_CORNER_TOP_RIGHT
         db      0, 0, 3, 4, 8, 8, 8, 8
         db      0, 0, 3, 4, 8, 8, 8, 8
+BMP_GLASS_LEFT
+        db      4, 4, 4, 4, 4, 4, 4, 4
+        db      4, 4, 4, 4, 4, 4, 4, 4
 
 BMP_LOGO
         db      00, 0fch, 02, 0dah, 0cah, 0c2h, 0eah, 0d2h
