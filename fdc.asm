@@ -1120,16 +1120,13 @@ DrawDumpTemplate
         lxi     h, BMP_GLASS_HORIZ
         lxi     b, 08a8h
         mvi     e, 24
-        ; mvi     a, 3
         call    PaintRowOfSameBitmap
 
         lxi     h, BMP_GLASS_CORNER_TOP_RIGHT
         lxi     b, 38a8h
         mvi     a, 3
         call    PaintBitmap
-        
-        
-        
+
         ret
 
 ; *************************************************
