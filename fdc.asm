@@ -1112,7 +1112,7 @@ DrawDumpTemplate
         mvi     a, 3
         call    PaintBitmap
 
-        lxi     h, BMP_GLASS_LEFT
+        lxi     h, BMP_GLASS_VERT
         lxi     b, 06b0h
         mvi     e, 8
         call    PaintColOfSameBitmap
@@ -1126,6 +1126,12 @@ DrawDumpTemplate
         lxi     b, 38a8h
         mvi     a, 3
         call    PaintBitmap
+
+        lxi     h, BMP_GLASS_VERT
+        lxi     b, 38b0h
+        mvi     e, 8
+        call    PaintColOfSameBitmap
+
 
         ret
 
@@ -2157,9 +2163,9 @@ BMP_GLASS_HORIZ
         db      0, 0, 255, 0, 0, 0, 0, 0
         db      0, 0, 255, 0, 0, 0, 0, 0
 BMP_GLASS_CORNER_TOP_RIGHT
-        db      0, 0, 3, 4, 8, 8, 8, 8
-        db      0, 0, 3, 4, 8, 8, 8, 8
-BMP_GLASS_LEFT
+        db      0, 0, 1, 2, 4, 4, 4, 4
+        db      0, 0, 1, 2, 4, 4, 4, 4
+BMP_GLASS_VERT
         db      4, 4, 4, 4, 4, 4, 4, 4
         db      4, 4, 4, 4, 4, 4, 4, 4
 
