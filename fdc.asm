@@ -1114,13 +1114,13 @@ DrawDumpTemplate
 
         lxi     h, BMP_GLASS_LEFT
         lxi     b, 06b0h
-        mvi     a, 3
-        call    PaintBitmap
+        mvi     e, 8
+        call    PaintColOfSameBitmap
 
         lxi     h, BMP_GLASS_HORIZ
         lxi     b, 08a8h
         mvi     e, 24
-        mvi     a, 3
+        ; mvi     a, 3
         call    PaintRowOfSameBitmap
 
         lxi     h, BMP_GLASS_CORNER_TOP_RIGHT
@@ -1592,6 +1592,25 @@ PROSB
         pop     bc
 
         ret
+
+PaintColOfSameBitmap
+        push    bc
+        
+PCOSB
+        mvi     a, 3
+        call    PaintBitmap
+        
+        mov     a, c
+        adi     8
+        mov     c, a
+        
+        dcr     e
+        jnz     PCOSB
+        
+        pop     bc
+
+        ret
+
 
 ; *************************************************
 ; Copy 8 bytes from DE to HL
